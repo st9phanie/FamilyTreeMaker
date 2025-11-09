@@ -17,15 +17,23 @@ class Role(str,Enum):
 
 #------- MODELS --------------
 class Person(BaseModel):  
+    id: Optional[int] = None
     firstname: str
     middlename: Optional[str] = None
     lastname: Optional[str] = None
     birth: Optional[date] = None
     death: Optional[date] = None
     photo: Optional[str] = None
-    birthplace: Optional[str] = None
-    deathplace: Optional[str] = None
+    birth_governorate: Optional[str] = None
+    birth_district: Optional[str] = None
+    birth_area: Optional[str] = None
+    death_governorate: Optional[str] = None
+    death_district: Optional[str] = None
+    death_area: Optional[str] = None
     sex: Sex = Sex.UNDISCLOSED
+    family_id : int
+    pid1: Optional[int]
+    pid2: Optional[int]
 
 class Relationship(BaseModel):
     person: int
@@ -33,3 +41,9 @@ class Relationship(BaseModel):
     relationship_type: Role
     start_date: Optional[date] = None
     end_date: Optional[date] = None
+    
+class Family(BaseModel):
+    id: Optional[int] = None
+    user_id: int
+    lastname: Optional[str]
+    

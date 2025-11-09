@@ -1,8 +1,6 @@
 from supabaseClient import supabase
-from fastapi import FastAPI, HTTPException, Depends, status
-from typing import Annotated, List
-from pydantic import BaseModel
-from models import *
+from fastapi import FastAPI, HTTPException, status
+from models import Person
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -41,3 +39,22 @@ def add_person(person: Person):
             detail=f"Failed to insert person: {response.error}"
         )
 
+@app.get("/family/{id}")
+def get_family(id:str):
+    members = supabase.table("person").select("*").contains("family_id", [id]).execute()
+    if not members.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Family with id {id} not found"
+        )
+    return members.data
+
+@app.get("/family/")
+def get_user_families(userid:int):
+    families = supabase.table("family").select("*").eq("user_id",userid).execute()
+    if not families.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No results"
+        )
+    return families.data
