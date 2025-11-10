@@ -39,7 +39,7 @@ def add_person(person: Person):
             detail=f"Failed to insert person: {response.error}"
         )
 
-@app.get("/family/{id}")
+@app.get("/family/{id}/")
 def get_family(id:str):
     members = supabase.table("person").select("*").contains("family_id", [id]).execute()
     if not members.data:

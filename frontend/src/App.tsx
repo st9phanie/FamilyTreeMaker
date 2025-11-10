@@ -1,6 +1,6 @@
 
 import { AddPerson } from "./pages/AddPerson"
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useParams } from 'react-router-dom';
 import Index from "./pages/Index";
 import Tree from "./pages/Tree";
 import Navbar from "./components/Navbar";
@@ -8,6 +8,10 @@ import Home from "./pages/Home";
 import Layout from "./Layout";
 import Families from "./pages/Families";
 
+function FamilyTreeWrapper() {
+  const { id } = useParams<{ id: string }>();
+  return <Tree id={parseInt(id!)} />;
+}
 
 const App = () => {
   return (
@@ -19,7 +23,7 @@ const App = () => {
       <Route element={<Layout />}>
         <Route path="/add-person" element={<AddPerson />} />
         <Route path="/family" element={<Families />} />
-        <Route path="/family-tree" element={<Tree />} />
+        <Route path="/family/:id" element={<FamilyTreeWrapper/>} />
         <Route path="/home" element={<Home />} />
       </Route>
     </Routes>

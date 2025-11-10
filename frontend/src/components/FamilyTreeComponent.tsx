@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { fetchFamilyMembers } from "@/lib/functions";
+import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -6,15 +7,29 @@ declare global {
   }
 }
 
-export const FamilyTreeComponent = () => {
-  const treeRef = useRef<HTMLDivElement | null>(null);
+type FamilyMember = {
+  id: number;
+  firstname: string;
+  pid1?: number;
+  pid2?: number;
+  partner_id?: number[];
+  sex: string;
+};
 
+type Props = {
+  id: number;
+};
+
+export const FamilyTreeComponent = ({ id }: Props) => {
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+  const treeRef = useRef<HTMLDivElement | null>(null);
+  const treeInstance = useRef<any>(null);
+
+  // Load Balkan JS script once
   useEffect(() => {
-    // 1. Load the FamilyTree.js script dynamically if not already loaded
     const loadScript = () =>
       new Promise<void>((resolve, reject) => {
         if (window.FamilyTree) return resolve();
-
         const script = document.createElement("script");
         script.src = "https://balkan.app/js/FamilyTree.js";
         script.async = true;
@@ -23,49 +38,63 @@ export const FamilyTreeComponent = () => {
         document.body.appendChild(script);
       });
 
-    // 2. Initialize the tree
-    const initTree = () => {
-      if (!window.FamilyTree || !treeRef.current) return;
-
-      const FamilyTree = window.FamilyTree;
-
-      const family = new FamilyTree(treeRef.current, {
-        mouseScrool: FamilyTree.action.scroll,
-        padding: 20,
-        template: "tommy",
-        scaleInitial: FamilyTree.match.boundary,
-        toolbar: {
-          zoom: true,
-          fit: true,
-        },
-        nodeBinding: {
-          field_0: "name",
-        },
-        nodes: [
-          { id: 1, pids: [2], name: "Amber McKenzie", gender: "female" },
-          { id: 2, pids: [1], name: "Ava Field", gender: "male" },
-          { id: 3, mid: 1, fid: 2, name: "Peter Stevens", gender: "male" },
-          { id: 4, mid: 1, fid: 2, name: "Savin Stevens", gender: "male" },
-          { id: 5, mid: 1, fid: 2, name: "Emma Stevens", gender: "female" },
-        ],
-      });
-
-      return family;
-    };
-
-    // 3. Run it
-    let treeInstance: any;
-    loadScript()
-      .then(() => {
-        treeInstance = initTree();
-      })
-      .catch(console.error);
-
-    // 4. Cleanup
-    return () => {
-      treeInstance?.destroy?.();
-    };
+    loadScript().catch(console.error);
   }, []);
+
+  // Fetch family members
+  useEffect(() => {
+    const loadMembers = async () => {
+      try {
+        const data = await fetchFamilyMembers(id);
+        if (data) setFamilyMembers(data);
+      } catch (err) {
+        console.error("Failed to load family members:", err);
+      }
+    };
+    loadMembers();
+  }, [id]);
+
+  // Initialize or refresh tree
+  useEffect(() => {
+    if (!window.FamilyTree || !treeRef.current || familyMembers.length === 0) return;
+
+    // Destroy any previous instance
+    treeInstance.current?.destroy?.();
+
+    const FamilyTree = window.FamilyTree;
+
+    treeInstance.current = new FamilyTree(treeRef.current, {
+      mouseScroll: FamilyTree.action.scroll,
+      padding: 20,
+      template: "tommy",
+      nodeTreeMenu: true,
+
+      scaleInitial: FamilyTree.match.boundary,
+      toolbar: {
+        zoom: true,
+        fit: true,
+      },
+      nodeBinding: {
+        field_0: "name",
+      },
+      nodes: familyMembers.map((m) => ({
+        id: m.id,
+        pids: m.partner_id ?? [],
+        name: m.firstname,
+        gender: m.sex === "F" ? "female" : m.sex === "M" ? "male" : "Undisclosed",
+        mid: m.pid1,
+        fid: m.pid2,
+      })),
+    });
+
+    return () => {
+      treeInstance.current?.destroy?.();
+    };
+  }, [familyMembers]);
+
+  if (familyMembers.length === 0) {
+    return <div className="text-center mt-10 text-gray-500">Loading family tree...</div>;
+  }
 
   return (
     <div

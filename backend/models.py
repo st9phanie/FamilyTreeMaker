@@ -5,9 +5,9 @@ from enum import Enum
 
 #------- ENUMS --------------
 class Sex(str,Enum):
-    MALE = "Male"
-    FEMALE = "Female"
-    UNDISCLOSED = "Undisclosed"
+    MALE = "M"
+    FEMALE = "F"
+    UNDISCLOSED = "U"
 
 class Role(str,Enum):
     CHILD = "Child"

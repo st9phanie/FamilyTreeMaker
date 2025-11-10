@@ -1,12 +1,22 @@
 import axios from "axios";
 
-export async function fetchUserFamilies(userId:number) {
+export async function fetchUserFamilies(userId: number) {
   try {
     const { data } = await axios.get("http://localhost:8000/family/", {
       params: { userid: userId },
     });
     return data;
-  } catch (err:any) {
+  } catch (err: any) {
+    console.error("Error fetching families:", err.response?.data || err.message);
+  }
+}
+
+export async function fetchFamilyMembers(id: number) {
+  try {
+    const { data } = await axios.get(`http://localhost:8000/family/${id}`);
+    
+    return data;
+  } catch (err: any) {
     console.error("Error fetching families:", err.response?.data || err.message);
   }
 }

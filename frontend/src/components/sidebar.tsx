@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const links = [
     { link: "/home", title: "Home" },
     { link: "/my-profile", title: 'My Profile' },
-    { link: "/family", title: 'My Family Tree' },
+    { link: "/family", title: 'Family Trees' },
 ]
 
 const Sidebar = () => {
@@ -13,7 +13,7 @@ const Sidebar = () => {
             <ul className='flex flex-col px-10 '>
                 {links.map((link, key) => (
                     <Link key={key} to={link.link}>
-                        <li  className='w-full text-lg py-2 px-2 rounded-sm hover:bg-gray-100'>
+                        <li  className='w-full text-lg py-3 px-2 rounded-sm hover:bg-gray-100'>
                             {link.title}
                         </li>
                     </Link>
