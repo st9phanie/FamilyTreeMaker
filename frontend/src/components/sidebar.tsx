@@ -1,20 +1,25 @@
-import React from 'react'
+import { useSidebar } from '@/utils/store';
+import { Home, Network, UserPen } from 'lucide-react';
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const links = [
-    { link: "/home", title: "Home" },
-    { link: "/my-profile", title: 'My Profile' },
-    { link: "/family", title: 'Family Trees' },
+    { link: "/home", title: "Home", icon: (<Home className='size-6 place-self-center' />) },
+    { link: "/my-profile", title: 'My Profile', icon: (<UserPen className='size-6 place-self-center' />) },
+    { link: "/family", title: 'Family Trees', icon: (<Network className='size-6 place-self-center' />) },
 ]
 
 const Sidebar = () => {
+    const { isOpen } = useSidebar()
+
+
     return (
-        <nav className='h-[calc(100vh-60px)] top-[60px] border-r border-[#7CB937] w-70 py-5 fixed left-0'>
-            <ul className='flex flex-col px-10 '>
+        <nav className={`h-[calc(100vh-60px)]  border-r border-lime-700 top-[60px] py-5 fixed left-0 ${isOpen ? "w-70 " : "w-15"}`}>
+            <ul className={`flex flex-col px-2`}  >
                 {links.map((link, key) => (
                     <Link key={key} to={link.link}>
-                        <li  className='w-full text-lg py-3 px-2 rounded-sm hover:bg-gray-100'>
-                            {link.title}
+                        <li className='w-full text-lg py-3 px-4 rounded-sm hover:bg-gray-100 '>
+                            {isOpen ? link.title : link.icon}
                         </li>
                     </Link>
                 ))}

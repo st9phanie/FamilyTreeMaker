@@ -1,3 +1,4 @@
+import { useSidebar } from '@/utils/store';
 import React, { type ReactNode } from 'react'
 
 type Props = {
@@ -5,21 +6,22 @@ type Props = {
     className?: string;
 }
 
-const Layout = ({children, className}:Props) => {
+const Layout = ({ children, className }: Props) => {
+    const { isOpen } = useSidebar()
+
     return (
         <div className=
-        {`fixed
+            {`fixed
         top-[60px]
-        left-[280px]
-        w-[calc(100vw-280px)]
+        ${isOpen ? "left-[280px] w-[calc(100vw-280px)]" : "left-[60px] w-[calc(100vw-60px)]"} 
         h-[calc(100vh-60px)]
         bg-white
         overflow-auto
         flex
         py-5
-        px-10 ${className}`}
-      >
-        {children}
+         ${className}`}
+        >
+            {children}
         </div>
     )
 }

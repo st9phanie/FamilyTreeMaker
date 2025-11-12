@@ -1,19 +1,19 @@
 declare global {
     type Person = {
-        firstname: string,
-        middlename: string | null,
-        lastname: string | null,
-        governorate: string | null,
-        district: string | null,
-        area: string | null,
-        dob: Date | undefined,
-        dod: Date | undefined,
-        sex: "Undisclosed" | "Male" | "Female",
-        status: "Unknown" | 'Deceased' | "Living",
-        photo: File | null,
-        deathGovernorate: string | null,
-        deathArea: string | null,
-        deathDistrict: string | null
+        firstname: string;
+        middlename?: string;
+        lastname?: string;
+        governorate?: string;
+        district?: string;
+        area?: string;
+        dob?: Date;
+        dod?: Date;
+        sex: "M" | "F" | "U";
+        status?: "Living" | "Deceased" | "Unknown";
+        photo?: File | null;
+        deathGovernorate?: string;
+        deathArea?: string;
+        deathDistrict?: string;
     };
 
 }

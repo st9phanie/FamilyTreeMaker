@@ -6,6 +6,13 @@ html {
   overflow-y: scroll;
 }
 
+svg.tommy .node.male>rect {
+    fill: #617BA3;
+}   
+
+svg.tommy .node.female>rect {
+    fill: #C45B61;
+}   
 
 @custom-variant dark (&:is(.dark *));
 

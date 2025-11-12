@@ -18,7 +18,7 @@ const Locations = ({ person, setPerson, prefix = "", label }: Props) => {
     const district = (person as any)[distKey];
 
     return (
-        <div className="flex flex-col lg:flex-row justify-between gap-6 w-full">
+        <div className="flex flex-col justify-between gap-6 w-full">
             {label && <h3 className="text-base font-semibold mb-2">{label}</h3>}
 
             {/* Governorate */}
