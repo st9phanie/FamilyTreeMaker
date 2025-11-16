@@ -8,11 +8,8 @@ type Props = {
   id: number
 }
 
-
-
 const FamilyCard = ({ lastname, memberCount = 0, id }: Props) => {
   const navigate = useNavigate();
-
 
   const GoTo = () => {
     navigate(`/family/${id}`);

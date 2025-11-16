@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@300..700&display=swap');@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@300..700&display=swap');
+@import "tailwindcss";
 @import "tw-animate-css";
 
 
@@ -7,12 +8,15 @@ html {
 }
 
 svg.tommy .node.male>rect {
-    fill: #617BA3;
-}   
+  fill: #617BA3;
+}
 
 svg.tommy .node.female>rect {
-    fill: #C45B61;
-}   
+  fill: #C45B61;
+}
+
+
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,6 +131,7 @@ svg.tommy .node.female>rect {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -144,15 +149,17 @@ svg.tommy .node.female>rect {
 
 /* input field on focus */
 div.bft-light .bft-input>input:focus {
-    border-color: green;
+  border-color: green;
 }
 
 /* the search label on focus */
-.bft-light .bft-input>label.focused, .bft-dark .bft-input>label.focused {
-    color: green !important;
+.bft-light .bft-input>label.focused,
+.bft-dark .bft-input>label.focused {
+  color: green !important;
 }
 
 /* the hovered search resutt */
-.bft-light .bft-search [data-search-item-id]:hover, .bft-light .bft-search [data-selected=yes] {
-    background-color: green !important;
+.bft-light .bft-search [data-search-item-id]:hover,
+.bft-light .bft-search [data-selected=yes] {
+  background-color: green !important;
 }

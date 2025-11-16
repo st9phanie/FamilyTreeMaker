@@ -35,12 +35,7 @@ class Person(BaseModel):
     pid1: Optional[int]
     pid2: Optional[int]
 
-class Relationship(BaseModel):
-    person: int
-    related_person: int
-    relationship_type: Role
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
+
     
 class Family(BaseModel):
     id: Optional[int] = None

@@ -25,7 +25,7 @@ const ImagePicker = ({setPhoto}:Props) => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="w-32 h-32 rounded-full border border-gray-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-gray-600 transition bg-gray-200/10"
+        className="size-28 rounded-full border border-gray-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-gray-600 transition bg-gray-200/10"
         onClick={handleClick}
       >
         {preview ? (

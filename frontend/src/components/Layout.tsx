@@ -19,6 +19,7 @@ const Layout = ({ children, className }: Props) => {
         overflow-auto
         flex
         py-5
+        px-10
          ${className}`}
         >
             {children}

@@ -1,10 +1,11 @@
 import { locations } from "../utils/utils.js";
-import Combobox from "@/components/combobox.js";
+import Combobox from "@/components/combobox.js"; // Assuming this is the fixed version
+
 
 type Props = {
     person: Person;
-    setPerson: (p: any) => void;
-    prefix: string;
+    setPerson: (updater: (prev: Person) => Person) => void;
+    prefix: string; 
     label?: string;
 };
 
@@ -14,11 +15,13 @@ const Locations = ({ person, setPerson, prefix = "", label }: Props) => {
     const distKey = `${prefix ? prefix + "District" : "district"}`;
     const areaKey = `${prefix ? prefix + "Area" : "area"}`;
 
-    const governorate = (person as any)[govKey];
-    const district = (person as any)[distKey];
+    // 1. READ: Get current values from the prop
+    const governorate = person[govKey] || "";
+    const district = person[distKey] || "";
+    const area = person[areaKey] || "";
 
     return (
-        <div className="flex flex-col justify-between gap-6 w-full">
+        <div className="flex flex-col gap-6 w-full">
             {label && <h3 className="text-base font-semibold mb-2">{label}</h3>}
 
             {/* Governorate */}
@@ -27,14 +30,19 @@ const Locations = ({ person, setPerson, prefix = "", label }: Props) => {
                 <Combobox
                     list={locations.governorates}
                     listType="Governorate"
-                    setValue={(value) =>
-                        setPerson((p: any) => ({
+                    // 2. DISPLAY: Pass the current value to Combobox.
+                    // The Combobox will display this string.
+                    value={governorate} // <-- THIS CONTROLS THE UI DISPLAY
+                    setValue={(value) => {
+                        // 3. UPDATE: When a new value is selected...
+                        setPerson((p) => ({ // ...update the parent state
                             ...p,
                             [govKey]: value,
-                            [distKey]: "",
-                            [areaKey]: "",
-                        }))
-                    }
+                            [distKey]: "", 
+                            [areaKey]: "", 
+                        })); console.log(person.governorate);
+
+                    }}
                 />
             </div>
 
@@ -44,13 +52,15 @@ const Locations = ({ person, setPerson, prefix = "", label }: Props) => {
                 <Combobox
                     list={locations.districts[governorate] || []}
                     listType="District"
-                    setValue={(value) =>
-                        setPerson((p: any) => ({
+                    // 2. DISPLAY: Show the current district
+                    value={district} 
+                    setValue={(value) => {
+                        setPerson((p) => ({
                             ...p,
                             [distKey]: value,
-                            [areaKey]: "",
-                        }))
-                    }
+                            [areaKey]: "", 
+                        }));
+                    }}
                     disabled={!governorate}
                 />
             </div>
@@ -61,12 +71,15 @@ const Locations = ({ person, setPerson, prefix = "", label }: Props) => {
                 <Combobox
                     list={locations.areas[district] || []}
                     listType="Area"
-                    setValue={(value) =>
-                        setPerson((p: any) => ({
+                    // 2. DISPLAY: Show the current area
+                    value={area} // <-- THIS CONTROLS THE UI DISPLAY
+                    setValue={(value) => {
+                        // 3. UPDATE: Update the parent state
+                        setPerson((p) => ({
                             ...p,
                             [areaKey]: value,
-                        }))
-                    }
+                        }));
+                    }}
                     disabled={!district}
                 />
             </div>

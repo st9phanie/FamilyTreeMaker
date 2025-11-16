@@ -22,9 +22,10 @@ type Props = {
   listType: string;
   setValue: (value: string) => void;
   disabled?: boolean;
+  value?: string; 
 };
 
-const Combobox = ({ list, listType, setValue, disabled }: Props) => {
+const Combobox = ({ list, listType, setValue, disabled, value }: Props) => {
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
 
@@ -47,7 +48,7 @@ const Combobox = ({ list, listType, setValue, disabled }: Props) => {
         >
           {selectedValue
             ? list.find((item) => item === selectedValue)
-            : `Select ${listType}...`}
+            : value?.length !== 0 ? value : `Select ${listType}...`}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
