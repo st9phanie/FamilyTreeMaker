@@ -10,6 +10,8 @@ type Props = {
     person?: Person;
     name: string | undefined;
     onBack: () => void;
+    refresh: () => void;
+
 }
 type NameField = {
     id: string;
@@ -25,7 +27,7 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const AddSibling = ({ person, name, onBack }: Props) => {
+const AddSibling = ({ person, name, onBack, refresh }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
     const [middlename, setMiddlename] = useState<string>("")
@@ -37,11 +39,16 @@ const AddSibling = ({ person, name, onBack }: Props) => {
         { id: "middlename", label: "Middle Name(s)", value: middlename, onChange: setMiddlename },
         { id: "lastname", label: "Last Name", value: lastname, onChange: setLastname },
     ];
-    const onSaveClick = () => {
-        const data = addPerson({ photo, lastname, firstname, middlename, sex })
-        console.log(data);
 
-    }
+    const onSaveClick = () => {
+        let data;
+        if (photo || lastname || firstname || middlename || sex !== "U") {
+            data = addPerson({ photo, lastname, firstname, middlename, sex,family_id:person?.family_id,pid1:person?.pid1,pid2:person?.pid2 })
+            console.log(data);
+            refresh()
+        }
+
+    };
 
     return (
         <div className='w-[360px] h-[calc(100vh-60px)] border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
@@ -76,7 +83,7 @@ const AddSibling = ({ person, name, onBack }: Props) => {
                     <p className="text-sm px-1">Sex</p>
                     <RadioGroup
                         value={sex}
-                        onValueChange={(value)=>setSex(value as "M" | "F" | "U") }
+                        onValueChange={(value) => setSex(value as "M" | "F" | "U")}
                         className="flex flex-row font-normal"
                     >
                         {sexFields.map((val, key) => (

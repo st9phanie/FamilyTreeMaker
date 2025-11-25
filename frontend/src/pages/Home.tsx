@@ -10,10 +10,11 @@ type Props = {
   id?: number;
 }
 
-const Home = ({ id=1 }: Props) => {
+const Home = ({ id = 1 }: Props) => {
   const [dataFromChild, setDataFromChild] = useState<number>(1);
   const [familyMembers, setFamilyMembers] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedPerson, setSelectedPerson] = useState<Person>();
 
   const handleDataFromChild = (data: number) => {
     setDataFromChild(data);
@@ -21,8 +22,8 @@ const Home = ({ id=1 }: Props) => {
   };
 
   const refreshMembers = () => {
-  loadMembers(); // reload from backend
-};
+    loadMembers();
+  };
 
   const loadMembers = async () => {
     if (!id) {
@@ -48,23 +49,31 @@ const Home = ({ id=1 }: Props) => {
     loadMembers();
   }, [id]); // Dependency array: loadMembers runs whenever 'id' changes
 
+  useEffect(() => {
+    if (familyMembers.length > 0) {
+      const person = familyMembers.find(m => m.id === dataFromChild);
+      setSelectedPerson(person);
+    }
+  }, [familyMembers, dataFromChild]);
+
   // Show a loading state while fetching
   if (loading) {
     return (
-      <div className='flex justify-center items-center h-screen'>
+      <div className='flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]'>
         <Loader2 className='animate-spin size-10 text-emerald-600' />
       </div>
     );
-  } 
+  }
 
 
   return (
     <div className='flex flex-row min-h-screen'>
 
       {/* Sidebar container with fixed width (e.g., w-[360px]) and set height */}
+      {selectedPerson && (
       <div className='hidden md:flex w-[360px]'>
-        <SidebarContainer person={familyMembers.find((node) => node.id === dataFromChild)} refresh={refreshMembers} />
-      </div>
+        <SidebarContainer person={selectedPerson!} refresh={refreshMembers} />
+      </div>)}
 
       {/* Main content area takes up remaining space and scrolls */}
       <main className='grow h-[calc(100vh-60px)] mt-[60px] p-5 overflow-hidden'>

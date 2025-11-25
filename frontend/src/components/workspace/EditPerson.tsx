@@ -1,15 +1,15 @@
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Mail, Pen, Sidebar, Text } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { updatePerson } from '@/lib/functions';
 
 type Props = {
     person: Person;
-    name: string | undefined;
     onBack: () => void;
+    refresh: () => void;
 }
 
 type NameField = {
@@ -26,12 +26,13 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const EditPerson = ({ person, name, onBack }: Props) => {
+const EditPerson = ({ person, onBack, refresh }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>(person.firstname || "")
     const [middlename, setMiddlename] = useState<string>(person.middlename || "")
     const [lastname, setLastname] = useState<string>(person.lastname || "")
     const [sex, setSex] = useState<"M" | "F" | "U" | undefined>(person?.sex)
+    const [update,setUpdate] = useState<boolean>(false)
 
     const nameFields: NameField[] = [
         { id: "firstname", label: "First Name", required: false, value: firstname, onChange: setFirstname },
@@ -40,17 +41,21 @@ const EditPerson = ({ person, name, onBack }: Props) => {
     ];
 
     const onSaveClick = () => {
-        const data = updatePerson(person.id! ,{ photo, lastname, firstname, middlename, sex })
+        const data = updatePerson(person.id!, { photo, lastname, firstname, middlename, sex })
         console.log(data);
-
+        setUpdate(true)
     }
+
+    useEffect(() => {
+        if(update) {refresh();setUpdate(false);}
+    },[update])
 
     return (
         <div className='w-[360px] h-[calc(100vh-60px)]
  border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
             <div className='flex flex-row justify-between'>
                 <ArrowLeft className='text-emerald-900' onClick={onBack} />
-                <p className='text-center text-lg text-emerald-900'>Edit {name}</p>
+                <p className='text-center text-lg text-emerald-900'>Edit {firstname}</p>
                 <Sidebar className='text-emerald-900' />
 
             </div>

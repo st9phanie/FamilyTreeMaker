@@ -3,7 +3,7 @@ import { useState } from "react";
 import AddSibling from "./AddSibling";
 import EditPerson from "./EditPerson";
 
-const SidebarContainer = ({ person, refresh }: { person: Person; refresh:()=>void;}) => {
+const SidebarContainer = ({ person, refresh }: { person: Person; refresh: () => void; }) => {
     const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit">("main");
     const name = [person.firstname, person.middlename, person.lastname].filter(Boolean).join(" ")
 
@@ -22,13 +22,14 @@ const SidebarContainer = ({ person, refresh }: { person: Person; refresh:()=>voi
                     name={name}
                     person={person}
                     onBack={() => setCurrentSidebar("main")}
+                    refresh={refresh}
 
                 />
             )}
 
             {currentSidebar === "edit" && (
                 <EditPerson
-                    name={name}
+                    refresh={refresh}
                     onBack={() => setCurrentSidebar("main")}
                     person={person}
                 />
