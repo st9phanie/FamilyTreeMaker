@@ -89,3 +89,14 @@ export async function addPerson(person: Partial<Person>) {
 
   }
 }
+export async function deletePerson(id: number) {
+  try {
+    const { data } = await axios.delete(
+      `http://localhost:8000/person/${id}`
+    );
+    return data;
+  } catch (err: any) {
+    console.error("Error deleting person:", err.response?.data || err.message);
+    throw err; // <-- IMPORTANT so UI knows it failed
+  }
+}

@@ -14,6 +14,8 @@ const SidebarContainer = ({ person, refresh }: { person: Person; refresh: () => 
                     name={name}
                     onAddSibling={() => setCurrentSidebar("sibling")}
                     onEditDetails={() => setCurrentSidebar("edit")}
+                    refresh={refresh}
+                    person={person}
                 />
             )}
 

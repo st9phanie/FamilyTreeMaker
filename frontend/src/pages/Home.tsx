@@ -52,7 +52,7 @@ const Home = ({ id = 1 }: Props) => {
   useEffect(() => {
     if (familyMembers.length > 0) {
       const person = familyMembers.find(m => m.id === dataFromChild);
-      setSelectedPerson(person);
+      setSelectedPerson(person || familyMembers[0]);
     }
   }, [familyMembers, dataFromChild]);
 

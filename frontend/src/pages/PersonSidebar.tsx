@@ -1,14 +1,25 @@
 import { Button } from '@/components/ui/button';
+import { deletePerson } from '@/lib/functions';
 import { Mail, Pen, Sidebar, Text } from 'lucide-react';
 
 type Props = {
-    person?: Person;
+    person: Person;
     name: string | undefined;
     onAddSibling: () => void;
     onEditDetails: () => void;
+    refresh: () => void;
+
 }
 
-const PersonSidebar = ({ person, name, onAddSibling, onEditDetails }: Props) => {
+const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh }: Props) => {
+
+    const onDelete = async () => {
+        const data = await deletePerson(person.id!)
+        console.log(data);
+        if (data.status == "success") refresh();
+    }
+
+
     return (
         <div className='w-[360px] h-[calc(100vh-60px)]
  border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
@@ -35,7 +46,7 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails }: Props) => 
             </div>
 
             <hr className='border-slate-300 ' />
-            <Button variant="destructive" className='border border-b-3 border-amber-950'>Delete Person</Button>
+            <Button variant="destructive" className='border border-b-3 border-amber-950' onClick={onDelete}>Delete Person</Button>
         </div>
     )
 }

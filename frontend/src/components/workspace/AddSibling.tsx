@@ -40,12 +40,13 @@ const AddSibling = ({ person, name, onBack, refresh }: Props) => {
         { id: "lastname", label: "Last Name", value: lastname, onChange: setLastname },
     ];
 
-    const onSaveClick = () => {
+    const onSaveClick = async () => {
         let data;
         if (photo || lastname || firstname || middlename || sex !== "U") {
-            data = addPerson({ photo, lastname, firstname, middlename, sex,family_id:person?.family_id,pid1:person?.pid1,pid2:person?.pid2 })
+            data = await addPerson({ photo, lastname, firstname, middlename, sex,family_id:person?.family_id,pid1:person?.pid1,pid2:person?.pid2 })
             console.log(data);
-            refresh()
+
+            if (data.status == 'success') refresh()
         }
 
     };

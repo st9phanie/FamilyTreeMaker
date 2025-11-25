@@ -17,6 +17,7 @@ app.add_middleware(
 )
 
 
+# get person info
 @app.get("/person/{id}", response_model=Person)
 def get_person(id: int):
     person = supabase.table("person").select("*").eq("id", id).execute()
@@ -29,6 +30,7 @@ def get_person(id: int):
     return person.data[0]
 
 
+# update person
 @app.put("/person/{id}", response_model=Person)
 def update_person(id: int, person: PersonUpdate):
     data = person.model_dump(mode="json", exclude_unset=True)
@@ -47,9 +49,10 @@ def update_person(id: int, person: PersonUpdate):
             detail=f"Person with id {id} not found",
         )
 
-    return response.data[0]
+    return {"status": "success"}
 
 
+# create person
 @app.post("/person/")
 def add_person(person: Person):
     data = person.model_dump(mode="json", exclude_unset=True)
@@ -57,7 +60,7 @@ def add_person(person: Person):
 
     if response.data:
         return {
-            "message": f"Person {person.firstname} added successfully",
+            "status": "success",
             "person": response.data[0],
         }
     else:
@@ -67,6 +70,21 @@ def add_person(person: Person):
         )
 
 
+# delete person
+@app.delete("/person/{id}")
+def delete_person(id: int):
+    response = supabase.table("person").delete().eq("id", id).execute()
+
+    if not response.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Person with id {id} could not be deleted",
+        )
+
+    return {"status": "success", "id": id}
+
+
+# get family members of a certain family
 @app.get("/family/{id}/")
 def get_family(id: str):
     members = supabase.table("person").select("*").contains("family_id", [id]).execute()
@@ -78,6 +96,7 @@ def get_family(id: str):
     return members.data
 
 
+# get the families created by a user
 @app.get("/family/")
 def get_user_families(userid: int):
     families = supabase.table("family").select("*").eq("user_id", userid).execute()

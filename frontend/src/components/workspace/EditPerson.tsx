@@ -40,10 +40,10 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
         { id: "lastname", label: "Last Name", value: lastname, onChange: setLastname },
     ];
 
-    const onSaveClick = () => {
-        const data = updatePerson(person.id!, { photo, lastname, firstname, middlename, sex })
+    const onSaveClick = async () => {
+        const data = await updatePerson(person.id!, { photo, lastname, firstname, middlename, sex })
         console.log(data);
-        setUpdate(true)
+        if (data.status == "success") setUpdate(true)
     }
 
     useEffect(() => {
