@@ -1,44 +1,62 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 from enum import Enum
 
-#------- ENUMS --------------
-class Sex(str,Enum):
+
+# ------- ENUMS --------------
+class Sex(str, Enum):
     MALE = "M"
     FEMALE = "F"
     UNDISCLOSED = "U"
 
-class Role(str,Enum):
-    CHILD = "Child"
-    ADOPTED_CHILD = "Adopted_child"
-    SPOUSE = "Spouse"
-    PARTNER = "Partner"
 
-#------- MODELS --------------
-class Person(BaseModel):  
+class Status(str, Enum):
+    LIVE = "L"
+    DECEASED = "D"
+    UNKNOWN = "U"
+
+
+# ------- MODELS --------------
+class Person(BaseModel):
     id: Optional[int] = None
-    firstname: str
+    firstname: Optional[str] = None
     middlename: Optional[str] = None
     lastname: Optional[str] = None
     birth: Optional[date] = None
     death: Optional[date] = None
     photo: Optional[str] = None
-    birth_governorate: Optional[str] = None
-    birth_district: Optional[str] = None
-    birth_area: Optional[str] = None
-    death_governorate: Optional[str] = None
-    death_district: Optional[str] = None
-    death_area: Optional[str] = None
-    sex: Sex = Sex.UNDISCLOSED
-    family_id : int
-    pid1: Optional[int]
-    pid2: Optional[int]
+    governorate: Optional[str] = None
+    district: Optional[str] = None
+    area: Optional[str] = None
+    deathplace: Optional[str] = None
+    sex: Optional[Sex] = Sex.UNDISCLOSED
+    status: Optional[Status] = Status.UNKNOWN
+    pid1: Optional[int] = None
+    pid2: Optional[int] = None
+    partner_id: Optional[List[int]] = None
+    family_id: Optional[List[int]] = None
 
 
-    
 class Family(BaseModel):
     id: Optional[int] = None
     user_id: int
     lastname: Optional[str]
-    
+
+class PersonUpdate(BaseModel):
+    firstname: Optional[str] = None
+    middlename: Optional[str] = None
+    lastname: Optional[str] = None
+    governorate: Optional[str] = None
+    district: Optional[str] = None
+    area: Optional[str] = None
+    birth: Optional[date] = None
+    pid1: Optional[int] = None
+    pid2: Optional[int] = None
+    death: Optional[date] = None
+    sex: Optional[Sex] = None
+    status: Optional[Status] = None
+    photo: Optional[str] = None
+    partner_id: Optional[List[int]] = None
+    family_id: Optional[List[int]] = None
+    deathplace: Optional[str] = None

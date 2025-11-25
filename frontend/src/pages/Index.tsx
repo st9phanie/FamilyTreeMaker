@@ -1,4 +1,4 @@
-import SearchBar from '@/components/Searchbar'
+import SearchBar from '@/components/home-page/Searchbar'
 import React from 'react'
 
 const Index = () => {

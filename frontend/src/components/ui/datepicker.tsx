@@ -12,23 +12,33 @@ import {
 type Props = {
   setDate: (value: Date | undefined) => void;
   label: string;
-  existingDate?: Date;
-}
+  existingDate?: Date | string | null;
+};
 
 export function Calendar22({ setDate, label, existingDate }: Props) {
-  const [open, setOpen] = React.useState(false)
-  const [date, setDate2] = React.useState<Date | undefined>(existingDate)
+  // Normalize date: always convert string → Date
+  const normalize = (val: Date | string | null | undefined) =>
+    val ? new Date(val) : undefined;
+
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate2] = React.useState<Date | undefined>(
+    normalize(existingDate)
+  );
 
   React.useEffect(() => {
-    setDate2(existingDate)
-  }, [existingDate])
+    setDate2(normalize(existingDate));
+  }, [existingDate]);
 
-  const handleSelect = (currentValue: Date) => {
-    const newValue = currentValue === date ? undefined : currentValue
-    setDate2(newValue)
-    setDate(newValue)
-    setOpen(false)
-  }
+  const handleSelect = (selected: Date | undefined) => {
+    const isSame =
+      selected && date && selected.getTime() === date.getTime();
+
+    const newValue = isSame ? undefined : selected;
+
+    setDate2(newValue);
+    setDate(newValue);
+    setOpen(false);
+  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -43,7 +53,7 @@ export function Calendar22({ setDate, label, existingDate }: Props) {
             id="date"
             className="w-[250px] justify-between font-normal"
           >
-            {date ? date.toLocaleString("en-ca").substring(0,10) : "Select date"}
+            {date ? date.toISOString().slice(0, 10) : "Select date"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -53,13 +63,10 @@ export function Calendar22({ setDate, label, existingDate }: Props) {
             mode="single"
             selected={date}
             captionLayout="dropdown"
-            onSelect={(date) => {
-              handleSelect(date!)
-              setOpen(false)
-            }}
+            onSelect={handleSelect}
           />
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

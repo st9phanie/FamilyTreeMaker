@@ -1,10 +1,11 @@
+import { fileToBase64 } from "@/lib/helperfunctions";
 import React, { useRef, useState } from "react";
 
 type Props = {
-    setPhoto: (value:File) => void;
+  setPhoto: (value: string) => void;
 }
 
-const ImagePicker = ({setPhoto}:Props) => {
+const ImagePicker = ({ setPhoto }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -12,20 +13,20 @@ const ImagePicker = ({setPhoto}:Props) => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result as string);
-      reader.readAsDataURL(file);
-      setPhoto(file)
-    }
+    if (!file) return;
+
+    const base64 = await fileToBase64(file);
+
+    setPreview(base64);   // for UI
+    setPhoto(base64);     // now passing the string to parent
   };
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="size-28 rounded-full border border-gray-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-gray-600 transition bg-gray-200/10"
+        className="size-28 rounded-full border border-slate-600 flex items-center justify-center overflow-hidden cursor-pointer hover:border-black transition bg-white"
         onClick={handleClick}
       >
         {preview ? (

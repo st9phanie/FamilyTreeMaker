@@ -4,7 +4,7 @@ import Combobox from "@/components/combobox.js";
 import { Calendar22 } from "@/components/ui/datepicker.js";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import ImagePicker from "@/components/ImagePicker.js";
+import ImagePicker from "@/components/ui/ImagePicker.js";
 import { Button } from "@/components/ui/button.js";
 import Locations from "@/components/Locations.js";
 

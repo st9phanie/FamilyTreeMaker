@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Layout from "./Layout";
 import Families from "./pages/Families";
+import MyProfile from "./pages/MyProfile";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -20,11 +21,12 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Index />} />
 
-      <Route element={<Layout />}>
+      <Route >
         <Route path="/add-person" element={<AddPerson />} />
         <Route path="/family" element={<Families />} />
         <Route path="/family/:id" element={<FamilyTreeWrapper/>} />
         <Route path="/home" element={<Home />} />
+        <Route path="/profile" element={<MyProfile />} />
       </Route>
     </Routes>
 

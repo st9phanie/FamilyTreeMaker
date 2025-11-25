@@ -7,6 +7,9 @@ html {
   overflow-y: scroll;
 }
 
+body {
+  background: #fff;
+}
 svg.tommy .node.male>rect {
   fill: #617BA3;
 }
@@ -15,7 +18,11 @@ svg.tommy .node.female>rect {
   fill: #C45B61;
 }
 
-
+.field_0 {
+    font-family: Impact;
+    text-transform: uppercase;
+    fill: #555;
+}
 
 
 @custom-variant dark (&:is(.dark *));
@@ -66,7 +73,7 @@ svg.tommy .node.female>rect {
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: #7CB937;
+  --primary: oklch(34.159% 0.06823 255.771);
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -74,7 +81,7 @@ svg.tommy .node.female>rect {
   --muted-foreground: oklch(0.554 0.046 257.417);
   --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(44.153% 0.18047 27.964);
   --border: oklch(0.929 0.013 255.508);
   --input: oklch(0.929 0.013 255.508);
   --ring: oklch(0.704 0.04 256.788);

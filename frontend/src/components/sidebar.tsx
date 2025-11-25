@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const links = [
     { link: "/home", title: "Home", icon: (<Home className='size-6 place-self-center' />) },
-    { link: "/my-profile", title: 'My Profile', icon: (<UserPen className='size-6 place-self-center' />) },
+    { link: "/profile", title: 'My Profile', icon: (<UserPen className='size-6 place-self-center' />) },
     { link: "/family", title: 'Family Trees', icon: (<Network className='size-6 place-self-center' />) },
 ]
 
