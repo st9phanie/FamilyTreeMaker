@@ -16,7 +16,7 @@ const Navbar = () => {
 
     return (
         <nav className='w-full flex flex-row text-white bg-emerald-700 border-b-2 border-emerald-900 h-[60px] px-4 items-center justify-between fixed top-0 left-0 '>
-            <p className='lg:text-2xl text-lg text-white font-bold'>Parens</p>
+            <p className='lg:text-2xl text-lg text-white font-bold poppins'>Cognatus</p>
 
             {/* <div className='flex flex-row items-center space-x-4 '>
                 <Sidebar className='size-6' onClick={toggle} />

@@ -3,21 +3,19 @@ import { Loader2 } from "lucide-react";
 
 type Props = {
     nodes: MemberNode[];
-    onSend: (id:number)=>void;
+    onSend: (id: number) => void;
 };
 
-export const Family = ({ nodes, onSend }: Props) => {
+const Family = ({ nodes, onSend }: Props) => {
     const [loading, setLoading] = useState(true);
     const treeRef = useRef<HTMLDivElement | null>(null);
     const treeInstance = useRef<any>(null);
-    const [selectedNode, setSelectedNode] = useState(1)
 
-    // Load FamilyTree.js script
+    // Load FamilyTree.js script dynamically
     useEffect(() => {
         const loadScript = () =>
             new Promise<void>((resolve, reject) => {
                 if (window.FamilyTree) return resolve();
-                // Load JS
                 const script = document.createElement("script");
                 script.src = "https://balkan.app/js/FamilyTree.js";
                 script.async = true;
@@ -29,16 +27,15 @@ export const Family = ({ nodes, onSend }: Props) => {
         loadScript()
             .then(() => setLoading(false))
             .catch(console.error);
-
-        
     }, []);
 
-    // Initialize tree **after script has loaded**
+    // Initialize tree
     useEffect(() => {
         if (loading || !window.FamilyTree || !treeRef.current) return;
 
         const FamilyTree = window.FamilyTree;
 
+        // Destroy previous instance
         treeInstance.current?.destroy?.();
 
         const family = new FamilyTree(treeRef.current, {
@@ -46,21 +43,22 @@ export const Family = ({ nodes, onSend }: Props) => {
             padding: 20,
             template: "tommy",
             scaleInitial: 0.8,
+            enableSearch: true, // Search toolbar
             nodeMouseClick: FamilyTree.action.none,
-            toolbar: { zoom: true, fit: true },
+            toolbar: { zoom: true, fit: true, fullScreen: true, expandAll: true },
             nodeBinding: { field_0: "name" },
             nodes: nodes,
         });
 
-        treeInstance.current = family;
-
-        family.on("click", (sender, args) => {
-            setSelectedNode(args.node.id)
+        family.onNodeClick((args) => {
             onSend(args.node.id)
+            return false;
         });
 
+        treeInstance.current = family;
+
         return () => family.destroy?.();
-    }, [loading, nodes]);
+    }, [loading, nodes, onSend]);
 
     if (loading) {
         return (

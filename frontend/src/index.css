@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -10,18 +10,13 @@ html {
 body {
   background: #fff;
 }
+
 svg.tommy .node.male>rect {
   fill: #617BA3;
 }
 
 svg.tommy .node.female>rect {
   fill: #C45B61;
-}
-
-.field_0 {
-    font-family: Impact;
-    text-transform: uppercase;
-    fill: #555;
 }
 
 
@@ -143,14 +138,8 @@ svg.tommy .node.female>rect {
     @apply bg-background text-foreground;
   }
 }
-
-.quicksand {
-  font-family: "Quicksand", sans-serif;
-  font-optical-sizing: auto;
-}
-
-.outfit {
-  font-family: "Outfit", sans-serif;
+.poppins {
+  font-family: "Poppins", sans-serif;
   font-optical-sizing: auto;
 }
 
