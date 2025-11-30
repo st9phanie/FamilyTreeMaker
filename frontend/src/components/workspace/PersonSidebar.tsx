@@ -9,11 +9,13 @@ type Props = {
     onAddSibling: () => void;
     onEditDetails: () => void;
     onAddChild: () => void;
+    onAddParent: () => void;
+    onAddPartner: () => void;
     refresh: () => void;
 
 }
 
-const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild }: Props) => {
+const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild,onAddParent,onAddPartner }: Props) => {
 
     const onDelete = async () => {
         const data = await deletePerson(person.id!)
@@ -26,7 +28,7 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
  border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
             <div className='flex flex-row justify-between gap-x-2 items-center'>
                 <Link to="/home"><Home className='text-emerald-900'/></Link>
-                <p className='text-center text-lg text-emerald-900'>{name}</p>
+                <p className='text-center text-md text-emerald-900'>{name}</p>
                 <Sidebar className='text-emerald-900' />
 
             </div>
@@ -38,10 +40,11 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
             </div>
 
             <hr className='border-slate-600 ' />
-            <div className='flex flex-col gap-y-2 '>
-                <p className='text-center text-md'>Add relatives:</p>
-                <Button className='border border-b-3 border-slate-900'>Parent</Button>
-                <Button className='border border-b-3 border-slate-900'>Partner</Button>
+                            <p className='text-center text-md'>Add relatives:</p>
+
+            <div className=' gap-y-2 grid grid-cols-2 gap-x-2'>
+                <Button className='border border-b-3 border-slate-900' onClick={onAddParent}>Parent</Button>
+                <Button className='border border-b-3 border-slate-900' onClick={onAddPartner}>Partner</Button>
                 <Button className='border border-b-3 border-slate-900' onClick={onAddSibling}>Sibling</Button>
                 <Button className='border border-b-3 border-slate-900' onClick={onAddChild}>Child</Button>
             </div>

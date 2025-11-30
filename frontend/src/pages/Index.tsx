@@ -1,13 +1,9 @@
-import SearchBar from '@/components/home-page/Searchbar'
-import React from 'react'
+import Hero from '@/components/index-page/Hero'
 
 const Index = () => {
   return (
-    <div className='w-full px-20 py-10 min-h-[calc(100vh-60px)] bg-red-200 flex flex-col '>
-        <SearchBar onSearchChange={()=>{}} />
-        <div className=''>
-
-        </div>
+    <div className='w-full  min-h-[calc(100vh-60px)] mt-[60px] bg-white flex flex-col '>
+        <Hero />
     </div>
   )
 }

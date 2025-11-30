@@ -40,35 +40,13 @@ export async function fetchUserFamiliesAndLengths(userId: number) {
 }
 
 export async function updatePerson(id: number, person: Partial<Person>) {
-  const payload: any = { ...person };
-
-  // Convert Date → "YYYY-MM-DD"
-  if (payload.birth instanceof Date) {
-    payload.birth = payload.birth.toISOString().slice(0, 10);
-  }
-  if (payload.death instanceof Date) {
-    payload.death = payload.death.toISOString().slice(0, 10);
-  }
-  // Arrays must be arrays of numbers
-  if (Array.isArray(payload.partner_id)) {
-    payload.partner_id = payload.partner_id.map(Number);
-  }
-
-  if (Array.isArray(payload.family_id)) {
-    payload.family_id = payload.family_id.map(Number);
-  }
-
-  // Remove undefined fields
-  Object.keys(payload).forEach((key) => {
-    if (payload[key] === undefined) delete payload[key];
-  });
 
   try {
-    console.log("Sending payload:", payload);
+    console.log("Sending payload:", person);
 
     const { data } = await axios.put(
       `http://localhost:8000/person/${id}`,
-      payload
+      person
     );
 
     return data;

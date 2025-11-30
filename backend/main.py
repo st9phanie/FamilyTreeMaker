@@ -18,7 +18,7 @@ app.add_middleware(
 
 
 # get person info
-@app.get("/person/{id}", response_model=Person)
+@app.get("/person/{id}")
 def get_person(id: int):
     person = supabase.table("person").select("*").eq("id", id).execute()
 
@@ -31,7 +31,7 @@ def get_person(id: int):
 
 
 # update person
-@app.put("/person/{id}", response_model=Person)
+@app.put("/person/{id}")
 def update_person(id: int, person: PersonUpdate):
     data = person.model_dump(mode="json", exclude_unset=True)
     print(data)
@@ -42,15 +42,16 @@ def update_person(id: int, person: PersonUpdate):
         )
 
     response = supabase.table("person").update(data).eq("id", id).execute()
-
-    if not response.data:
+    if response.data:
+        return {
+                "status": "success",
+                "person": response.data[0],
+            }
+    else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Person with id {id} not found",
         )
-
-    return {"status": "success"}
-
 
 # create person
 @app.post("/person/")

@@ -55,7 +55,7 @@ const AddChild = ({ person, name, onBack, refresh }: Props) => {
         <div className='w-[360px] h-[calc(100vh-60px)] border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
             <div className='flex flex-row justify-between'>
                 <ArrowLeft className='text-emerald-900' onClick={onBack} />
-                <p className='text-center text-lg text-emerald-900'>Child of {name}{person?.firstname}</p>
+                <p className='text-center text-md text-emerald-900'>Child of {name}</p>
                 <Sidebar className='text-emerald-900' />
             </div>
             <ImagePicker
