@@ -12,11 +12,11 @@ body {
 }
 
 svg.tommy .node.male>rect {
-  fill: #617BA3;
+  fill: #23354f;
 }
 
 svg.tommy .node.female>rect {
-  fill: #C45B61;
+  fill: #861f24;
 }
 
 
@@ -68,7 +68,7 @@ svg.tommy .node.female>rect {
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(34.159% 0.06823 255.771);
+  --primary: #004f3b;
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);

@@ -104,3 +104,6 @@ def get_user_families(userid: int):
     if not families.data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No results")
     return families.data
+
+######################################## NOTES ############################################################
+######################################## CONTACT ############################################################

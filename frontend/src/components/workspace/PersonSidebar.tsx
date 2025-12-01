@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { deletePerson } from '@/lib/functions';
-import { Home, Mail, Pen, Sidebar, Text } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useSidebar } from '@/utils/store';
+import { ChevronsLeftIcon, Trash2 } from 'lucide-react';
 
 type Props = {
     person: Person;
@@ -15,7 +15,7 @@ type Props = {
 
 }
 
-const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild,onAddParent,onAddPartner }: Props) => {
+const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild, onAddParent, onAddPartner }: Props) => {
 
     const onDelete = async () => {
         const data = await deletePerson(person.id!)
@@ -24,33 +24,37 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
     }
 
     return (
-        <div className='w-[360px] h-[calc(100vh-60px)]
- border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
-            <div className='flex flex-row justify-between gap-x-2 items-center'>
-                <Link to="/home"><Home className='text-emerald-900'/></Link>
-                <p className='text-center text-md text-emerald-900'>{name}</p>
-                <Sidebar className='text-emerald-900' />
+        <div className={`w-[360px] h-[calc(100vh-60px)] border-r border-r-gray-300 px-5 flex flex-col top-[60px] fixed py-10 justify-between`}>
 
-            </div>
-            <img src={person.photo || "/defaultpfp.jpg"} className='size-30 place-self-center' />
+            <img src={person.photo || "/defaultpfp.jpg"} className=' size-24 place-self-center rounded-full border-2 border-gray-200 ' />
+            <p className='text-center text-md text-teal-900 -mt-5'>{name}</p>
+            <hr className='border-gray-300 -mt-5' />
+
             <div className='flex flex-col gap-y-2'>
-                <Button className='border border-b-3 border-slate-900' onClick={onEditDetails}><Pen />Personal details</Button>
-                <Button className='border border-b-3 border-slate-900'><Mail />Contact information</Button>
-                <Button className='border border-b-3 border-slate-900'><Text /> Biography</Button>
+                <Button variant="ghost" className='border text-white bg-teal-900 border-teal-900 rounded-none' onClick={onEditDetails}>Edit profile</Button>
+                <div className='flex flex-row justify-between gap-x-1'>
+                    <Button variant="ghost" className='border flex-1 rounded-none border-teal-900 bg-white text-teal-900'>Contact</Button>
+                    <Button variant="ghost" className='border flex-1 rounded-none border-teal-900 bg-white text-teal-900'>Notes</Button>
+                </div>
+
             </div>
 
-            <hr className='border-slate-600 ' />
-                            <p className='text-center text-md'>Add relatives:</p>
+            {/* <hr className='border-gray-300 ' /> */}
+            <p className='text-start text-sm text-teal-900 mt-5 '>Add relatives:</p>
 
-            <div className=' gap-y-2 grid grid-cols-2 gap-x-2'>
-                <Button className='border border-b-3 border-slate-900' onClick={onAddParent}>Parent</Button>
-                <Button className='border border-b-3 border-slate-900' onClick={onAddPartner}>Partner</Button>
-                <Button className='border border-b-3 border-slate-900' onClick={onAddSibling}>Sibling</Button>
-                <Button className='border border-b-3 border-slate-900' onClick={onAddChild}>Child</Button>
+            <div className=' gap-y-2 grid grid-cols-2 gap-x-1 -mt-5'>
+                <Button variant="ghost" className='border rounded-none border-teal-900  bg-white text-teal-900' onClick={onAddParent}>Parent</Button>
+                <Button variant="ghost" className='border rounded-none border-teal-900 bg-white text-teal-900' onClick={onAddPartner}>Partner</Button>
+                <Button variant="ghost" className='border rounded-none border-teal-900 bg-white text-teal-900' onClick={onAddSibling}>Sibling</Button>
+                <Button variant="ghost" className='border rounded-none border-teal-900 bg-white text-teal-900' onClick={onAddChild}>Child</Button>
             </div>
 
-            <hr className='border-slate-300 ' />
-            <Button variant="destructive" className='border border-b-3 border-amber-950' onClick={onDelete}>Delete Person</Button>
+            <hr className='border-gray-300 ' />
+            <Button variant="outline" className='-mt-5 border-red-700 border-2 rounded-none text-red-700  hover:text-white hover:bg-red-700 cursor-pointer' onClick={onDelete}>
+                <Trash2 className='' />
+                Delete Person
+            </Button>
+
         </div>
     )
 }

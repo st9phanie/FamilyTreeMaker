@@ -9,14 +9,15 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSidebar } from '@/utils/store'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
 
     const { toggle } = useSidebar()
 
     return (
-        <nav className='w-full flex flex-row text-emerald-900 bg-white h-[60px] shadow-sm shadow-emerald-900/20 px-4 items-center justify-between fixed top-0 left-0 '>
-            <p className='md:text-3xl text-2xl text-emerald-900 fdl tracking-widest font-medium'>Cognatus</p>
+        <nav className='w-full flex flex-row text-white bg-teal-950 h-[60px] border-b border-gray-200 px-4 items-center justify-between fixed top-0 left-0 '>
+            <Link to="/"><p className='md:text-3xl text-2xl  fdl tracking-widest font-medium'>Cognatus</p></Link>
 
             <div className='flex'>
                 <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>

@@ -4,17 +4,19 @@ import { useEffect, useState } from 'react';
 import SidebarContainer from '@/components/workspace/SidebarContainer';
 import { fetchFamilyMembers } from '@/lib/functions';
 import { toMemberNode } from '@/lib/helperfunctions';
-import { Loader2 } from 'lucide-react';
+import { ChevronsLeftIcon, ChevronsRightIcon, Loader2 } from 'lucide-react';
+import { useSidebar } from '@/utils/store';
 
 type Props = {
   id?: number;
 }
 
-const Workspace = ({ id}: Props) => {
+const Workspace = ({ id }: Props) => {
   const [dataFromChild, setDataFromChild] = useState<number>(1);
   const [familyMembers, setFamilyMembers] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedPerson, setSelectedPerson] = useState<Person>();
+  const { isOpen, toggle } = useSidebar()
 
   const handleDataFromChild = (data: number) => {
     setDataFromChild(data);
@@ -60,7 +62,7 @@ const Workspace = ({ id}: Props) => {
   if (loading) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]'>
-        <Loader2 className='animate-spin size-10 text-emerald-600' />
+        <Loader2 className='animate-spin size-10 text-teal-600' />
       </div>
     );
   }
@@ -71,12 +73,21 @@ const Workspace = ({ id}: Props) => {
 
       {/* Sidebar container with fixed width (e.g., w-[360px]) and set height */}
       {selectedPerson && (
-      <div className='hidden md:flex w-[360px]'>
-        <SidebarContainer person={selectedPerson!} refresh={refreshMembers} />
-      </div>)}
+        <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
+          <SidebarContainer person={selectedPerson!} refresh={refreshMembers} />
+        </div>)}
 
-      {/* Main content area takes up remaining space and scrolls */}
       <main className='grow h-[calc(100vh-60px)] mt-[60px] p-5 overflow-hidden'>
+        {isOpen ?
+          (<button className=' absolute top-20 z-10 cursor-pointer'
+            onClick={toggle}>
+            <ChevronsLeftIcon className='text-teal-900 ' />
+          </button>)
+          : <button className='absolute top-20 z-10 cursor-pointer'
+            onClick={toggle}>
+            <ChevronsRightIcon className='text-teal-900 ' />
+          </button>}
+
         <Family nodes={toMemberNode(familyMembers)} onSend={handleDataFromChild} />
       </main>
     </div>

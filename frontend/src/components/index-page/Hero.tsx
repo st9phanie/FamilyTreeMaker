@@ -5,12 +5,12 @@ const Hero = () => {
     return (
         <section id="" className='flex flex-col lg:flex-row w-full h-[calc(100vh-120px)]  lg:justify-between px-5 py-10 lg:items-center '>
             <div className="flex flex-col lg:w-[50%] gap-y-6 lg:pr-10 lg:items-start items-center lg:text-start text-center">
-                <h1 className="font-semibold  lg:text-5xl text-4xl  text-emerald-900  ">Build a family tree</h1>
+                <h1 className="font-semibold  lg:text-5xl text-4xl  text-teal-900  ">Build a family tree</h1>
                 <p className="text-xl ">Curious about your heritage? Jumpstart your ancestry search for FREE in the worldwide community family tree. Connect now—we may already have details about your family.
                 </p>
 
-                <p className="lg:mt-5 text-xl font-medium text-emerald-900 ">Build Your Tree Now</p>
-                <Button className="w-50 cursor-pointer hover:bg-emerald-900/80 bg-emerald-900 px-4 py-2 -mt-2 group">
+                <p className="lg:mt-5 text-xl font-medium text-teal-900 ">Build Your Tree Now</p>
+                <Button className="w-50 cursor-pointer hover:bg-teal-900/80 bg-teal-900 px-4 py-2 -mt-2 group">
                     Start now
                     <ArrowRight className="group-hover:translate-x-1 duration-400 -ml-1" />
                 </Button>

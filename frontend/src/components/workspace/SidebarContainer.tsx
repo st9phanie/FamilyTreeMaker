@@ -1,17 +1,33 @@
 import PersonSidebar from "@/components/workspace/PersonSidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddSibling from "./AddSibling";
 import EditPerson from "./EditPerson";
 import AddChild from "./AddChild";
 import AddParent from "./AddParent";
 import AddPartner from "./AddPartner";
+import { useSidebar } from "@/utils/store";
 
 const SidebarContainer = ({ person, refresh }: { person: Person; refresh: () => void; }) => {
-    const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner">("main");
+    const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none">("main");
     const name = [person.firstname, person.middlename, person.lastname].filter(Boolean).join(" ")
+    const { isOpen } = useSidebar()
+
+    useEffect(() => {
+        if (!isOpen) {
+            setCurrentSidebar("none");
+        } else if (currentSidebar === "none") {
+            setCurrentSidebar("main");
+        }
+    }, [isOpen]);
+
+    if (!isOpen || currentSidebar === "none") {
+        return null;
+    }
+
 
     return (
         <>
+
             {currentSidebar === "main" && (
                 <PersonSidebar
                     name={name}
@@ -68,6 +84,7 @@ const SidebarContainer = ({ person, refresh }: { person: Person; refresh: () => 
                     person={person}
                 />
             )}
+
         </>
     );
 };

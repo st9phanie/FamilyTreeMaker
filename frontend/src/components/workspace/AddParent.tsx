@@ -1,10 +1,10 @@
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Mail, Sidebar, Text } from 'lucide-react';
+import { ArrowLeft} from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPerson } from '@/lib/functions';
+import { addPerson, updatePerson } from '@/lib/functions';
 
 type Props = {
     person: Person;
@@ -41,29 +41,49 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
     ];
 
     const onSaveClick = async () => {
-        let data;
-        if (photo || lastname || firstname || middlename || sex !== "U") {
-            data = await addPerson({ photo, lastname, firstname, middlename, sex,family_id:person?.family_id,pid1:person?.id, pid2:person.partner_id?.[0] })
-            console.log(data);
+        if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
 
-            if (data.status == 'success') refresh()
-        }
+        const data = await addPerson({
+            photo,
+            lastname,
+            firstname,
+            middlename,
+            sex,
+            family_id: person?.family_id,
+            partner_id: [person.id!]
+        });
 
+        if (data?.status !== "success") return;
+
+        const newId = data.person.id;
+
+        const updatedPartners = Array.isArray(person.partner_id)
+            ? [...person.partner_id, newId]
+            : [newId];
+
+        const res = await updatePerson(person.id!, {
+            partner_id: updatedPartners
+        });
+
+        if (res?.status === "success") refresh();
     };
 
+
     return (
-        <div className='w-[360px] h-[calc(100vh-60px)] border-r-2 border-r-emerald-900 px-5 flex flex-col gap-y-5 top-[60px] fixed bg-emerald-100/20 overflow-y-scroll py-5'>
+        <div className='w-[360px] h-[calc(100vh-60px)] border border-r-gray-300 px-5 flex flex-col gap-y-5 top-[60px] fixed py-5 justify-between'>
             <div className='flex flex-row justify-between'>
-                <ArrowLeft className='text-emerald-900' onClick={onBack} />
-                <p className='text-center text-md text-emerald-900'>Parent of {name}</p>
-                <Sidebar className='text-emerald-900' />
+                <button>
+                    <ArrowLeft className='cursor-pointer text-teal-900' onClick={onBack} />
+                </button>
+                <p className='text-center text-md text-teal-900'>Parent of {name}</p>
+                <div></div>
             </div>
             <ImagePicker
                 setPhoto={setPhoto}
             />
             {/* -------------------------------------------------------------------------------------------------------------------- */}
             <div className='flex flex-col gap-y-2'>
-                <div className="flex flex-col justify-between mb-2 gap-y-2 text-emerald-950">
+                <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">
                     {nameFields.map(field => (
                         <div key={field.id} className="flex flex-col">
                             <label className="text-sm mb-1 px-1" htmlFor={field.id}>{field.label}</label>
@@ -73,7 +93,7 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
                                 required={field.required}
                                 value={field.value}
                                 onChange={(e) => field.onChange(e.target.value)}
-                                className="border border-b-2 focus:border-emerald-900 border-emerald-900 outline-none bg-white rounded px-2 py-1"
+                                className="border border-b-2 focus:border-teal-900 border-gray-300 outline-none  bg-white text-teal-900 px-2 py-1"
                             />
                         </div>
                     ))}
@@ -85,7 +105,7 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
                     <RadioGroup
                         value={sex}
                         onValueChange={(value) => setSex(value as "M" | "F" | "U")}
-                        className="flex flex-row font-normal"
+                        className="flex flex-row font-normal text-teal-700 justify-between"
                     >
                         {sexFields.map((val, key) => (
                             <div key={key} className="flex items-center space-x-2">
@@ -97,19 +117,11 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
                 </div>
                 {/* -------------------------------------------------------------------------------------------------------------------- */}
 
-                <div>
-
-                </div>
-                <div className='flex flex-row gap-x-2 justify-between w-full mt-5'>
-                    <Button className='border border-b-3 border-slate-900 flex-1 active:border-b cursor-pointer'><Mail />Contact</Button>
-                    <Button className='border border-b-3 border-slate-900 flex-1 active:border-b cursor-pointer'><Text /> Biography</Button>
-                </div>
             </div>
 
-            <hr className='border-slate-300 ' />
             <div className='flex flex-row gap-x-2 justify-between w-full'>
-                <Button className='border border-b-3 bg-emerald-600 border-emerald-950 flex-1 active:border-b cursor-pointer hover:bg-emerald-500' onClick={onSaveClick}>Save</Button>
-                <Button variant="destructive" className='border border-b-3 border-amber-950 hover:bg-red-700 cursor-pointer flex-1 active:border-b' onClick={onBack}>Cancel</Button>
+                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
+                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1 rounded-none bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>
