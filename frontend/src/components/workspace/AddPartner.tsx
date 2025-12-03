@@ -1,10 +1,10 @@
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPerson, updatePerson } from '@/lib/functions';
+import { addPartner} from '@/lib/functions';
 
 type Props = {
     person: Person;
@@ -33,6 +33,7 @@ const AddPartner = ({ person, name, onBack, refresh }: Props) => {
     const [middlename, setMiddlename] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
     const [sex, setSex] = useState<"M" | "F" | "U" | undefined>("U")
+    const [updating, setUpdating] = useState<boolean>(false)
 
     const nameFields: NameField[] = [
         { id: "firstname", label: "First Name", required: false, value: firstname, onChange: setFirstname },
@@ -41,31 +42,20 @@ const AddPartner = ({ person, name, onBack, refresh }: Props) => {
     ];
 
     const onSaveClick = async () => {
+        setUpdating(true)
         if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
 
-        const data = await addPerson({
+        const data = await addPartner(person.id!, {
             photo,
             lastname,
             firstname,
             middlename,
             sex,
-            family_id: person?.family_id,
-            partner_id: [person.id!]
-        });
-
-        if (data?.status !== "success") return;
-
-        const newId = data.person.id;
-
-        const updatedPartners = Array.isArray(person.partner_id)
-            ? [...person.partner_id, newId]
-            : [newId];
-
-        const res = await updatePerson(person.id!, {
-            partner_id: updatedPartners
-        });
-
-        if (res?.status === "success") refresh();
+            family_id: person.family_id,
+            partner_id:[person.id!]})
+        if (data?.status === "success"){ 
+            setUpdating(false);
+            refresh();}
     };
 
 
@@ -120,7 +110,11 @@ const AddPartner = ({ person, name, onBack, refresh }: Props) => {
             </div>
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
-                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
+                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>
+                {
+                    updating ? "Saving..": "Save"
+                }
+                </Button>
                 <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1 rounded-none bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
             </div>
 

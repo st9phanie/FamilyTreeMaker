@@ -35,7 +35,7 @@ class Person(BaseModel):
     pid1: Optional[int] = None
     pid2: Optional[int] = None
     partner_id: Optional[List[int]] = None
-    family_id: Optional[List[int]] = None
+    family_id: Optional[int] = None
 
 
 class Family(BaseModel):
@@ -58,5 +58,15 @@ class PersonUpdate(BaseModel):
     status: Optional[Status] = None
     photo: Optional[str] = None
     partner_id: Optional[List[int]] = None
-    family_id: Optional[List[int]] = None
+    family_id: Optional[int] = None
     deathplace: Optional[str] = None
+    
+    
+class PersonCreate(BaseModel):
+    photo: Optional[str] = None
+    firstname: Optional[str] = None
+    middlename: Optional[str] = None
+    lastname: Optional[str] = None
+    sex: Optional[Sex] = "U"
+    family_id: Optional[int] = None
+    partner_id:Optional[List[int]] = None

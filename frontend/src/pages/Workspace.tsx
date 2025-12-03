@@ -3,7 +3,7 @@ import Family from '@/components/workspace/FamilyTree'; // Ensure Node is export
 import { useEffect, useState } from 'react';
 import SidebarContainer from '@/components/workspace/SidebarContainer';
 import { fetchFamilyMembers } from '@/lib/functions';
-import { toMemberNode } from '@/lib/helperfunctions';
+import { retryFetch, toMemberNode } from '@/lib/helperfunctions';
 import { ChevronsLeftIcon, ChevronsRightIcon, Loader2 } from 'lucide-react';
 import { useSidebar } from '@/utils/store';
 
@@ -36,7 +36,7 @@ const Workspace = ({ id }: Props) => {
 
     try {
       setLoading(true);
-      const data = await fetchFamilyMembers(id);
+      const data = await retryFetch(() => fetchFamilyMembers(id), 3, 800);
       setFamilyMembers(data);
     } catch (err) {
       console.error("Failed to load family members:", err);
@@ -67,6 +67,15 @@ const Workspace = ({ id }: Props) => {
     );
   }
 
+  const nodes = toMemberNode(familyMembers);
+
+  if (!nodes) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]">
+        No family members found.
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-row min-h-screen'>
@@ -76,6 +85,8 @@ const Workspace = ({ id }: Props) => {
         <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
           <SidebarContainer person={selectedPerson!} refresh={refreshMembers} />
         </div>)}
+
+
 
       <main className='grow h-[calc(100vh-60px)] mt-[60px] p-5 overflow-hidden'>
         {isOpen ?
@@ -88,7 +99,7 @@ const Workspace = ({ id }: Props) => {
             <ChevronsRightIcon className='text-teal-900 ' />
           </button>}
 
-        <Family nodes={toMemberNode(familyMembers)} onSend={handleDataFromChild} />
+        <Family nodes={nodes} onSend={handleDataFromChild} />
       </main>
     </div>
   );

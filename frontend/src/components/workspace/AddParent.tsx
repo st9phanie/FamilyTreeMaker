@@ -4,7 +4,7 @@ import { ArrowLeft} from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPerson, updatePerson } from '@/lib/functions';
+import { addParent, addPerson, updatePerson } from '@/lib/functions';
 
 type Props = {
     person: Person;
@@ -43,29 +43,16 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
     const onSaveClick = async () => {
         if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
 
-        const data = await addPerson({
+        const data = await addParent(person.id!,{
             photo,
             lastname,
             firstname,
             middlename,
             sex,
             family_id: person?.family_id,
-            partner_id: [person.id!]
         });
 
-        if (data?.status !== "success") return;
-
-        const newId = data.person.id;
-
-        const updatedPartners = Array.isArray(person.partner_id)
-            ? [...person.partner_id, newId]
-            : [newId];
-
-        const res = await updatePerson(person.id!, {
-            partner_id: updatedPartners
-        });
-
-        if (res?.status === "success") refresh();
+        if (data?.status === "success") refresh();
     };
 
 

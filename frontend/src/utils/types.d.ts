@@ -18,7 +18,7 @@ declare global {
         //deathArea?: string;
         //deathDistrict?: string;
         partner_id?: number[];
-        family_id?: number[]
+        family_id?: number
         deathplace?: string;
     };
 

@@ -24,3 +24,13 @@ export const fileToBase64 = (file: File): Promise<string> => {
     reader.readAsDataURL(file);
   });
 };
+
+export async function retryFetch(fn: () => Promise<any>, retries = 3, delay = 500) {
+  try {
+    return await fn();
+  } catch (err) {
+    if (retries <= 0) throw err;
+    await new Promise(res => setTimeout(res, delay));
+    return retryFetch(fn, retries - 1, delay);
+  }
+}
