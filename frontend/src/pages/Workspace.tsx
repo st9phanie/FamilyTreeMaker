@@ -83,7 +83,7 @@ const Workspace = ({ id }: Props) => {
       {/* Sidebar container with fixed width (e.g., w-[360px]) and set height */}
       {selectedPerson && (
         <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
-          <SidebarContainer person={selectedPerson!} refresh={refreshMembers} />
+          <SidebarContainer family={familyMembers} person={selectedPerson!} refresh={refreshMembers} />
         </div>)}
 
 

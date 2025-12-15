@@ -1,16 +1,18 @@
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addParent, addPerson, updatePerson } from '@/lib/functions';
+import { addParent } from '@/lib/functions';
+import Combobox from '../combobox';
 
 type Props = {
     person: Person;
     name: string | undefined;
     onBack: () => void;
     refresh: () => void;
+    family: Person[];
 
 }
 type NameField = {
@@ -27,12 +29,13 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const AddParent = ({ person, name, onBack, refresh }: Props) => {
+const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
     const [middlename, setMiddlename] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
     const [sex, setSex] = useState<"M" | "F" | "U" | undefined>("U")
+    const [parent, setParent] = useState<number | null>(null)
 
     const nameFields: NameField[] = [
         { id: "firstname", label: "First Name", required: false, value: firstname, onChange: setFirstname },
@@ -41,19 +44,47 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
     ];
 
     const onSaveClick = async () => {
-        if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
+        const isNewParentValid =
+            photo || lastname || firstname || middlename || sex !== "U";
 
-        const data = await addParent(person.id!,{
-            photo,
-            lastname,
-            firstname,
-            middlename,
-            sex,
-            family_id: person?.family_id,
-        });
+        const isUsingExistingParent = !!parent;
+
+        if (!isNewParentValid && !isUsingExistingParent) return;
+
+        let data;
+
+        // CASE 1 — user picked existing parent (their name)
+        if (isUsingExistingParent) {
+            console.log(family.find(m => m.id === parent)!);
+
+            data = await addParent(person.id!,
+                family.find(m => m.id === parent)!
+            );
+        }
+
+        // CASE 2 — user is creating a new parent
+        else {
+            data = await addParent(person.id!, {
+                photo,
+                lastname,
+                firstname,
+                middlename,
+                sex,
+                family_id: person.family_id,
+            });
+        }
 
         if (data?.status === "success") refresh();
     };
+
+
+    const familyMembers = family
+        .slice()
+        .sort((a, b) => a.id! - b.id!)
+        .map(f => ({
+            id: f.id!,
+            label: `${f.firstname!} ${f.middlename!} ${f.lastname!} (${f.birth || "?"})`
+        }));
 
 
     return (
@@ -68,6 +99,12 @@ const AddParent = ({ person, name, onBack, refresh }: Props) => {
             <ImagePicker
                 setPhoto={setPhoto}
             />
+            {/* -------------------------------------------------------------------------------------------------------------------- */}
+            <div>
+                <p className='text-teal-900 text-sm'>Add existing person as parent:</p>
+                <Combobox list={familyMembers} listType='person' setValue={setParent} />
+            </div>
+
             {/* -------------------------------------------------------------------------------------------------------------------- */}
             <div className='flex flex-col gap-y-2'>
                 <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">

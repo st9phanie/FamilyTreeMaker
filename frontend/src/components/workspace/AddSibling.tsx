@@ -4,13 +4,14 @@ import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPerson } from '@/lib/functions';
+import { addParent, addSibling } from '@/lib/functions';
 
 type Props = {
     person: Person;
     name: string | undefined;
     onBack: () => void;
     refresh: () => void;
+    family: Person[];
 
 }
 type NameField = {
@@ -27,12 +28,15 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const AddSibling = ({ person, name, onBack, refresh }: Props) => {
+
+
+const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
     const [middlename, setMiddlename] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
     const [sex, setSex] = useState<"M" | "F" | "U" | undefined>("U")
+    const [sibling, setSibling] = useState<"F" | "M" | "P">("F")
 
     const nameFields: NameField[] = [
         { id: "firstname", label: "First Name", required: false, value: firstname, onChange: setFirstname },
@@ -40,16 +44,75 @@ const AddSibling = ({ person, name, onBack, refresh }: Props) => {
         { id: "lastname", label: "Last Name", value: lastname, onChange: setLastname },
     ];
 
-    const onSaveClick = async () => {
-        let data;
-        if (photo || lastname || firstname || middlename || sex !== "U") {
-            data = await addPerson({ photo, lastname, firstname, middlename, sex, family_id: person?.family_id, pid1: person?.pid1, pid2: person?.pid2 })
-            console.log(data);
+    const relFields = [
+        { value: "F", label: "Full" },
+        { value: "M", label: "Half (" + family.find(m => m.id === person.pid1)?.firstname + ")" },
+        { value: "P", label: "Half (" + family.find(m => m.id === person.pid2)?.firstname + ")" },
+    ];
 
-            if (data.status == 'success') refresh()
+    const onSaveClick = async () => {
+        if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
+
+        // parents of the current person
+        const mom = person.pid1;
+        const dad = person.pid2;
+
+        let newSibling;
+        let createdParent;
+
+        console.log(mom);
+        
+        if (sibling === "F") {
+            // full sibling: same mom + dad
+            newSibling = await addSibling(person.id!, {
+                photo, lastname, firstname, middlename, sex,
+                family_id: person.family_id,
+                pid1: mom,
+                pid2: dad
+            });
+
+        } else if (sibling === "M") {
+            // maternal half sibling: share mom only
+            newSibling = await addSibling(person.id!, {
+                photo, lastname, firstname, middlename, sex,
+                family_id: person.family_id,
+                pid1: mom,
+                pid2: null
+            });
+
+            // // If mom doesn't exist → create her
+            // if (!mom && newSibling?.status === "success") {
+            //     createdParent = await addParent(newSibling.sibling_id, {
+            //         firstname: `Mother of ${firstname}`,
+            //         family_id: person.family_id,
+            //         sex: "F"
+            //     });
+            // }
+
+        } else if (sibling === "P") {
+            // paternal half sibling: share dad only
+            newSibling = await addSibling(person.id!, {
+                photo, lastname, firstname, middlename, sex,
+                family_id: person.family_id,
+                pid1: null,
+                pid2: dad
+            });
+
+            // If dad doesn't exist → create him
+            if (!dad && newSibling?.status === "success") {
+                createdParent = await addParent(newSibling.sibling_id, {
+                    firstname: `Father of ${firstname}`,
+                    family_id: person.family_id,
+                    sex: "M"
+                });
+            }
         }
 
+        if (newSibling?.status === "success") {
+            refresh();
+        }
     };
+
 
 
     return (
@@ -64,7 +127,7 @@ const AddSibling = ({ person, name, onBack, refresh }: Props) => {
             <ImagePicker
                 setPhoto={setPhoto}
             />
-            {/* -------------------------------------------------------------------------------------------------------------------- */}
+            {/* --------------------------------------------------- NAMES ----------------------------------------------------------------- */}
             <div className='flex flex-col gap-y-2'>
                 <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">
                     {nameFields.map(field => (
@@ -81,7 +144,7 @@ const AddSibling = ({ person, name, onBack, refresh }: Props) => {
                         </div>
                     ))}
                 </div>
-                {/* -------------------------------------------------------------------------------------------------------------------- */}
+                {/* ---------------------------------------------------------- SEX ---------------------------------------------------------- */}
 
                 <div className="flex flex-col gap-3">
                     <p className="text-sm px-1">Sex</p>
@@ -98,9 +161,26 @@ const AddSibling = ({ person, name, onBack, refresh }: Props) => {
                         ))}
                     </RadioGroup>
                 </div>
-                {/* -------------------------------------------------------------------------------------------------------------------- */}
+                {/* ------------------------------------------------------------ FULL OR HALF SIBLING -------------------------------------------------------- */}
 
+                <div className="flex flex-col gap-3">
+                    <p className="text-sm px-1">Relation</p>
+                    <RadioGroup
+                        value={sibling}
+                        onValueChange={(value) => setSibling(value as "F" | "M" | "P")}
+                        className="flex flex-row font-normal text-teal-700 justify-around"
+                    >
+                        {relFields.map((val, key) => (
+                            <div key={key} className="flex items-center space-x-2">
+                                <RadioGroupItem value={val.value} id={val.label} />
+                                <Label htmlFor={val.label}>{val.label}</Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
+                </div>
             </div>
+
+            {/* ------------------------------------------------- BUTTONS ------------------------------------------------------------------- */}
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>

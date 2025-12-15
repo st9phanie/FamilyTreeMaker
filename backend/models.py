@@ -70,3 +70,5 @@ class PersonCreate(BaseModel):
     sex: Optional[Sex] = "U"
     family_id: Optional[int] = None
     partner_id:Optional[List[int]] = None
+    pid1: Optional[int] = None
+    pid2: Optional[int] = None

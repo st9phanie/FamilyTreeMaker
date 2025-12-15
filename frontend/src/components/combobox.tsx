@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,24 +16,44 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { useState } from "react";
-
-type Props = {
-  list: string[];
-  listType: string;
-  setValue: (value: string) => void;
-  disabled?: boolean;
-  value?: string; 
+// -------------------- Types --------------------
+export type ComboItem = {
+  id: number;
+  label: string;
 };
 
-const Combobox = ({ list, listType, setValue, disabled, value }: Props) => {
-  const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
+type Props = {
+  list: ComboItem[];
+  listType: string;
+  setValue: (id: number | null) => void;
+  value?: number | null; 
+  disabled?: boolean;
+};
 
-  const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === selectedValue ? "" : currentValue;
-    setSelectedValue(newValue);
-    setValue(newValue); // send value to parent
+// -------------------- Component --------------------
+const Combobox = ({
+  list,
+  listType,
+  setValue,
+  value,
+  disabled = false,
+}: Props) => {
+  const [open, setOpen] = useState(false);
+  const [internalValue, setInternalValue] = useState<number | null>(null);
+
+  // controlled vs uncontrolled
+  const actualValue = value ?? internalValue;
+
+  const selectedItem = list.find(item => item.id === actualValue);
+
+  const handleSelect = (id: number) => {
+    const newValue = id === actualValue ? null : id;
+
+    if (value === undefined) {
+      setInternalValue(newValue);
+    }
+
+    setValue(newValue);
     setOpen(false);
   };
 
@@ -43,32 +64,35 @@ const Combobox = ({ list, listType, setValue, disabled, value }: Props) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className="w-[250px] justify-between"
-          disabled={disabled || false}
         >
-          {selectedValue
-            ? list.find((item) => item === selectedValue)
-            : value?.length !== 0 ? value : `Select ${listType}...`}
-          <ChevronsUpDown className="opacity-50" />
+          {selectedItem ? selectedItem.label : `Select ${listType}...`}
+          <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+
+      <PopoverContent className="w-[250px] p-0">
         <Command>
-          <CommandInput placeholder={`Search ${listType}...`} className="h-9" />
+          <CommandInput
+            placeholder={`Search ${listType}...`}
+            className="h-9"
+          />
           <CommandList>
             <CommandEmpty>No {listType.toLowerCase()} found.</CommandEmpty>
+
             <CommandGroup>
-              {list.map((item) => (
+              {list.map(item => (
                 <CommandItem
-                  key={item}
-                  value={item}
-                  onSelect={handleSelect}
+                  key={item.id}
+                  value={item.label}
+                  onSelect={() => handleSelect(item.id)}
                 >
-                  {item}
+                  {item.label}
                   <Check
                     className={cn(
-                      "ml-auto",
-                      selectedValue === item ? "opacity-100" : "opacity-0"
+                      "ml-auto h-4 w-4",
+                      item.id === actualValue ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

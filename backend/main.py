@@ -95,20 +95,44 @@ def add_partner(id: int, partner: PersonCreate):  # use a creation model
 
     return {"status": "success", "new_partner_id": new_id}
 
-# -------------------------------------- ADD PARENT -----------------------------------------------
-@app.post("/person/{id}/add_parent")
-def add_parent(id: int, partner: PersonCreate):
-
-    # 1. Create new parent
+#----------- ADD SIBLING -----------------
+@app.post("/person/{id}/add_sibling")
+def add_sibling(id: int, partner: PersonCreate):  # use a creation model
     data = partner.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
 
     if not res.data:
-        raise HTTPException(400, "Failed to create parent")
+        raise HTTPException(status_code=400, detail="Failed to create sibling")
 
-    new_parent_id = res.data[0]["id"]
+    new_id = res.data[0]["id"]
 
-    # 2. Fetch child's current parents in ONE query
+    return {"status": "success", "sibling_id": new_id}
+
+# -------------------------------------- ADD PARENT -----------------------------------------------
+@app.post("/person/{id}/add_parent")
+def add_parent(id: int, partner: Person):
+    data = partner.model_dump(exclude_unset=True)
+
+    # --------------------------------------------
+    # CASE A: existing parent (ID provided)
+    # --------------------------------------------
+    if "id" in data:
+        new_parent_id = data["id"]
+
+    # --------------------------------------------
+    # CASE B: create new parent
+    # --------------------------------------------
+    else:
+        res = supabase.table("person").insert(data).execute()
+
+        if not res.data:
+            raise HTTPException(400, "Failed to create parent")
+
+        new_parent_id = res.data[0]["id"]
+
+    # --------------------------------------------
+    # Fetch child's current parents
+    # --------------------------------------------
     original = (
         supabase.table("person")
         .select("pid1, pid2")
@@ -123,56 +147,34 @@ def add_parent(id: int, partner: PersonCreate):
     pid1 = row.get("pid1")
     pid2 = row.get("pid2")
 
-    # CASE 1: no parents at all → assign pid1
+    # CASE 1: no parents → pid1
     if pid1 is None:
-        update = (
-            supabase.table("person")
-            .update({"pid1": new_parent_id})
-            .eq("id", id)
-            .execute()
-        )
-
-        if not update.data:
-            raise HTTPException(500, "Failed to add parent")
+        supabase.table("person").update(
+            {"pid1": new_parent_id}
+        ).eq("id", id).execute()
 
         return {"status": "success", "assigned": "pid1", "parent_id": new_parent_id}
 
-    # CASE 2: only one parent → assign pid2
+    # CASE 2: one parent → pid2 + partner link
     if pid2 is None:
-        update = (
-            supabase.table("person")
-            .update({"pid2": new_parent_id})
-            .eq("id", id)
-            .execute()
-        )
+        supabase.table("person").update(
+            {"pid2": new_parent_id}
+        ).eq("id", id).execute()
 
-        if not update.data:
-            raise HTTPException(500, "Failed to add parent")
-
-        # ---- Link the two parents as partners ----
-        parent1_id = pid1
-        parent2_id = new_parent_id
-
-        # Get existing partner list of parent1
-        p1 = (
-            supabase.table("person")
-            .select("partner_id")
-            .eq("id", parent1_id)
-            .execute()
-        )
-
-        if not p1.data:
-            raise HTTPException(404, "Parent 1 not found (data corruption?)")
-
+        # link parents as partners
+        p1 = supabase.table("person").select("partner_id").eq("id", pid1).execute()
         partners = p1.data[0].get("partner_id") or []
-        if parent2_id not in partners:
-            partners.append(parent2_id)
 
-        # Update parent1's partner list
-        supabase.table("person").update({"partner_id": partners}).eq("id", parent1_id).execute()
+        if new_parent_id not in partners:
+            partners.append(new_parent_id)
 
-        # add parent1 to parent2’s partner list as well  
-        supabase.table("person").update({"partner_id": [parent1_id]}).eq("id", parent2_id).execute()
+        supabase.table("person").update(
+            {"partner_id": partners}
+        ).eq("id", pid1).execute()
+
+        supabase.table("person").update(
+            {"partner_id": [pid1]}
+        ).eq("id", new_parent_id).execute()
 
         return {
             "status": "success",
@@ -181,24 +183,82 @@ def add_parent(id: int, partner: PersonCreate):
             "linked_parents": True,
         }
 
-    # CASE 3: already has two parents
     return {"status": "fail", "message": "Person already has two parents"}
 
 
-
-
-# delete person
 @app.delete("/person/{id}")
 def delete_person(id: int):
-    response = supabase.table("person").delete().eq("id", id).execute()
+    # 1. Fetch the person (we need their partner list)
+    person = (
+        supabase.table("person")
+        .select("partner_id")
+        .eq("id", id)
+        .execute()
+    )
 
-    if not response.data:
+    if not person.data:
+        raise HTTPException(404, f"Person {id} not found")
+
+    partner_ids = person.data[0].get("partner_id") or []
+
+    # ---------------------------------------------------
+    # 2. Remove this person from all partners’ partner_id arrays
+    # ---------------------------------------------------
+    for pid in partner_ids:
+        result = (
+            supabase.table("person")
+            .select("partner_id")
+            .eq("id", pid)
+            .execute()
+        )
+
+        if not result.data:
+            continue  # partner missing or corrupted entry
+
+        arr = result.data[0].get("partner_id") or []
+        cleaned = [p for p in arr if p != id]
+
+        supabase.table("person").update({"partner_id": cleaned}).eq("id", pid).execute()
+
+    # ---------------------------------------------------
+    # 3. Nullify parent references in children
+    # ---------------------------------------------------
+
+    # All children where deleted person is pid1
+    children_pid1 = (
+        supabase.table("person")
+        .select("id")
+        .eq("pid1", id)
+        .execute()
+    )
+
+    for child in children_pid1.data:
+        supabase.table("person").update({"pid1": None}).eq("id", child["id"]).execute()
+
+    # All children where deleted person is pid2
+    children_pid2 = (
+        supabase.table("person")
+        .select("id")
+        .eq("pid2", id)
+        .execute()
+    )
+
+    for child in children_pid2.data:
+        supabase.table("person").update({"pid2": None}).eq("id", child["id"]).execute()
+
+    # ---------------------------------------------------
+    # 4. Delete the person record
+    # ---------------------------------------------------
+    delete_res = supabase.table("person").delete().eq("id", id).execute()
+
+    if not delete_res.data:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=404,
             detail=f"Person with id {id} could not be deleted",
         )
 
-    return {"status": "success", "id": id}
+    return {"status": "success", "deleted": id}
+
 
 
 # get family members of a certain family

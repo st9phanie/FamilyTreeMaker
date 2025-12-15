@@ -8,8 +8,8 @@ declare global {
         district?: string;
         area?: string;
         birth?: date;
-        pid1?: number;
-        pid2?: number;
+        pid1?: number | null;
+        pid2?: number | null;
         death?: date;
         sex?: "M" | "F" | "U";
         status?: "L" | "D" | "U";
