@@ -26,7 +26,7 @@ type Props = {
   list: ComboItem[];
   listType: string;
   setValue: (id: number | null) => void;
-  value?: number | null; 
+  value?: number | null;
   disabled?: boolean;
 };
 
@@ -58,21 +58,21 @@ const Combobox = ({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className="w-[250px] justify-between"
+          className="justify-between text-teal-950 rounded-none w-full"
         >
           {selectedItem ? selectedItem.label : `Select ${listType}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[250px] p-0">
+      <PopoverContent className="w-full p-0 rounded-none text-teal-950">
         <Command>
           <CommandInput
             placeholder={`Search ${listType}...`}
@@ -87,11 +87,12 @@ const Combobox = ({
                   key={item.id}
                   value={item.label}
                   onSelect={() => handleSelect(item.id)}
+                  className="text-teal-950"
                 >
                   {item.label}
                   <Check
                     className={cn(
-                      "ml-auto h-4 w-4",
+                      "ml-auto h-4 w-4 text-teal-950",
                       item.id === actualValue ? "opacity-100" : "opacity-0"
                     )}
                   />

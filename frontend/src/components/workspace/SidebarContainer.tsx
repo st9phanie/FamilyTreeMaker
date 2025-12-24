@@ -7,7 +7,7 @@ import AddParent from "./AddParent";
 import AddPartner from "./AddPartner";
 import { useSidebar } from "@/utils/store";
 
-const SidebarContainer = ({ person, refresh, family}: { person: Person; refresh: () => void;family:Person[] }) => {
+const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh: () => void; family: Person[] }) => {
     const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none">("main");
     const name = [person.firstname, person.middlename, person.lastname].filter(Boolean).join(" ")
     const { isOpen } = useSidebar()
@@ -63,6 +63,7 @@ const SidebarContainer = ({ person, refresh, family}: { person: Person; refresh:
                 <AddChild
                     name={name}
                     refresh={refresh}
+                    family={family}
                     onBack={() => setCurrentSidebar("main")}
                     person={person}
                 />

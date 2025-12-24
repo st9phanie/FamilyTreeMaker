@@ -4,13 +4,15 @@ import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPerson } from '@/lib/functions';
+import { addChild } from '@/lib/functions';
+import Combobox from '../combobox';
 
 type Props = {
     person: Person;
     name: string | undefined;
     onBack: () => void;
     refresh: () => void;
+    family: Person[];
 
 }
 type NameField = {
@@ -27,12 +29,21 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const AddChild = ({ person, name, onBack, refresh }: Props) => {
+const cleanName = (value: string) =>
+  value
+    .trim()
+    .replace(/\s+/g, " ");
+
+    
+const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
     const [middlename, setMiddlename] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
     const [sex, setSex] = useState<"M" | "F" | "U" | undefined>("U")
+    const [parent, setParent] = useState<number | null>(null)
+    const [saving, setSaving] = useState<boolean>(false)
+
 
     const nameFields: NameField[] = [
         { id: "firstname", label: "First Name", required: false, value: firstname, onChange: setFirstname },
@@ -41,19 +52,29 @@ const AddChild = ({ person, name, onBack, refresh }: Props) => {
     ];
 
     const onSaveClick = async () => {
-        let data;
-        if (photo || lastname || firstname || middlename || sex !== "U") {
-            data = await addPerson({ photo, lastname, firstname, middlename, sex,family_id:person?.family_id,pid1:person?.id, pid2:person.partner_id?.[0] })
-            console.log(data);
+        if (!(photo || lastname || firstname || middlename || sex !== "U")) return;
+        setSaving(true)
 
-            if (data.status == 'success') refresh()
+        const data = await addChild(person.id!, { photo, lastname, firstname, middlename, sex, family_id: person.family_id, pid1: person.id, pid2: parent })
+        console.log(data);
+
+        if (data.status == 'success') {
+            setSaving(false)
+            refresh()
         }
-
     };
+
+    const familyMembers = family
+        .slice()
+        .sort((a, b) => a.id! - b.id!)
+        .map(f => ({
+            id: f.id!,
+            label: `${f.firstname!} ${f.middlename!} ${f.lastname!} (${f.birth || "?"})`
+        }));
 
 
     return (
-        <div className='w-[360px] h-[calc(100vh-60px)] border border-r-gray-300 px-5 flex flex-col gap-y-5 top-[60px] fixed py-5 justify-between'>
+        <div className='w-[360px] h-[calc(100vh-60px)] border border-r-gray-300 px-5 flex flex-col gap-y-5 top-[60px] fixed py-5 justify-between overflow-y-scroll'>
             <div className='flex flex-row justify-between'>
                 <button>
                     <ArrowLeft className='cursor-pointer text-teal-900' onClick={onBack} />
@@ -64,6 +85,13 @@ const AddChild = ({ person, name, onBack, refresh }: Props) => {
             <ImagePicker
                 setPhoto={setPhoto}
             />
+
+            {/* -------------------------------------------------------------------------------------------------------------------- */}
+            <div>
+                <p className='text-teal-900 text-sm mb-2'>Add existing person as the second parent of the child:</p>
+                <Combobox list={familyMembers} listType='person' setValue={setParent} />
+                <hr className='mt-7' />
+            </div>
             {/* -------------------------------------------------------------------------------------------------------------------- */}
             <div className='flex flex-col gap-y-2'>
                 <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">
@@ -103,7 +131,9 @@ const AddChild = ({ person, name, onBack, refresh }: Props) => {
             </div>
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
-                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
+                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900'
+                    onClick={onSaveClick}>
+                    {saving ? "Saving..." : "Save"}</Button>
                 <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1 rounded-none bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
             </div>
 

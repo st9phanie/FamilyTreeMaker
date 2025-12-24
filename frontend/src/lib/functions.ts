@@ -93,6 +93,18 @@ export async function addSibling(id:number, person: Partial<Person>) {
 
   }
 }
+export async function addChild(id:number, person: Partial<Person>) {
+  try {
+    const { data } = await axios.post(
+      `http://localhost:8000/person/${id}/add_child`,
+      person
+    );
+    return data;
+  } catch (err: any) {
+    console.error("Error adding person:", err.response?.data || err.message);
+
+  }
+}
 
 export async function addParent(id:number, person: Partial<Person>) {
   try {

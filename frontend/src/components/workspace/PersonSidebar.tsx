@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { deletePerson } from '@/lib/functions';
-import { useSidebar } from '@/utils/store';
-import { ChevronsLeftIcon, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 type Props = {
     person: Person;
@@ -12,7 +11,6 @@ type Props = {
     onAddParent: () => void;
     onAddPartner: () => void;
     refresh: () => void;
-
 }
 
 const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild, onAddParent, onAddPartner }: Props) => {

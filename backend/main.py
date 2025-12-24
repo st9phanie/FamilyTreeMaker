@@ -2,7 +2,7 @@ from supabaseClient import supabase
 from fastapi import FastAPI, HTTPException, status
 from models import Person, PersonUpdate, PersonCreate
 from fastapi.middleware.cors import CORSMiddleware
-
+from typing import Optional
 
 app = FastAPI()
 
@@ -15,9 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
     allow_methods=["*"],
 )
-
-
-    
+   
 # get person info
 @app.get("/person/{id}")
 def get_person(id: int):
@@ -95,10 +93,23 @@ def add_partner(id: int, partner: PersonCreate):  # use a creation model
 
     return {"status": "success", "new_partner_id": new_id}
 
+#----------- ADD CHILD -----------------
+@app.post("/person/{id}/add_child")
+def add_child(id:int, child:Optional[PersonCreate] = None):
+    data = child.model_dump(exclude_unset=True)
+    res = supabase.table("person").insert(data).execute()
+    
+    if not res.data:
+        raise HTTPException(status_code=400, detail="Failed to create child")
+    
+    new_id = res.data[0]["id"]
+    
+    return {"status": "success", "new_child_id": new_id}
+
 #----------- ADD SIBLING -----------------
 @app.post("/person/{id}/add_sibling")
-def add_sibling(id: int, partner: PersonCreate):  # use a creation model
-    data = partner.model_dump(exclude_unset=True)
+def add_sibling(id: int, sibling: PersonCreate):  # use a creation model
+    data = sibling.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
 
     if not res.data:
