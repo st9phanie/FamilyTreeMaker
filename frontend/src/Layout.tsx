@@ -1,13 +1,14 @@
+// layouts/MainLayout.tsx
+import Navbar from "@/components/Navbar";
 import { Outlet } from "react-router-dom";
 
-const Layout = () => {
-    return (
-        <div className="flex flex-row">
-            <main className="">
-                <Outlet />
-            </main>
-        </div>
-    );
+const MainLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
 };
 
-export default Layout;
+export default MainLayout;

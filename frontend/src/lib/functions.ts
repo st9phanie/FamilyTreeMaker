@@ -68,7 +68,7 @@ export async function addPerson(person: Partial<Person>) {
   }
 }
 
-export async function addPartner(id:number, person: Partial<Person>) {
+export async function addPartner(id: number, person: Partial<Person>) {
   try {
     const { data } = await axios.post(
       `http://localhost:8000/person/${id}/add_partner`,
@@ -81,7 +81,7 @@ export async function addPartner(id:number, person: Partial<Person>) {
   }
 }
 
-export async function addSibling(id:number, person: Partial<Person>) {
+export async function addSibling(id: number, person: Partial<Person>) {
   try {
     const { data } = await axios.post(
       `http://localhost:8000/person/${id}/add_sibling`,
@@ -93,7 +93,7 @@ export async function addSibling(id:number, person: Partial<Person>) {
 
   }
 }
-export async function addChild(id:number, person: Partial<Person>) {
+export async function addChild(id: number, person: Partial<Person>) {
   try {
     const { data } = await axios.post(
       `http://localhost:8000/person/${id}/add_child`,
@@ -106,7 +106,7 @@ export async function addChild(id:number, person: Partial<Person>) {
   }
 }
 
-export async function addParent(id:number, person: Partial<Person>) {
+export async function addParent(id: number, person: Partial<Person>) {
   try {
     const { data } = await axios.post(
       `http://localhost:8000/person/${id}/add_parent`,
@@ -128,5 +128,51 @@ export async function deletePerson(id: number) {
   } catch (err: any) {
     console.error("Error deleting person:", err.response?.data || err.message);
     throw err; // <-- IMPORTANT so UI knows it failed
+  }
+}
+
+export async function signupuser({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  try {
+    const { data } = await axios.post(
+      "http://localhost:8000/auth/signup",
+      { email, password }
+    );
+    return data;
+  } catch (err: any) {
+    console.error("Error signing up user:", err.response?.data || err.message);
+    throw err;
+  }
+}
+
+
+export async function loginuser({ email, password }: { email: string; password: string; }) {
+  try {
+    const { data } = await axios.post(
+      `http://localhost:8000/auth/login`,
+      { email, password }
+    );
+    return data;
+  } catch (err: any) {
+    console.error("Error logging in user:", err.response?.data || err.message);
+
+  }
+}
+
+export async function resendConfirmation(email: string) {
+  try {
+    const { data } = await axios.post(
+      `http://localhost:8000/auth/resend-confirmation`,
+      { email }
+    );
+    return data;
+  } catch (err: any) {
+    console.error("Error resending confirmation email:", err.response?.data || err.message);
+
   }
 }

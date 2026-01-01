@@ -72,3 +72,12 @@ class PersonCreate(BaseModel):
     partner_id:Optional[List[int]] = None
     pid1: Optional[int] = None
     pid2: Optional[int] = None
+    
+    
+#------------------ AUTH --------------------------
+class UserAuth(BaseModel):
+    email: str
+    password: str
+    
+class EmailRequest(BaseModel):
+    email: str

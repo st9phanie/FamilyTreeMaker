@@ -1,6 +1,6 @@
 from supabaseClient import supabase
 from fastapi import FastAPI, HTTPException, status
-from models import Person, PersonUpdate, PersonCreate
+from models import Person, PersonUpdate, PersonCreate, UserAuth, EmailRequest
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
@@ -15,7 +15,49 @@ app.add_middleware(
     allow_headers=["*"],
     allow_methods=["*"],
 )
-   
+
+
+# ---------------------------------- AUTH -----------------------------------------------
+# Sign Up
+@app.post("/auth/signup")
+def signup(user: UserAuth):
+    try:
+        response = supabase.auth.sign_up(
+            {"email": user.email, "password": user.password}
+        )
+        return {
+            "status": "success",
+            "message": "Sign up successful, check email for verification",
+            "user": response.user,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Log In
+@app.post("/auth/login")
+def login(user: UserAuth):
+    try:
+        response = supabase.auth.sign_in_with_password(
+            {"email": user.email, "password": user.password}
+        )
+        return {"access_token": response.session.access_token, "user": response.user, "status":"success"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+#Resend Confirmation Email
+@app.post("/auth/resend-confirmation")
+def resend_confirmation(email: EmailRequest):
+    try:
+        supabase.auth.resend({"type": "signup", "email": email})
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(400, str(e))
+
+
+# ---------------------------------- APP -----------------------------------------------
+
+
 # get person info
 @app.get("/person/{id}")
 def get_person(id: int):
@@ -70,7 +112,8 @@ def add_person(person: Person):
             detail=f"Failed to insert person: {response.error}",
         )
 
-#----------- ADD PARTNER -----------------
+
+# ----------- ADD PARTNER -----------------
 @app.post("/person/{id}/add_partner")
 def add_partner(id: int, partner: PersonCreate):  # use a creation model
     data = partner.model_dump(exclude_unset=True)
@@ -93,20 +136,22 @@ def add_partner(id: int, partner: PersonCreate):  # use a creation model
 
     return {"status": "success", "new_partner_id": new_id}
 
-#----------- ADD CHILD -----------------
+
+# ----------- ADD CHILD -----------------
 @app.post("/person/{id}/add_child")
-def add_child(id:int, child:Optional[PersonCreate] = None):
+def add_child(id: int, child: Optional[PersonCreate] = None):
     data = child.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
-    
+
     if not res.data:
         raise HTTPException(status_code=400, detail="Failed to create child")
-    
+
     new_id = res.data[0]["id"]
-    
+
     return {"status": "success", "new_child_id": new_id}
 
-#----------- ADD SIBLING -----------------
+
+# ----------- ADD SIBLING -----------------
 @app.post("/person/{id}/add_sibling")
 def add_sibling(id: int, sibling: PersonCreate):  # use a creation model
     data = sibling.model_dump(exclude_unset=True)
@@ -118,6 +163,7 @@ def add_sibling(id: int, sibling: PersonCreate):  # use a creation model
     new_id = res.data[0]["id"]
 
     return {"status": "success", "sibling_id": new_id}
+
 
 # -------------------------------------- ADD PARENT -----------------------------------------------
 @app.post("/person/{id}/add_parent")
@@ -144,12 +190,7 @@ def add_parent(id: int, partner: Person):
     # --------------------------------------------
     # Fetch child's current parents
     # --------------------------------------------
-    original = (
-        supabase.table("person")
-        .select("pid1, pid2")
-        .eq("id", id)
-        .execute()
-    )
+    original = supabase.table("person").select("pid1, pid2").eq("id", id).execute()
 
     if not original.data:
         raise HTTPException(404, f"Person {id} not found")
@@ -160,17 +201,13 @@ def add_parent(id: int, partner: Person):
 
     # CASE 1: no parents → pid1
     if pid1 is None:
-        supabase.table("person").update(
-            {"pid1": new_parent_id}
-        ).eq("id", id).execute()
+        supabase.table("person").update({"pid1": new_parent_id}).eq("id", id).execute()
 
         return {"status": "success", "assigned": "pid1", "parent_id": new_parent_id}
 
     # CASE 2: one parent → pid2 + partner link
     if pid2 is None:
-        supabase.table("person").update(
-            {"pid2": new_parent_id}
-        ).eq("id", id).execute()
+        supabase.table("person").update({"pid2": new_parent_id}).eq("id", id).execute()
 
         # link parents as partners
         p1 = supabase.table("person").select("partner_id").eq("id", pid1).execute()
@@ -179,13 +216,13 @@ def add_parent(id: int, partner: Person):
         if new_parent_id not in partners:
             partners.append(new_parent_id)
 
-        supabase.table("person").update(
-            {"partner_id": partners}
-        ).eq("id", pid1).execute()
+        supabase.table("person").update({"partner_id": partners}).eq(
+            "id", pid1
+        ).execute()
 
-        supabase.table("person").update(
-            {"partner_id": [pid1]}
-        ).eq("id", new_parent_id).execute()
+        supabase.table("person").update({"partner_id": [pid1]}).eq(
+            "id", new_parent_id
+        ).execute()
 
         return {
             "status": "success",
@@ -200,12 +237,7 @@ def add_parent(id: int, partner: Person):
 @app.delete("/person/{id}")
 def delete_person(id: int):
     # 1. Fetch the person (we need their partner list)
-    person = (
-        supabase.table("person")
-        .select("partner_id")
-        .eq("id", id)
-        .execute()
-    )
+    person = supabase.table("person").select("partner_id").eq("id", id).execute()
 
     if not person.data:
         raise HTTPException(404, f"Person {id} not found")
@@ -216,12 +248,7 @@ def delete_person(id: int):
     # 2. Remove this person from all partners’ partner_id arrays
     # ---------------------------------------------------
     for pid in partner_ids:
-        result = (
-            supabase.table("person")
-            .select("partner_id")
-            .eq("id", pid)
-            .execute()
-        )
+        result = supabase.table("person").select("partner_id").eq("id", pid).execute()
 
         if not result.data:
             continue  # partner missing or corrupted entry
@@ -236,23 +263,13 @@ def delete_person(id: int):
     # ---------------------------------------------------
 
     # All children where deleted person is pid1
-    children_pid1 = (
-        supabase.table("person")
-        .select("id")
-        .eq("pid1", id)
-        .execute()
-    )
+    children_pid1 = supabase.table("person").select("id").eq("pid1", id).execute()
 
     for child in children_pid1.data:
         supabase.table("person").update({"pid1": None}).eq("id", child["id"]).execute()
 
     # All children where deleted person is pid2
-    children_pid2 = (
-        supabase.table("person")
-        .select("id")
-        .eq("pid2", id)
-        .execute()
-    )
+    children_pid2 = supabase.table("person").select("id").eq("pid2", id).execute()
 
     for child in children_pid2.data:
         supabase.table("person").update({"pid2": None}).eq("id", child["id"]).execute()
@@ -269,7 +286,6 @@ def delete_person(id: int):
         )
 
     return {"status": "success", "deleted": id}
-
 
 
 # get family members of a certain family
