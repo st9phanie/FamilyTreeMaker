@@ -1,5 +1,5 @@
 from supabaseClient import supabase
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, Header, HTTPException, status, Depends
 from models import Person, PersonUpdate, PersonCreate, UserAuth, EmailRequest
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
@@ -54,7 +54,20 @@ def resend_confirmation(email: EmailRequest):
     except Exception as e:
         raise HTTPException(400, str(e))
 
-
+#Get Logged in user's id
+async def get_current_user(authorization: str = Header(None)) -> str:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid or missing token")
+    
+    token = authorization.replace("Bearer ", "")
+    try:
+        response = supabase.auth.get_user(token)
+        if not response.user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return response.user.id # Return just the string
+    except Exception:
+        raise HTTPException(status_code=401, detail="Authentication failed")
+        
 # ---------------------------------- APP -----------------------------------------------
 
 
@@ -287,27 +300,23 @@ def delete_person(id: int):
 
     return {"status": "success", "deleted": id}
 
+# get the families created by a user
+@app.get("/families")
+def read_user_families(user_id: str = Depends(get_current_user)):
+    """Fetches all families owned by the logged-in user."""
+    families = supabase.table("family").select("*").eq("user_id", user_id).execute()
+    return families.data if families.data else []
 
 # get family members of a certain family
-@app.get("/family/{id}")
-def get_family(id: str):
-    members = supabase.table("person").select("*").eq("family_id", id).execute()
-    if not members.data:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Family with id {id} not found",
-        )
+@app.get("/family/{family_id}")
+def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
+    """Fetches members only if the user owns the family."""
+    check = supabase.table("family").select("id").eq("id", family_id).eq("user_id", user_id).execute()
+    if not check.data:
+        raise HTTPException(status_code=403, detail="Forbidden: You do not own this family")
+
+    members = supabase.table("person").select("*").eq("family_id", family_id).execute()
     return members.data
-
-
-# get the families created by a user
-@app.get("/family")
-def get_user_families(userid: int):
-    families = supabase.table("family").select("*").eq("user_id", userid).execute()
-    if not families.data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No results")
-    return families.data
-
 
 ######################################## NOTES ############################################################
 ######################################## CONTACT ############################################################

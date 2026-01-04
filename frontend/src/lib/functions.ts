@@ -1,178 +1,103 @@
 import axios from "axios";
+import { supabase } from "./supabase";
+import api from "@/api";
+const API_URL = "http://localhost:8000";
 
-export async function fetchUserFamilies(userId: number) {
+// Helper to get the current session token
+async function getAuthHeader() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) return {};
+  
+  return {
+    Authorization: `Bearer ${session.access_token}`,
+  };
+}
+
+export async function fetchFamilies() {
   try {
-    const { data } = await axios.get("http://localhost:8000/family", {
-      params: { userid: userId },
-    });
+    const headers = await getAuthHeader();
+    const { data } = await api.get(`/families`, { headers });
     return data;
   } catch (err: any) {
     console.error("Error fetching families:", err.response?.data || err.message);
+    throw err; // Throwing allows the component to catch and show an error UI
   }
 }
 
-export async function fetchFamilyMembers(id: number) {
+export async function fetchFamilyMembers(id: string | number) {
   try {
-    const { data } = await axios.get(`http://localhost:8000/family/${id}`);
+    const headers = await getAuthHeader();
+    const { data } = await api.get(`/family/${id}`, { headers });
     return data;
   } catch (err: any) {
-    console.error("Error fetching families:", err.response?.data || err.message);
+    console.error(`Error fetching members for family ${id}:`, err.response?.data || err.message);
+    return []; // Return empty list on error to prevent Promise.all failure
   }
 }
 
-export async function fetchUserFamiliesAndLengths(userId: number) {
+export async function fetchUserFamiliesAndLengths() {
   try {
-    const families = await fetchUserFamilies(userId);
+    const families = await fetchFamilies();
+    
+    if (!families || families.length === 0) return [[], []];
 
+    // Fetch all member lists in parallel
     const memberLists = await Promise.all(
       families.map((f: Family) => fetchFamilyMembers(f.id))
     );
 
     const lengths = memberLists.map(list => list.length);
 
-    console.log(lengths);
-
     return [families, lengths];
-
   } catch (err: any) {
-    console.error("Error fetching families:", err.response?.data || err.message);
+    console.error("Error in combined fetch:", err.message);
+    return [[], []];
   }
 }
 
-export async function updatePerson(id: number, person: Partial<Person>) {
-
-  try {
-    console.log("Sending payload:", person);
-
-    const { data } = await axios.put(
-      `http://localhost:8000/person/${id}`,
-      person
-    );
-
-    return data;
-  } catch (err: any) {
-    console.error("Error updating user:", err.response?.data || err.message);
-  }
-}
-
-export async function addPerson(person: Partial<Person>) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/person`,
-      person
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error adding person:", err.response?.data || err.message);
-
-  }
-}
-
-export async function addPartner(id: number, person: Partial<Person>) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/person/${id}/add_partner`,
-      person
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error adding person:", err.response?.data || err.message);
-
-  }
-}
-
-export async function addSibling(id: number, person: Partial<Person>) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/person/${id}/add_sibling`,
-      person
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error adding person:", err.response?.data || err.message);
-
-  }
-}
-export async function addChild(id: number, person: Partial<Person>) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/person/${id}/add_child`,
-      person
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error adding person:", err.response?.data || err.message);
-
-  }
-}
-
-export async function addParent(id: number, person: Partial<Person>) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/person/${id}/add_parent`,
-      person
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error adding person:", err.response?.data || err.message);
-
-  }
-}
-
-export async function deletePerson(id: number) {
-  try {
-    const { data } = await axios.delete(
-      `http://localhost:8000/person/${id}`
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error deleting person:", err.response?.data || err.message);
-    throw err; // <-- IMPORTANT so UI knows it failed
-  }
-}
-
-export async function signupuser({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    const { data } = await axios.post(
-      "http://localhost:8000/auth/signup",
-      { email, password }
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error signing up user:", err.response?.data || err.message);
-    throw err;
-  }
-}
-
-
-export async function loginuser({ email, password }: { email: string; password: string; }) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/auth/login`,
-      { email, password }
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error logging in user:", err.response?.data || err.message);
-
-  }
+export async function signupuser({ email, password }: { email:string; password:string; }) {
+  const { data } = await api.post("/auth/signup", { email, password });
+  return data;
 }
 
 export async function resendConfirmation(email: string) {
-  try {
-    const { data } = await axios.post(
-      `http://localhost:8000/auth/resend-confirmation`,
-      { email }
-    );
-    return data;
-  } catch (err: any) {
-    console.error("Error resending confirmation email:", err.response?.data || err.message);
+  const { data } = await api.post("/auth/resend-confirmation", { email });
+  return data;
+}
 
-  }
+// --- PERSON & RELATIONSHIP FUNCTIONS (Protected) ---
+
+export async function updatePerson(id: number, person: Partial<Person>) {
+  const { data } = await api.put(`/person/${id}`, person);
+  return data;
+}
+
+export async function addPerson(person: Partial<Person>) {
+  const { data } = await api.post(`/person`, person);
+  return data;
+}
+
+export async function addPartner(id: number, person: Partial<Person>) {
+  const { data } = await api.post(`/person/${id}/add_partner`, person);
+  return data;
+}
+
+export async function addSibling(id: number, person: Partial<Person>) {
+  const { data } = await api.post(`/person/${id}/add_sibling`, person);
+  return data;
+}
+
+export async function addChild(id: number, person: Partial<Person>) {
+  const { data } = await api.post(`/person/${id}/add_child`, person);
+  return data;
+}
+
+export async function addParent(id: number, person: Partial<Person>) {
+  const { data } = await api.post(`/person/${id}/add_parent`, person);
+  return data;
+}
+
+export async function deletePerson(id: number, person: Partial<Person>) {
+  const { data } = await api.post(`/person/${id}/add_parent`, person);
+  return data;
 }

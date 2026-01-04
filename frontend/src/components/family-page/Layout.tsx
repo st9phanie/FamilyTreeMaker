@@ -12,14 +12,13 @@ const Layout = ({ children, className }: Props) => {
     return (
         <div className=
             {`fixed
-        top-[60px]
-        ${isOpen ? "left-[280px] w-[calc(100vw-280px)]" : "left-[60px] w-[calc(100vw-60px)]"} 
+        top-[60px] w-full
         h-[calc(100vh-60px)]
         bg-white
         overflow-auto
         flex
         py-5
-        px-10
+        px-5
          ${className}`}
         >
             {children}

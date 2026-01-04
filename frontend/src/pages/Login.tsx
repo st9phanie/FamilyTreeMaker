@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { loginuser, resendConfirmation } from "@/lib/functions";
+import { resendConfirmation } from "@/lib/functions";
+import { supabase } from "@/lib/supabase"; // Import your supabase client
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -16,31 +17,30 @@ const Login = () => {
   const navigate = useNavigate();
 
 
-  const login = async () => {
+
+const login = async () => {
     setLoading(true);
     setError(null);
-    setInfo(null);
 
     try {
-      const data = await loginuser({ email, password });
+        // 1. Use Supabase directly
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-      if (data?.status === "success") {
-        navigate("/");
-      } else {
-        setError(data?.message || "Invalid email or password");
-      }
+        if (authError) throw authError;
+
+        if (data?.session) {
+            navigate("/home");
+        }
     } catch (err: any) {
-      const detail = err?.response?.data?.detail;
-
-      if (detail === "Email not confirmed") {
-        setError("Email not confirmed. Please confirm your email.");
-      } else {
-        setError(detail || "Login failed");
-      }
+        setError(err.message || "Login failed");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const resend = async () => {
     if (!email) {

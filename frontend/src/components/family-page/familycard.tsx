@@ -3,12 +3,12 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
-  lastname: string | "Unnamed";
+  name: string | "Unnamed";
   memberCount?: number;
   id: number
 }
 
-const FamilyCard = ({ lastname, memberCount = 0, id }: Props) => {
+const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
   const navigate = useNavigate();
 
   const GoTo = () => {
@@ -16,13 +16,13 @@ const FamilyCard = ({ lastname, memberCount = 0, id }: Props) => {
   };
 
   return (
-    <div className='flex flex-col rounded-2xl bg-lime-600 p-4 text-white h-[150px] w-[250px] gap-y-3 shadow-lg justify-between'>
+    <div className='flex flex-col bg-teal-600 p-4 text-white h-40 w-[250px] gap-y-3 shadow-lg justify-between'>
       <div>
         <p className="text-xl font-bold tracking-wide drop-shadow-sm">
-          {lastname} Family
+          {name}
         </p>
 
-        <div className="flex items-center mt-1 text-sm text-lime-100">
+        <div className="flex items-center mt-1 text-sm text-teal-950">
           <Users className="w-4 h-4 mr-2" />
           {memberCount === 0 ? (
             <span>No members yet</span>
@@ -34,7 +34,8 @@ const FamilyCard = ({ lastname, memberCount = 0, id }: Props) => {
 
 
       <div className="flex flex-row justify-between items-center mt-3 w-full">
-        <Button className="rounded-full cursor-pointer" size="icon-sm" variant="secondary" onClick={GoTo}><Edit className="size-4 text-lime-900" /></Button>
+        <Button className="rounded-full cursor-pointer" size="icon-sm" variant="secondary" onClick={GoTo}><Edit className="size-4 text-teal-950" /></Button>
+
         <Button size="icon-sm" className="rounded-full cursor-pointer" variant="secondary"><Trash className="text-red-600 size-4" /></Button>
       </div>
 

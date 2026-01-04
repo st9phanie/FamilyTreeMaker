@@ -25,7 +25,7 @@ declare global {
     type Family = {
         id: number;
         user_id: number;
-        lastname: string;
+        name: string;
     };
 
     interface Window {

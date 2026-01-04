@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/family-page/Layout";
 import  FamilyTreeComponent  from "../components/FamilyTreeComponent";
 
 type Props = {
