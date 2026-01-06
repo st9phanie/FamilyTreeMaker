@@ -1,5 +1,4 @@
-import { Globe, Sidebar, User2 } from 'lucide-react'
-import React from 'react'
+import { Globe, User2 } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,7 +19,18 @@ const Navbar = () => {
                 <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>
                     <li className=''>
                         <div className='flex grid-cols-2 gap-x-5'>
-                            <User2 className='size-6' />
+
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger>
+                                    <User2 className='size-6' />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
+                                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger>

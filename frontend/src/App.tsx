@@ -12,7 +12,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
-  return <Workspace id={parseInt(id!)} />;
+  return <Workspace id={id!} />;
 }
 
 const App = () => {

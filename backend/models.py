@@ -3,7 +3,6 @@ from typing import Optional, List
 from datetime import date
 from enum import Enum
 
-
 # ------- ENUMS --------------
 class Sex(str, Enum):
     MALE = "M"
@@ -35,11 +34,11 @@ class Person(BaseModel):
     pid1: Optional[int] = None
     pid2: Optional[int] = None
     partner_id: Optional[List[int]] = None
-    family_id: Optional[int] = None
+    family_id: Optional[str] = None
 
 
 class Family(BaseModel):
-    id: Optional[int] = None
+    id: Optional[str] = None
     user_id: int
     lastname: Optional[str]
 
@@ -58,7 +57,7 @@ class PersonUpdate(BaseModel):
     status: Optional[Status] = None
     photo: Optional[str] = None
     partner_id: Optional[List[int]] = None
-    family_id: Optional[int] = None
+    family_id: Optional[str] = None
     deathplace: Optional[str] = None
     
     
@@ -68,7 +67,7 @@ class PersonCreate(BaseModel):
     middlename: Optional[str] = None
     lastname: Optional[str] = None
     sex: Optional[Sex] = "U"
-    family_id: Optional[int] = None
+    family_id: Optional[str] = None
     partner_id:Optional[List[int]] = None
     pid1: Optional[int] = None
     pid2: Optional[int] = None

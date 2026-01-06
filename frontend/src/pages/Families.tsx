@@ -26,6 +26,7 @@ const Families = () => {
         }
     }, []);
 
+
     useEffect(() => {
         loadFamilies();
     }, [loadFamilies]);
@@ -40,7 +41,7 @@ const Families = () => {
             </h1>
 
             <div
-                className={`flex h-full bg-red-100 gap-x-5`}
+                className={`flex h-full  gap-x-5`}
             >
                 {families.map((f, index) => (
                     <FamilyCard

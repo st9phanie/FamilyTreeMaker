@@ -1,6 +1,6 @@
-import axios from "axios";
 import { supabase } from "./supabase";
 import api from "@/api";
+
 const API_URL = "http://localhost:8000";
 
 // Helper to get the current session token
@@ -24,7 +24,7 @@ export async function fetchFamilies() {
   }
 }
 
-export async function fetchFamilyMembers(id: string | number) {
+export async function fetchFamilyMembers(id: string) {
   try {
     const headers = await getAuthHeader();
     const { data } = await api.get(`/family/${id}`, { headers });
@@ -98,6 +98,6 @@ export async function addParent(id: number, person: Partial<Person>) {
 }
 
 export async function deletePerson(id: number, person: Partial<Person>) {
-  const { data } = await api.post(`/person/${id}/add_parent`, person);
+  const { data } = await api.post(`/person/${id}`, person);
   return data;
 }

@@ -1,4 +1,4 @@
-import { fetchFamilyMembers, updatePerson } from "@/lib/functions";
+import { fetchFamilyMembers } from "@/lib/functions";
 import { cache, useEffect, useRef, useState } from "react";
 import { Loader2} from "lucide-react";
 
@@ -7,7 +7,7 @@ const editForm = function () {
 };
 
 type Props = {
-  id: number;
+  id: string;
 };
 
 const DEFAULT_PERSON: Person = {

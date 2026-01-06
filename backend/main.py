@@ -107,13 +107,17 @@ def update_person(id: int, person: PersonUpdate):
             detail=f"Person with id {id} not found",
         )
 
-
-# create person
+#create oerson        
 @app.post("/person")
-def add_person(person: Person):
+def add_person(person: Person, user_id: str = Depends(get_current_user)):
+    family_check = supabase.table("family").select("id").eq("id", person.family_id).eq("user_id", user_id).execute()
+    
+    if not family_check.data:
+        raise HTTPException(status_code=403, detail="You cannot add members to a family you don't own")
+
     data = person.model_dump(mode="json", exclude_unset=True)
     response = supabase.table("person").insert(data).execute()
-
+    
     if response.data:
         return {
             "status": "success",
@@ -124,7 +128,6 @@ def add_person(person: Person):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to insert person: {response.error}",
         )
-
 
 # ----------- ADD PARTNER -----------------
 @app.post("/person/{id}/add_partner")

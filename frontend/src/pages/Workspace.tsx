@@ -1,6 +1,5 @@
-// Home.tsx
 import Family from '@/components/workspace/FamilyTree'; // Ensure Node is exported and imported
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import SidebarContainer from '@/components/workspace/SidebarContainer';
 import { fetchFamilyMembers } from '@/lib/functions';
 import { retryFetch, toMemberNode } from '@/lib/helperfunctions';
@@ -8,7 +7,7 @@ import { ChevronsLeftIcon, ChevronsRightIcon, Loader2 } from 'lucide-react';
 import { useSidebar } from '@/utils/store';
 
 type Props = {
-  id?: number;
+  id?: string;
 }
 
 const Workspace = ({ id }: Props) => {
@@ -18,10 +17,12 @@ const Workspace = ({ id }: Props) => {
   const [selectedPerson, setSelectedPerson] = useState<Person>();
   const { isOpen, toggle } = useSidebar()
 
-  const handleDataFromChild = (data: number) => {
+  const nodes = useMemo(() => toMemberNode(familyMembers), [familyMembers]);
+
+  const handleDataFromChild = useCallback((data: number) => {
     setDataFromChild(data);
     console.log('Data received from child:', data);
-  };
+  }, []);
 
   const refreshMembers = () => {
     loadMembers();
@@ -49,7 +50,7 @@ const Workspace = ({ id }: Props) => {
   // EFFECT 1: Load members when 'id' changes
   useEffect(() => {
     loadMembers();
-  }, [id]); // Dependency array: loadMembers runs whenever 'id' changes
+  }, [id]);
 
   useEffect(() => {
     if (familyMembers.length > 0) {
@@ -67,9 +68,7 @@ const Workspace = ({ id }: Props) => {
     );
   }
 
-  const nodes = toMemberNode(familyMembers);
-
-  if (!nodes) {
+  if (!nodes || nodes.length === 0) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]">
         No family members found.

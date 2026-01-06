@@ -62,7 +62,7 @@ const Family = ({ nodes, onSend }: Props) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center w-full h-full text-gray-500">
+            <div className="flex justify-center items-center w-full h-full text-gray-50a0">
                 <Loader2 className="w-10 h-10 animate-spin" />
             </div>
         );

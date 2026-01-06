@@ -23,7 +23,7 @@ declare global {
     };
 
     type Family = {
-        id: number;
+        id: string;
         user_id: number;
         name: string;
     };
@@ -36,8 +36,8 @@ declare global {
 
     interface MemberNode {
         id: number;
-        mid?: number;
-        fid?: number;
+        mid?: number | null;
+        fid?: number | null;
         pids?: number[];
         name: string;
         gender: string;
