@@ -32,7 +32,7 @@ const login = async () => {
         if (authError) throw authError;
 
         if (data?.session) {
-            navigate("/home");
+            navigate("/family");
         }
     } catch (err: any) {
         setError(err.message || "Login failed");

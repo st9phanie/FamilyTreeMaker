@@ -13,7 +13,7 @@ const Sidebar = () => {
 
 
     return (
-        <nav className={`h-[calc(100vh-60px)]  border-r border-lime-700 top-[60px] py-5 fixed left-0 ${isOpen ? "w-70 " : "w-15"}`}>
+        <nav className={`h-[calc(100vh-40px)]  border-r border-lime-700 top-[40px] py-5 fixed left-0 ${isOpen ? "w-70 " : "w-15"}`}>
             <ul className={`flex flex-col px-2`}  >
                 {links.map((link, key) => (
                     <Link key={key} to={link.link}>

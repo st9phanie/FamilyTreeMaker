@@ -72,7 +72,7 @@ const Family = ({ nodes, onSend }: Props) => {
         <div
             ref={treeRef}
             id="tree"
-            style={{ width: "100%", height: "calc(100vh - 60px)", overflow: "hidden" }}
+            style={{ width: "100%", height: "calc(100vh - 40px)", overflow: "hidden" }}
         />
     );
 };

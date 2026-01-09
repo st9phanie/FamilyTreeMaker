@@ -80,3 +80,8 @@ class UserAuth(BaseModel):
     
 class EmailRequest(BaseModel):
     email: str
+    
+    
+    
+class FamilyNameUpdate(BaseModel):
+    new_name: str

@@ -15,7 +15,7 @@ const Workspace = ({ id }: Props) => {
   const [familyMembers, setFamilyMembers] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedPerson, setSelectedPerson] = useState<Person>();
-  const { isOpen, toggle } = useSidebar()
+  const { isOpen, toggle } = useSidebar();
 
   const nodes = useMemo(() => toMemberNode(familyMembers), [familyMembers]);
 
@@ -62,7 +62,7 @@ const Workspace = ({ id }: Props) => {
   // Show a loading state while fetching
   if (loading) {
     return (
-      <div className='flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]'>
+      <div className='flex justify-center items-center min-h-max'>
         <Loader2 className='animate-spin size-10 text-teal-600' />
       </div>
     );
@@ -70,7 +70,7 @@ const Workspace = ({ id }: Props) => {
 
   if (!nodes || nodes.length === 0) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-60px)] mt-[60px]">
+      <div className="flex justify-center items-center h-[calc(100vh-40px)] mt-[40px]">
         No family members found.
       </div>
     );
@@ -78,8 +78,6 @@ const Workspace = ({ id }: Props) => {
 
   return (
     <div className='flex flex-row min-h-screen'>
-
-      {/* Sidebar container with fixed width (e.g., w-[360px]) and set height */}
       {selectedPerson && (
         <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
           <SidebarContainer family={familyMembers} person={selectedPerson!} refresh={refreshMembers} />
@@ -87,16 +85,16 @@ const Workspace = ({ id }: Props) => {
 
 
 
-      <main className='grow h-[calc(100vh-60px)] mt-[60px] p-5 overflow-hidden'>
-        {isOpen ?
-          (<button className=' absolute top-20 z-10 cursor-pointer'
+      <main className='grow h-[calc(100vh-40px)] mt-[40px] p-5 overflow-hidden'>
+        {/* {isOpen ?
+          (<button className=' absolute top-15 z-10 cursor-pointer'
             onClick={toggle}>
             <ChevronsLeftIcon className='text-teal-900 ' />
           </button>)
-          : <button className='absolute top-20 z-10 cursor-pointer'
+          : <button className='absolute top-15 z-10 cursor-pointer'
             onClick={toggle}>
             <ChevronsRightIcon className='text-teal-900 ' />
-          </button>}
+          </button>} */}
 
         <Family nodes={nodes} onSend={handleDataFromChild} />
       </main>

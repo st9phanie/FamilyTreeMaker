@@ -74,7 +74,7 @@ const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
 
 
     return (
-        <div className='w-[360px] h-[calc(100vh-60px)] border border-r-gray-300 px-5 flex flex-col gap-y-5 top-[60px] fixed py-5 justify-between overflow-y-scroll'>
+        <div className='w-[360px] h-[calc(100vh-40px)] border border-r-gray-300 px-5 flex flex-col gap-y-5 top-[40px] fixed py-5 justify-between overflow-y-scroll'>
             <div className='flex flex-row justify-between'>
                 <button>
                     <ArrowLeft className='cursor-pointer text-teal-900' onClick={onBack} />

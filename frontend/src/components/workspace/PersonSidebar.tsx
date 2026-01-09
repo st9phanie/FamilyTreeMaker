@@ -22,7 +22,7 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
     }
 
     return (
-        <div className={`w-[360px] h-[calc(100vh-60px)] border-r border-r-gray-300 px-5 flex flex-col top-[60px] fixed py-10 justify-between`}>
+        <div className={`w-[360px] h-[calc(100vh-40px)] border-r border-r-gray-300 px-5 flex flex-col top-[40px] fixed py-10 justify-between`}>
 
             <img src={person.photo || "/defaultpfp.jpg"} className=' size-24 place-self-center rounded-full border-2 border-gray-200 ' />
             <p className='text-center text-md text-teal-900 -mt-5'>{name}</p>

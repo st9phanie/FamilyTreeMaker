@@ -12,8 +12,8 @@ const Layout = ({ children, className }: Props) => {
     return (
         <div className=
             {`fixed
-        top-[60px] w-full
-        h-[calc(100vh-60px)]
+        top-10 w-full
+        h-[calc(100vh-40px)]
         bg-white
         overflow-auto
         flex

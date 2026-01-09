@@ -1,6 +1,6 @@
 from supabaseClient import supabase
 from fastapi import FastAPI, Header, HTTPException, status, Depends
-from models import Person, PersonUpdate, PersonCreate, UserAuth, EmailRequest
+from models import Person, PersonUpdate, PersonCreate, UserAuth, EmailRequest, FamilyNameUpdate
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 
@@ -69,7 +69,6 @@ async def get_current_user(authorization: str = Header(None)) -> str:
         raise HTTPException(status_code=401, detail="Authentication failed")
         
 # ---------------------------------- APP -----------------------------------------------
-
 
 # get person info
 @app.get("/person/{id}")
@@ -306,14 +305,12 @@ def delete_person(id: int):
 # get the families created by a user
 @app.get("/families")
 def read_user_families(user_id: str = Depends(get_current_user)):
-    """Fetches all families owned by the logged-in user."""
     families = supabase.table("family").select("*").eq("user_id", user_id).execute()
     return families.data if families.data else []
 
 # get family members of a certain family
 @app.get("/family/{family_id}")
 def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
-    """Fetches members only if the user owns the family."""
     check = supabase.table("family").select("id").eq("id", family_id).eq("user_id", user_id).execute()
     if not check.data:
         raise HTTPException(status_code=403, detail="Forbidden: You do not own this family")
@@ -321,5 +318,21 @@ def get_family_members(family_id: str, user_id: str = Depends(get_current_user))
     members = supabase.table("person").select("*").eq("family_id", family_id).execute()
     return members.data
 
+# update family card name
+@app.put("/family/{id}/update_name")
+def update_family_card_name(id: str, new_name:FamilyNameUpdate,user_id: str = Depends(get_current_user)):
+    check = supabase.table("family").select("id").eq("id", id).eq("user_id", user_id).execute()
+    if not check.data:
+        raise HTTPException(status_code=403, detail="Forbidden: You do not own this family")
+    response = supabase.table("family").update({"name": new_name.new_name}).eq("id", id).execute()
+    if response.data:
+        return {
+            "status": "success",
+        }
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Family with id {id} not found",
+        )
 ######################################## NOTES ############################################################
 ######################################## CONTACT ############################################################

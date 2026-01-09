@@ -52,8 +52,8 @@ const Families = () => {
                     />
                 ))}
 
-                <Link to="/family/new">
-                    <div className="flex cursor-pointer items-center border-2 border-teal-950 p-4 h-40 w-[250px] shadow-lg justify-center">
+                <Link to="/family/new" className="h-40">
+                    <div className="flex cursor-pointer items-center border-2 border-teal-950 p-4 h-40 w-[250px] shadow-sm justify-center">
                         <Plus className="text-teal-950 size-6" />
                     </div>
                 </Link>

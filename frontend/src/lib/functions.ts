@@ -7,7 +7,7 @@ const API_URL = "http://localhost:8000";
 async function getAuthHeader() {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) return {};
-  
+
   return {
     Authorization: `Bearer ${session.access_token}`,
   };
@@ -38,7 +38,7 @@ export async function fetchFamilyMembers(id: string) {
 export async function fetchUserFamiliesAndLengths() {
   try {
     const families = await fetchFamilies();
-    
+
     if (!families || families.length === 0) return [[], []];
 
     // Fetch all member lists in parallel
@@ -55,7 +55,7 @@ export async function fetchUserFamiliesAndLengths() {
   }
 }
 
-export async function signupuser({ email, password }: { email:string; password:string; }) {
+export async function signupuser({ email, password }: { email: string; password: string; }) {
   const { data } = await api.post("/auth/signup", { email, password });
   return data;
 }
@@ -99,5 +99,12 @@ export async function addParent(id: number, person: Partial<Person>) {
 
 export async function deletePerson(id: number, person: Partial<Person>) {
   const { data } = await api.post(`/person/${id}`, person);
+  return data;
+}
+
+export async function updateFamilyCardName(id: string, new_name: string) {
+  const headers = await getAuthHeader();
+
+  const { data } = await api.put(`/family/${id}/update_name`, {new_name}, { headers });
   return data;
 }

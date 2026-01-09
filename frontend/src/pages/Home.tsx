@@ -1,8 +1,10 @@
 
-const Home = () => {
+const Dashboard = () => {
   return (
-    <div>Home</div>
+    <div>
+      Dashboard
+    </div>
   )
 }
 
-export default Home
+export default Dashboard

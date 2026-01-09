@@ -1,4 +1,4 @@
-import {User2 } from 'lucide-react'
+import { Globe, User2 } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,9 +11,11 @@ import { Link } from 'react-router-dom'
 
 const Navbar = () => {
 
+    
+
     return (
-        <nav className='w-full flex flex-row text-teal-950 bg-white h-10 border-b border-gray-200 px-4 items-center justify-between fixed top-0 left-0 '>
-            <Link to="/"><p className='text-lg font-medium cursor-pointer'>Cognatus</p></Link>
+        <nav className='w-full flex flex-row text-white bg-teal-950 h-[60px] border-b border-gray-200 px-4 items-center justify-between fixed top-0 left-0 '>
+            <Link to="/"><p className='md:text-2xl text-xl font-medium'>Cognatus</p></Link>
 
             <div className='flex'>
                 <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>
@@ -22,16 +24,15 @@ const Navbar = () => {
 
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger>
-                                    <User2 className='size-5' />
+                                    <Globe className='size-6' />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                                    <DropdownMenuLabel>Language</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
-                                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
+                                    <DropdownMenuItem>English</DropdownMenuItem>
+                                    <DropdownMenuItem>العربية</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-
                         </div>
                     </li>
 

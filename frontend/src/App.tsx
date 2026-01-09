@@ -1,7 +1,5 @@
-import { AddPerson } from "./pages/AddPerson";
 import { Routes, Route, useParams, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
-import Home from "./pages/Home";
 import Families from "./pages/Families";
 import MyProfile from "./pages/MyProfile";
 import Workspace from "./pages/Workspace";
@@ -9,6 +7,8 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import MainLayout from "./Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Navbar from "./components/index-page/Navbar";
+import Dashboard from "./pages/Home";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -21,12 +21,11 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<> <Index /><Navbar /></>} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/add-person" element={<AddPerson />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/family" element={<Families />} />
             <Route path="/family/:id" element={<FamilyTreeWrapper />} />
             <Route path="/profile" element={<MyProfile />} />
