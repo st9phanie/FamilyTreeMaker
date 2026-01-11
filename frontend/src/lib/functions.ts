@@ -16,7 +16,7 @@ async function getAuthHeader() {
 export async function fetchFamilies() {
   try {
     const headers = await getAuthHeader();
-    const { data } = await api.get(`/families`, { headers });
+    const { data } = await api.get(`/family/all`, { headers });
     return data;
   } catch (err: any) {
     console.error("Error fetching families:", err.response?.data || err.message);
@@ -106,5 +106,10 @@ export async function updateFamilyCardName(id: string, new_name: string) {
   const headers = await getAuthHeader();
 
   const { data } = await api.put(`/family/${id}/update_name`, {new_name}, { headers });
+  return data;
+}
+
+export async function createNewFamily(family: Partial<Family>) {
+  const { data } = await api.post(`/family`, family);
   return data;
 }

@@ -24,7 +24,7 @@ declare global {
 
     type Family = {
         id: string;
-        user_id: number;
+        user_id: string;
         name: string;
     };
 

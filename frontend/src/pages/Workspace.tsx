@@ -62,7 +62,7 @@ const Workspace = ({ id }: Props) => {
   // Show a loading state while fetching
   if (loading) {
     return (
-      <div className='flex justify-center items-center min-h-max'>
+      <div className='fixed min-h-max top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
         <Loader2 className='animate-spin size-10 text-teal-600' />
       </div>
     );
@@ -70,7 +70,7 @@ const Workspace = ({ id }: Props) => {
 
   if (!nodes || nodes.length === 0) {
     return (
-      <div className="flex justify-center items-center h-[calc(100vh-40px)] mt-[40px]">
+      <div className="flex justify-center items-center h-[calc(100vh-40px)] mt-[40px] ">
         No family members found.
       </div>
     );

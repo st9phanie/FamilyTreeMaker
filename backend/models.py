@@ -39,8 +39,8 @@ class Person(BaseModel):
 
 class Family(BaseModel):
     id: Optional[str] = None
-    user_id: int
-    lastname: Optional[str]
+    user_id: Optional[str] = None
+    name: Optional[str]
 
 class PersonUpdate(BaseModel):
     firstname: Optional[str] = None
@@ -80,8 +80,6 @@ class UserAuth(BaseModel):
     
 class EmailRequest(BaseModel):
     email: str
-    
-    
     
 class FamilyNameUpdate(BaseModel):
     new_name: str

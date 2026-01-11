@@ -26,6 +26,7 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
 
     return (
         <>
+
             {currentSidebar === "main" && (
                 <PersonSidebar
                     name={name}
