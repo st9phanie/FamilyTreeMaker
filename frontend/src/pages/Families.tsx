@@ -5,7 +5,6 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -17,7 +16,7 @@ import { createNewFamily, fetchUserFamiliesAndLengths } from "@/lib/functions";
 import { supabase } from "@/lib/supabase";
 import { Loader2, Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Families = () => {
     const navigate = useNavigate();

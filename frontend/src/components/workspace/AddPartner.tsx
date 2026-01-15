@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addPartner} from '@/lib/functions';
+import { addPartner } from '@/lib/functions';
 
 type Props = {
     person: Person;
@@ -52,10 +52,12 @@ const AddPartner = ({ person, name, onBack, refresh }: Props) => {
             middlename,
             sex,
             family_id: person.family_id,
-            partner_id:[person.id!]})
-        if (data?.status === "success"){ 
+            partner_id: [person.id!]
+        })
+        if (data?.status === "success") {
             setUpdating(false);
-            refresh();}
+            refresh();
+        }
     };
 
 
@@ -111,11 +113,11 @@ const AddPartner = ({ person, name, onBack, refresh }: Props) => {
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className=' bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>
-                {
-                    updating ? "Saving..": "Save"
-                }
+                    {
+                        updating ? "Saving.." : "Save"
+                    }
                 </Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>

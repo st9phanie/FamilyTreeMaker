@@ -29,12 +29,12 @@ const sexFields = [
     { code: "U", label: "Undisclosed" },
 ];
 
-const cleanName = (value: string) =>
-  value
-    .trim()
-    .replace(/\s+/g, " ");
+// const cleanName = (value: string) =>
+//     value
+//         .trim()
+//         .replace(/\s+/g, " ");
 
-    
+
 const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
     const [photo, setPhoto] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
@@ -134,7 +134,7 @@ const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
                 <Button className=' bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900'
                     onClick={onSaveClick}>
                     {saving ? "Saving..." : "Save"}</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>

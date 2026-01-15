@@ -1,4 +1,3 @@
-import { useSidebar } from '@/utils/store';
 import { type ReactNode } from 'react'
 
 type Props = {
@@ -7,7 +6,6 @@ type Props = {
 }
 
 const Layout = ({ children, className }: Props) => {
-    const { isOpen } = useSidebar()
 
     return (
         <div className=

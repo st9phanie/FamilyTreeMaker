@@ -64,7 +64,7 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
                 <div></div>
             </div>
             <ImagePicker
-                setPhoto={() => { }}
+                setPhoto={setPhoto}
             />
             {/* ---------------------------------------- NAMES ------------------------------------------------------------- */}
             <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">
@@ -103,7 +103,7 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className=' flex-1 active:border-b cursor-pointer ' onClick={onSaveClick}>Save</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>
         </SidebarLayout>
     )

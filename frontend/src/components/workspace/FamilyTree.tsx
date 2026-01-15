@@ -49,7 +49,7 @@ const Family = ({ nodes, onSend }: Props) => {
             nodes: nodes,
         });
 
-        family.onNodeClick((args) => {
+        family.onNodeClick((args:any) => {
             onSend(args.node.id)
             return false;
         });

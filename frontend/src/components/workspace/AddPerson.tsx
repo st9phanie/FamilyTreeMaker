@@ -1,6 +1,5 @@
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
@@ -98,7 +97,7 @@ const AddPerson = ({ onBack, refresh }: Props) => {
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className=' bg-teal-900 flex-1 active:border-b cursor-pointer hover:bg-emerald-900/20 hover:border hover:border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>        </div>
     )
 }

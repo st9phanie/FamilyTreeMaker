@@ -1,4 +1,4 @@
-import { Globe, User2 } from 'lucide-react'
+import { Globe } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,

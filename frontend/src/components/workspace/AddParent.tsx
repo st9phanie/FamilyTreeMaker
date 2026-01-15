@@ -122,7 +122,7 @@ const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
                         </div>
                     ))}
                 </div>
-                {/* -------------------------------------------------------------------------------------------------------------------- */}
+                {/* ----------------------------------------------------- SEX --------------------------------------------------------------- */}
 
                 <div className="flex flex-col gap-3">
                     <p className="text-sm px-1">Sex</p>
@@ -145,7 +145,7 @@ const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className=' bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>

@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
-import { addParent, addSibling } from '@/lib/functions';
+import { addSibling } from '@/lib/functions';
 
 type Props = {
     person: Person;
@@ -58,10 +58,10 @@ const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
         const dad = person.pid2;
 
         let newSibling;
-        let createdParent;
+        // let createdParent;
 
         console.log(mom);
-        
+
         if (sibling === "F") {
             // full sibling: same mom + dad
             newSibling = await addSibling(person.id!, {
@@ -98,14 +98,14 @@ const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
                 pid2: dad
             });
 
-            // If dad doesn't exist → create him
-            if (!dad && newSibling?.status === "success") {
-                createdParent = await addParent(newSibling.sibling_id, {
-                    firstname: `Father of ${firstname}`,
-                    family_id: person.family_id,
-                    sex: "M"
-                });
-            }
+            // // If dad doesn't exist → create him
+            // if (!dad && newSibling?.status === "success") {
+            //     createdParent = await addParent(newSibling.sibling_id, {
+            //         firstname: `Father of ${firstname}`,
+            //         family_id: person.family_id,
+            //         sex: "M"
+            //     });
+            // }
         }
 
         if (newSibling?.status === "success") {
@@ -184,7 +184,7 @@ const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
                 <Button className=' bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button variant="outline" className='cursor-pointer flex-1  bg-white ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>
