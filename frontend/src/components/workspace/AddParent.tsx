@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@radix-ui/react-label';
 import { useState } from 'react';
 import { addParent } from '@/lib/functions';
-import Combobox from '../combobox';
+import Combobox from '../ui/combobox';
 
 type Props = {
     person: Person;

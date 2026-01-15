@@ -50,7 +50,7 @@ const SignUp = () => {
     <div className="h-screen flex flex-row w-full ">
       <div className="h-full w-200 bg-teal-950 px-4 flex flex-col text-white justify-between">
         <div className="h-[60px] flex items-center">
-          <Link to="/"><p className='md:text-2xl text-xl font-medium '>Dendro</p></Link>
+          <Link to="/"><p className='md:text-2xl text-xl font-medium '>ORIGIN</p></Link>
         </div>
 
         <div className="w-90 text-center gap-y-10 mx-auto flex flex-col items-center justify-center h-full">

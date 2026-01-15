@@ -1,5 +1,5 @@
 import { locations } from "../utils/utils.js";
-import Combobox from "@/components/combobox.js"; // Assuming this is the fixed version
+import Combobox from "@/components/ui/combobox.js"; // Assuming this is the fixed version
 
 
 type Props = {

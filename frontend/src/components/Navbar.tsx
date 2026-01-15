@@ -13,7 +13,7 @@ const Navbar = () => {
 
     return (
         <nav className='w-full flex flex-row text-teal-950 h-10 border-b border-gray-200 px-5 items-center justify-between fixed top-0 left-0 '>
-            <Link to="/family"><p className='text-lg font-medium cursor-pointer'>Dendro</p></Link>
+            <Link to="/family"><p className='text-lg font-medium cursor-pointer'>ORIGIN</p></Link>
 
             <div className='flex'>
                 <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>
