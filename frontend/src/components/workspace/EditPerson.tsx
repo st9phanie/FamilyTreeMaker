@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { updatePerson } from '@/lib/functions';
+import SidebarLayout from './SidebarLayout';
 
 type Props = {
     person: Person;
@@ -47,16 +48,19 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
     }
 
     useEffect(() => {
-        if (update) { refresh(); setUpdate(false); }
+        if (update) {
+            refresh();
+            setUpdate(false);
+        }
     }, [update])
 
     return (
-        <div className='w-[360px] h-[calc(100vh-40px)] border-r border-r-gray-300 px-5 flex flex-col gap-y-5 top-[40px] fixed  py-5 justify-between'>
+        <SidebarLayout>
             <div className='flex flex-row justify-between'>
                 <button>
                     <ArrowLeft className='cursor-pointer text-teal-900' onClick={onBack} />
                 </button>
-                <p className='text-center text-md text-teal-900'>Edit {firstname}</p>
+                <p className='text-center text-base text-teal-900'>Edit {firstname}</p>
                 <div></div>
             </div>
             <ImagePicker
@@ -65,15 +69,15 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
             {/* ---------------------------------------- NAMES ------------------------------------------------------------- */}
             <div className="flex flex-col justify-between mb-2 gap-y-5 text-teal-950">
                 {nameFields.map(field => (
-                    <div key={field.id} className="flex flex-col">
-                        <label className="text-sm mb-1 px-1" htmlFor={field.id}>{field.label}</label>
+                    <div key={field.id} className="flex text-sm flex-col">
+                        <label className="mb-1 px-1" htmlFor={field.id}>{field.label}</label>
                         <input
                             id={field.id}
                             name={field.id}
                             required={field.required}
                             value={field.value}
                             onChange={(e) => field.onChange(e.target.value)}
-                            className="border border-b-2 focus:border-teal-900 border-gray-300 outline-none  bg-white text-teal-900 px-2 py-1"
+                            className="border border-b-2 focus:border-teal-900 border-gray-300 outline-none rounded-lg bg-white text-teal-900 px-2 py-2"
                         />
                     </div>
                 ))}
@@ -89,7 +93,7 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
                 >
                     {sexFields.map((val, key) => (
                         <div key={key} className="flex items-center space-x-2">
-                            <RadioGroupItem value={val.code} id={val.code} />
+                            <RadioGroupItem className='cursor-pointer' value={val.code} id={val.code} />
                             <Label htmlFor={val.code}>{val.label}</Label>
                         </div>
                     ))}
@@ -98,11 +102,12 @@ const EditPerson = ({ person, onBack, refresh }: Props) => {
 
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
-                <Button className='rounded-none bg-teal-900 flex-1 active:border-b cursor-pointer hover:bg-emerald-900/20 hover:border hover:border-teal-900 hover:text-teal-900' onClick={onSaveClick}>Save</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1 rounded-none bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
-            </div>        </div>
+                <Button className=' flex-1 active:border-b cursor-pointer ' onClick={onSaveClick}>Save</Button>
+                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+            </div>
+        </SidebarLayout>
     )
 }
 
-export default EditPerson 
+export default EditPerson
 

@@ -65,14 +65,14 @@ const Combobox = ({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className="justify-between text-teal-950 rounded-none w-full"
+          className="justify-between text-teal-950  w-full"
         >
           {selectedItem ? selectedItem.label : `Select ${listType}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-full p-0 rounded-none text-teal-950">
+      <PopoverContent className="w-full p-0  text-teal-950">
         <Command>
           <CommandInput
             placeholder={`Search ${listType}...`}

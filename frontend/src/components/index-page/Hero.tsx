@@ -16,7 +16,7 @@ const Hero = () => {
 
             <div className="flex flex-col lg:w-[50%] gap-y-6 lg:pr-10 lg:items-start items-center lg:text-start text-center">
                 <h1 className="font-semibold  lg:text-[52px] text-4xl  text-teal-900  ">Build a family tree</h1>
-                <p className="text-xl ">Curious about your heritage? Jumpstart your ancestry search for FREE in the worldwide community family tree. Connect now— we may already have details about your family.
+                <p className="text-xl ">Draw your family tree online and share it with relatives. Add photos and biographical details. Print the family tree or download to own computer for free.
                 </p>
 
                 <p className="lg:mt-5 text-xl font-medium text-teal-950 ">Build Your Tree Now</p>
@@ -24,7 +24,7 @@ const Hero = () => {
                     Start now
                     <ArrowRight className="group-hover:translate-x-1 duration-400 -ml-1" />
                 </Button>
-                <p className="text-xs text-gray-500 -mt-4 italic">Free. No credit card required.</p>
+                {/* <p className="text-xs text-gray-500 -mt-4 italic">Free. No credit card required.</p> */}
             </div>
             <div className="lg:w-[50%] lg:mt-0 mt-6 ">
                 <img src="/hero.jpg" alt="" className="object-cover w-full rounded-2xl lg:h-auto h-70" />

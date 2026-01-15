@@ -23,7 +23,6 @@ const login = async () => {
     setError(null);
 
     try {
-        // 1. Use Supabase directly
         const { data, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -81,7 +80,7 @@ const login = async () => {
         <div className="w-90 text-center gap-y-10 mx-auto flex flex-col items-center justify-center h-full">
           <h3 className="text-4xl font-semibold">Hello!</h3>
           <p className="text-wrap ">Start creating your family tree for free by signing up today. </p>
-          <Button className="w-full capitalize rounded-none border border-white border-b-2 bg-transparent hover:bg-teal-800" size="lg"
+          <Button className="w-full capitalize  border border-white border-b-2 bg-transparent hover:bg-teal-800" size="lg"
             onClick={goToSignup}>Sign up</Button>
         </div>
       </div>
@@ -95,7 +94,7 @@ const login = async () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
-          className="border px-2 py-2 w-[360px] bg-gray-100"
+          className="border rounded-lg  px-2 py-2 w-[360px] bg-gray-100"
         />
 
         <input
@@ -104,7 +103,7 @@ const login = async () => {
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="border px-2 py-2 w-[360px] bg-gray-100"
+          className="border px-2 rounded-lg  py-2 w-[360px] bg-gray-100"
         />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -121,7 +120,7 @@ const login = async () => {
         )}
 
         <Button
-          className="rounded-none w-[360px] py-5 hover:bg-teal-800/90 mt-2"
+          className=" w-[360px] py-5 hover:bg-teal-800/90 mt-2"
           onClick={login}
           disabled={loading}
         >

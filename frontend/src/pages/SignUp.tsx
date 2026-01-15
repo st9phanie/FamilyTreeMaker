@@ -56,7 +56,7 @@ const SignUp = () => {
         <div className="w-90 text-center gap-y-10 mx-auto flex flex-col items-center justify-center h-full">
           <h3 className="text-4xl font-semibold">Welcome Back!</h3>
           <p className="text-wrap ">If you already have an account, you can proceed by signing in.</p>
-          <Button className="w-full capitalize rounded-none border border-white border-b-2 bg-transparent hover:bg-teal-800" size="lg"
+          <Button className="w-full capitalize  border border-white border-b-2 bg-transparent hover:bg-teal-800" size="lg"
           onClick={goToLogin}>Sign In</Button>
         </div>
       </div>
@@ -70,7 +70,7 @@ const SignUp = () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
-          className="border px-2 py-2 w-90 bg-gray-100"
+          className="border px-2 rounded-lg  py-2 w-90 bg-gray-100"
         />
 
         <input
@@ -79,7 +79,7 @@ const SignUp = () => {
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="border w-90 px-2 py-2 bg-gray-100"
+          className="border rounded-lg  w-90 px-2 py-2 bg-gray-100"
         />
 
         <input
@@ -88,14 +88,14 @@ const SignUp = () => {
           value={password2}
           required
           onChange={(e) => setPassword2(e.target.value)}
-          className="border w-90 px-2 py-2 bg-gray-100"
+          className="border rounded-lg  w-90 px-2 py-2 bg-gray-100"
         />
 
         {error && (
           <p className="text-sm text-red-600">{error}</p>
         )}
 
-        <Button className="rounded-none w-90 py-5 hover:bg-teal-800/90 mt-2 " onClick={signup} disabled={loading}>
+        <Button className=" w-90 py-5 hover:bg-teal-800/90 mt-2 " onClick={signup} disabled={loading}>
           {loading ? "Signing up..." : "Sign up"}
         </Button>
 

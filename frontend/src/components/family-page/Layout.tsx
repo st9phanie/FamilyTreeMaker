@@ -1,5 +1,5 @@
 import { useSidebar } from '@/utils/store';
-import React, { type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 type Props = {
     children: ReactNode;

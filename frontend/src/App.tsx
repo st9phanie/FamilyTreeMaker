@@ -8,7 +8,6 @@ import Login from "./pages/Login";
 import MainLayout from "./Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Navbar from "./components/index-page/Navbar";
-import Dashboard from "./pages/Home";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +24,6 @@ const App = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/family" element={<Families />} />
             <Route path="/family/:id" element={<FamilyTreeWrapper />} />
             <Route path="/profile" element={<MyProfile />} />

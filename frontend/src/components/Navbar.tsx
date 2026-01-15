@@ -1,4 +1,4 @@
-import {User2 } from 'lucide-react'
+import { User2 } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,8 +8,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Link } from 'react-router-dom'
+import { supabase } from '@/lib/supabase'
 
 const Navbar = () => {
+
+    async function signOut() {
+        const { error } = await supabase.auth.signOut()
+    }
 
     return (
         <nav className='w-full flex flex-row text-teal-950 h-10 border-b border-gray-200 px-5 items-center justify-between fixed top-0 left-0 '>
@@ -27,7 +32,7 @@ const Navbar = () => {
                                     <DropdownMenuLabel>Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
-                                    <DropdownMenuItem className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={signOut} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
 

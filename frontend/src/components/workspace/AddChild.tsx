@@ -104,7 +104,7 @@ const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
                                 required={field.required}
                                 value={field.value}
                                 onChange={(e) => field.onChange(e.target.value)}
-                                className="border border-b-2 focus:border-teal-900 border-gray-300 outline-none  bg-white text-teal-900 px-2 py-1"
+                                className="rounded-lg border border-b-2 focus:border-teal-900 border-gray-300 outline-none  bg-white text-teal-900 px-2 py-1"
                             />
                         </div>
                     ))}
@@ -131,10 +131,10 @@ const AddChild = ({ person, name, onBack, refresh, family }: Props) => {
             </div>
 
             <div className='flex flex-row gap-x-2 justify-between w-full'>
-                <Button className='rounded-none bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900'
+                <Button className=' bg-teal-900 flex-1 cursor-pointer hover:bg-emerald-900/20 border-2 border-teal-900 hover:text-teal-900'
                     onClick={onSaveClick}>
                     {saving ? "Saving..." : "Save"}</Button>
-                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1 rounded-none bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
+                <Button className='border-2 border-red-800 cursor-pointer text-red-800 flex-1  bg-white hover:bg-red-100 ' onClick={onBack}>Cancel</Button>
             </div>
 
         </div>

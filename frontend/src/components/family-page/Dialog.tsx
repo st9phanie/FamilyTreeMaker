@@ -16,7 +16,7 @@ const Dialog = ({ ref, setOpen }: Props) => {
           <X onClick={setOpen} className='cursor-pointer' />
         </div>
 
-        <input placeholder='Enter a new name' className='text-teal-950 mt-3 bg-white rounded-none p-2' />
+        <input placeholder='rounded-lg Enter a new name' className='text-teal-950 mt-3 bg-white  p-2' />
         <Button variant="secondary">Save Changes</Button>
       </div>
     </div>

@@ -97,7 +97,7 @@ const Families = () => {
                     />
                 ))}
 
-                <div className="flex cursor-pointer items-center border-2 border-teal-950 h-35 w-[200px] shadow-sm justify-center">
+                <div className="rounded-lg flex cursor-pointer items-center border-2 border-teal-950 h-35 w-[200px] shadow-sm justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost" className="flex-1 h-full">
@@ -111,7 +111,7 @@ const Families = () => {
                             <div className="grid gap-4 mt-3">
                                 <div className="grid gap-3">
                                     <Label htmlFor="name-1">Name</Label>
-                                    <Input id="name-1" name="name" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-none" defaultValue="Family" required />
+                                    <Input id="name-1" name="name" value={newName} onChange={(e) => setNewName(e.target.value)} className="rounded-lg " defaultValue="Family" required />
                                 </div>
                             </div>
                             <DialogFooter>

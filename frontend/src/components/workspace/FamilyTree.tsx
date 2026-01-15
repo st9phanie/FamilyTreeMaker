@@ -35,7 +35,6 @@ const Family = ({ nodes, onSend }: Props) => {
 
         const FamilyTree = window.FamilyTree;
 
-        // Destroy previous instance
         treeInstance.current?.destroy?.();
 
         const family = new FamilyTree(treeRef.current, {
@@ -43,9 +42,9 @@ const Family = ({ nodes, onSend }: Props) => {
             padding: 20,
             template: "tommy",
             scaleInitial: 0.8,
-            enableSearch: true, // Search toolbar
+            enableSearch: true, 
             nodeMouseClick: FamilyTree.action.none,
-            toolbar: { zoom: true, fit: true, fullScreen: true, expandAll: true },
+            toolbar: { zoom: true, fit: true, fullScreen: true },
             nodeBinding: { field_0: "name" },
             nodes: nodes,
         });
@@ -62,7 +61,7 @@ const Family = ({ nodes, onSend }: Props) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center w-full h-full text-gray-50a0">
+            <div className="flex justify-center items-center w-full h-full text-teal-600">
                 <Loader2 className="w-10 h-10 animate-spin" />
             </div>
         );
