@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createNewFamily, fetchUserFamiliesAndLengths } from "@/lib/functions";
 import { supabase } from "@/lib/supabase";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const Families = () => {
     }, []);
 
     const createFamily = async () => {
-        if (!newName.trim()) return; // Prevent empty names
+        if (!newName.trim()) return;
 
         try {
             setLoading(true);
@@ -69,17 +69,24 @@ const Families = () => {
         loadFamilies();
     }, [loadFamilies]);
 
-    if (loading) return <Layout><div>Loading...</div></Layout>;
+    if (loading) {
+        return (
+            <Layout>
+                <div className='min-h-max fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+                    <Loader2 className='animate-spin size-10 text-teal-600' />
+                </div>
+            </Layout>)
+    }
     if (error) return <Layout><div className="text-red-500">{error}</div></Layout>;
 
     return (
-        <Layout className="flex flex-col gap-y-5 text-teal-950">
-            <h1 className="text-2xl drop-shadow-sm font-semibold tracking-wide">
+        <Layout className="flex flex-col text-teal-950">
+            <h1 className="text-lg drop-shadow-sm font-medium tracking-wide mb-3">
                 Your Families
             </h1>
 
             <div
-                className={`flex h-full  gap-x-5`}
+                className={`grid grid-cols-7 w-full gap-y-10 gap-x-3`}
             >
                 {families.map((f, index) => (
                     <FamilyCard
@@ -90,7 +97,7 @@ const Families = () => {
                     />
                 ))}
 
-                <div className="flex cursor-pointer items-center border-2 border-teal-950 h-40 w-[250px] shadow-sm justify-center">
+                <div className="flex cursor-pointer items-center border-2 border-teal-950 h-35 w-[200px] shadow-sm justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost" className="flex-1 h-full">
@@ -116,7 +123,9 @@ const Families = () => {
                         </DialogContent>
                     </Dialog>
                 </div>
+
             </div>
+
         </Layout>
     );
 };

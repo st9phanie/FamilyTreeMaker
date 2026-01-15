@@ -6,10 +6,11 @@ import AddChild from "./AddChild";
 import AddParent from "./AddParent";
 import AddPartner from "./AddPartner";
 import { useSidebar } from "@/utils/store";
+import AddPerson from "./AddPerson";
 
-const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh: () => void; family: Person[] }) => {
-    const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none">("main");
-    const name = [person.firstname, person.middlename, person.lastname].filter(Boolean).join(" ")
+const SidebarContainer = ({ person, refresh, family }: { person?: Person; refresh: () => void; family: Person[] }) => {
+    const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none" | "empty">("main");
+    const name = [person?.firstname, person?.middlename, person?.lastname].filter(Boolean).join(" ")
     const { isOpen } = useSidebar()
 
     useEffect(() => {
@@ -26,8 +27,7 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
 
     return (
         <>
-
-            {currentSidebar === "main" && (
+            {currentSidebar === "main" && person && (
                 <PersonSidebar
                     name={name}
                     onAddSibling={() => setCurrentSidebar("sibling")}
@@ -37,14 +37,14 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
                     onAddPartner={() => setCurrentSidebar("partner")}
 
                     refresh={refresh}
-                    person={person}
+                    person={person!}
                 />
             )}
 
             {currentSidebar === "sibling" && (
                 <AddSibling
                     name={name}
-                    person={person}
+                    person={person!}
                     family={family}
                     onBack={() => setCurrentSidebar("main")}
                     refresh={refresh}
@@ -52,11 +52,12 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
                 />
             )}
 
+
             {currentSidebar === "edit" && (
                 <EditPerson
                     refresh={refresh}
                     onBack={() => setCurrentSidebar("main")}
-                    person={person}
+                    person={person!}
                 />
             )}
 
@@ -66,7 +67,7 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
                     refresh={refresh}
                     family={family}
                     onBack={() => setCurrentSidebar("main")}
-                    person={person}
+                    person={person!}
                 />
             )}
             {currentSidebar === "parent" && (
@@ -75,7 +76,7 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
                     refresh={refresh}
                     family={family}
                     onBack={() => setCurrentSidebar("main")}
-                    person={person}
+                    person={person!}
                 />
             )}
             {currentSidebar === "partner" && (
@@ -83,9 +84,17 @@ const SidebarContainer = ({ person, refresh, family }: { person: Person; refresh
                     name={name}
                     refresh={refresh}
                     onBack={() => setCurrentSidebar("main")}
-                    person={person}
+                    person={person!}
                 />
             )}
+            
+            {!person &&
+                <AddPerson
+                    onBack={() => setCurrentSidebar("main")}
+                    refresh={refresh}
+
+                />
+            }
 
         </>
     );

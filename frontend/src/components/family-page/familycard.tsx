@@ -41,22 +41,22 @@ const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
   };
 
   return (
-    <div className='flex flex-col shadow-sm bg-teal-600 py-4  text-white h-40 w-[250px] gap-y-3 justify-between'>
+    <div className='flex flex-col shadow-sm text-sm  bg-teal-600 py-4  text-white h-35 w-[200px] gap-y-3 justify-between'>
       <div>
 
         {open
           ?
           <div className="flex flex-row items-center text-white px-4 ">
             <input placeholder="Enter new name" value={new_name} className="bg-white border-b-2 border-teal-950 text-teal-950 py-1 px-2 flex-1 min-w-0 mr-2 " onChange={(e) => setNewName(e.target.value)} />
-            <X className="size-5  shrink-0 cursor-pointer " onClick={() => setOpen(false)} />
+            <X className="size-5 -mr-1 shrink-0 cursor-pointer " onClick={() => setOpen(false)} />
           </div>
           :
-          <p className="px-4 text-xl font-bold tracking-wide drop-shadow-sm">
+          <p className="px-4 text-base font-semibold tracking-wide drop-shadow-sm">
             {new_name}
           </p>
         }
 
-        <div className="flex items-center px-4 mt-1 text-sm text-teal-950">
+        <div className="flex items-center px-4 mt-1 text-xs text-teal-950">
           <Users className="w-4 h-4 mr-2" />
           {memberCount === 0 ? (
             <span className="">0 members</span>
@@ -69,7 +69,7 @@ const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
       <div className="flex  flex-row justify-between items-center mt-3 w-full">
         {open
           ?
-          <Button className="ml-4 hover:bg-teal-900" onClick={updateName} disabled={loading}>
+          <Button size="sm" className="ml-4 rounded-none hover:bg-teal-900 text-sm " onClick={updateName} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

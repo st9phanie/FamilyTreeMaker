@@ -1,8 +1,6 @@
 import { supabase } from "./supabase";
 import api from "@/api";
 
-const API_URL = "http://localhost:8000";
-
 // Helper to get the current session token
 async function getAuthHeader() {
   const { data: { session } } = await supabase.auth.getSession();
@@ -65,7 +63,7 @@ export async function resendConfirmation(email: string) {
   return data;
 }
 
-// --- PERSON & RELATIONSHIP FUNCTIONS (Protected) ---
+// --- PERSON & RELATIONSHIP FUNCTIONS  ---
 
 export async function updatePerson(id: number, person: Partial<Person>) {
   const { data } = await api.put(`/person/${id}`, person);
@@ -73,7 +71,9 @@ export async function updatePerson(id: number, person: Partial<Person>) {
 }
 
 export async function addPerson(person: Partial<Person>) {
-  const { data } = await api.post(`/person`, person);
+  const headers = await getAuthHeader();
+
+  const { data } = await api.post(`/person`, person, {headers});
   return data;
 }
 
@@ -97,15 +97,15 @@ export async function addParent(id: number, person: Partial<Person>) {
   return data;
 }
 
-export async function deletePerson(id: number, person: Partial<Person>) {
-  const { data } = await api.post(`/person/${id}`, person);
+export async function deletePerson(id: number) {
+  const { data } = await api.delete(`/person/${id}`);
   return data;
 }
 
 export async function updateFamilyCardName(id: string, new_name: string) {
   const headers = await getAuthHeader();
 
-  const { data } = await api.put(`/family/${id}/update_name`, {new_name}, { headers });
+  const { data } = await api.put(`/family/${id}/update_name`, { new_name }, { headers });
   return data;
 }
 

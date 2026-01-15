@@ -72,8 +72,6 @@ class PersonCreate(BaseModel):
     pid1: Optional[int] = None
     pid2: Optional[int] = None
     
-    
-#------------------ AUTH --------------------------
 class UserAuth(BaseModel):
     email: str
     password: str

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { deletePerson } from '@/lib/functions';
 import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 type Props = {
     person: Person;
@@ -14,11 +15,25 @@ type Props = {
 }
 
 const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onAddChild, onAddParent, onAddPartner }: Props) => {
+    const [loading, setLoading] = useState<boolean>(false)
 
     const onDelete = async () => {
-        const data = await deletePerson(person.id!, person)
-        console.log(data);
-        if (data.status == "success") refresh();
+        try {
+            setLoading(true)
+            const data = await deletePerson(person.id!)
+
+            console.log(data);
+            if (data.status == "success") {
+                refresh();
+            } else {
+                setLoading(false);
+            }
+        } catch (err) {
+            console.error("Failed to update:", err);
+        }
+        finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -26,7 +41,7 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
 
             <div className='flex flex-col gap-y-2 '>
                 <img src={person.photo || "/defaultpfp.jpg"} className=' size-24 place-self-center rounded-full border-2 border-gray-200 ' />
-                <p className='text-center text-md text-teal-900 font-medium mt-5'>{name}</p>
+                <p className='text-center text-md te xt-teal-900 font-medium mt-5'>{name}</p>
                 <p className='text-center text-sm text-gray-400 '>{person.birth} </p>
                 <hr className='border-gray-300 my-5' />
 
@@ -51,7 +66,7 @@ const PersonSidebar = ({ person, name, onAddSibling, onEditDetails, refresh, onA
 
             <div className='flex flex-col justify-center'>
                 <hr className='border-gray-300 mb-2' />
-                <Button variant="link" className=' rounded-none text-red-700  cursor-pointer transition duration-400' onClick={onDelete}>
+                <Button variant="link" disabled={loading} className=' rounded-none text-red-700  cursor-pointer transition duration-400' onClick={onDelete}>
                     <Trash2 className='' />
                     Delete Person
                 </Button>

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import SidebarContainer from '@/components/workspace/SidebarContainer';
 import { fetchFamilyMembers } from '@/lib/functions';
 import { retryFetch, toMemberNode } from '@/lib/helperfunctions';
-import { ChevronsLeftIcon, ChevronsRightIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useSidebar } from '@/utils/store';
 
 type Props = {
@@ -15,7 +15,7 @@ const Workspace = ({ id }: Props) => {
   const [familyMembers, setFamilyMembers] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedPerson, setSelectedPerson] = useState<Person>();
-  const { isOpen, toggle } = useSidebar();
+  const { isOpen } = useSidebar();
 
   const nodes = useMemo(() => toMemberNode(familyMembers), [familyMembers]);
 
@@ -23,10 +23,6 @@ const Workspace = ({ id }: Props) => {
     setDataFromChild(data);
     console.log('Data received from child:', data);
   }, []);
-
-  const refreshMembers = () => {
-    loadMembers();
-  };
 
   const loadMembers = async () => {
     if (!id) {
@@ -47,6 +43,25 @@ const Workspace = ({ id }: Props) => {
     }
   };
 
+
+  const refreshMembers = (shouldDeselect = false) => {
+    if (shouldDeselect) {
+      setDataFromChild(0);
+      setSelectedPerson(undefined);
+    }
+    loadMembers();
+  };
+
+  // 2. Adjust the selection effect to be more defensive
+  useEffect(() => {
+    if (familyMembers.length > 0) {
+      const person = familyMembers.find(m => m.id === dataFromChild);
+      setSelectedPerson(person);
+    } else {
+      setSelectedPerson(undefined);
+    }
+  }, [familyMembers, dataFromChild]);
+
   // EFFECT 1: Load members when 'id' changes
   useEffect(() => {
     loadMembers();
@@ -62,42 +77,33 @@ const Workspace = ({ id }: Props) => {
   // Show a loading state while fetching
   if (loading) {
     return (
-      <div className='fixed min-h-max top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+      <div className='min-h-max top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
         <Loader2 className='animate-spin size-10 text-teal-600' />
       </div>
     );
   }
 
-  if (!nodes || nodes.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-[calc(100vh-40px)] mt-[40px] ">
-        No family members found.
-      </div>
-    );
-  }
 
   return (
-    <div className='flex flex-row min-h-screen'>
-      {selectedPerson && (
-        <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
-          <SidebarContainer family={familyMembers} person={selectedPerson!} refresh={refreshMembers} />
-        </div>)}
+    <div className="flex flex-row min-h-screen">
+      <div className={isOpen ? `hidden md:flex w-[360px]` : "w-0"}>
+        {/* pass person as optional */}
+        <SidebarContainer
+          family={familyMembers}
+          person={selectedPerson}
+          refresh={() => refreshMembers(true)} // Pass true to deselect on delete
+        />
+      </div>
 
-
-
-      <main className='grow h-[calc(100vh-40px)] mt-[40px] p-5 overflow-hidden'>
-        {/* {isOpen ?
-          (<button className=' absolute top-15 z-10 cursor-pointer'
-            onClick={toggle}>
-            <ChevronsLeftIcon className='text-teal-900 ' />
-          </button>)
-          : <button className='absolute top-15 z-10 cursor-pointer'
-            onClick={toggle}>
-            <ChevronsRightIcon className='text-teal-900 ' />
-          </button>} */}
-
-        <Family nodes={nodes} onSend={handleDataFromChild} />
-      </main>
+      {!nodes || nodes.length === 0 ? (
+        <main className="flex grow justify-center items-center h-[calc(100vh-40px)] mt-[40px]">
+          No family members found.
+        </main>
+      ) : (
+        <main className='grow h-[calc(100vh-40px)] mt-[40px] p-5 overflow-hidden'>
+          <Family nodes={nodes} onSend={handleDataFromChild} />
+        </main>
+      )}
     </div>
   );
 }
