@@ -18,6 +18,6 @@ app.include_router(auth.router)
 app.include_router(person.router)
 app.include_router(family.router)
 
-@app.get("/",methods=["GET", "HEAD"])
+@app.api_route("/",methods=["GET", "HEAD"])
 def root():
     return {"message": "API is running"}
