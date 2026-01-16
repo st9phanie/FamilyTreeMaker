@@ -4,7 +4,7 @@ from routers import auth, person, family
 
 app = FastAPI()
 
-origins = ["http://localhost:5173"]
+origins = ["http://localhost:5173","https://origin-family-tree.netlify.app/"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,6 +18,6 @@ app.include_router(auth.router)
 app.include_router(person.router)
 app.include_router(family.router)
 
-@app.get("/")
+@app.get("/",methods=["GET", "HEAD"])
 def root():
     return {"message": "API is running"}
