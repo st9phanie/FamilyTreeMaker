@@ -1,103 +1,52 @@
+import { useState, useMemo } from "react";
 import PersonSidebar from "@/components/workspace/PersonSidebar";
-import { useEffect, useState } from "react";
 import AddSibling from "./AddSibling";
 import EditPerson from "./EditPerson";
 import AddChild from "./AddChild";
 import AddParent from "./AddParent";
 import AddPartner from "./AddPartner";
-import { useSidebar } from "@/utils/store";
 import AddPerson from "./AddPerson";
 
+type SidebarView = "main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none";
+
 const SidebarContainer = ({ person, refresh, family }: { person?: Person; refresh: () => void; family: Person[] }) => {
-    const [currentSidebar, setCurrentSidebar] = useState<"main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none" | "empty">("main");
-    const name = [person?.firstname, person?.middlename, person?.lastname].filter(Boolean).join(" ")
-    const { isOpen } = useSidebar()
+    const [view, setView] = useState<SidebarView>("main");
 
-    useEffect(() => {
-        if (!isOpen) {
-            setCurrentSidebar("none");
-        } else if (currentSidebar === "none") {
-            setCurrentSidebar("main");
-        }
-    }, [isOpen]);
+    const name = useMemo(() => 
+        [person?.firstname, person?.middlename, person?.lastname].filter(Boolean).join(" "), 
+    [person]);
 
-    if (!isOpen || currentSidebar === "none") {
-        return null;
+    if (!person) {
+        return <AddPerson onBack={() => setView("main")} refresh={refresh} />;
     }
 
-    return (
-        <>
-            {currentSidebar === "main" && person && (
+    // 2. Define shared props to avoid repetition
+    const commonProps = { 
+        person, 
+        name, 
+        refresh, 
+        family, 
+        onBack: () => setView("main") 
+    };
+
+    switch (view) {
+        case "sibling": return <AddSibling {...commonProps} />;
+        case "edit":    return <EditPerson {...commonProps} />;
+        case "child":   return <AddChild {...commonProps} />;
+        case "parent":  return <AddParent {...commonProps} />;
+        case "partner": return <AddPartner {...commonProps} />;
+        default:
+            return (
                 <PersonSidebar
-                    name={name}
-                    onAddSibling={() => setCurrentSidebar("sibling")}
-                    onEditDetails={() => setCurrentSidebar("edit")}
-                    onAddChild={() => setCurrentSidebar("child")}
-                    onAddParent={() => setCurrentSidebar("parent")}
-                    onAddPartner={() => setCurrentSidebar("partner")}
-
-                    refresh={refresh}
-                    person={person!}
+                    {...commonProps}
+                    onAddSibling={() => setView("sibling")}
+                    onEditDetails={() => setView("edit")}
+                    onAddChild={() => setView("child")}
+                    onAddParent={() => setView("parent")}
+                    onAddPartner={() => setView("partner")}
                 />
-            )}
-
-            {currentSidebar === "sibling" && (
-                <AddSibling
-                    name={name}
-                    person={person!}
-                    family={family}
-                    onBack={() => setCurrentSidebar("main")}
-                    refresh={refresh}
-
-                />
-            )}
-
-
-            {currentSidebar === "edit" && (
-                <EditPerson
-                    refresh={refresh}
-                    onBack={() => setCurrentSidebar("main")}
-                    person={person!}
-                />
-            )}
-
-            {currentSidebar === "child" && (
-                <AddChild
-                    name={name}
-                    refresh={refresh}
-                    family={family}
-                    onBack={() => setCurrentSidebar("main")}
-                    person={person!}
-                />
-            )}
-            {currentSidebar === "parent" && (
-                <AddParent
-                    name={name}
-                    refresh={refresh}
-                    family={family}
-                    onBack={() => setCurrentSidebar("main")}
-                    person={person!}
-                />
-            )}
-            {currentSidebar === "partner" && (
-                <AddPartner
-                    name={name}
-                    refresh={refresh}
-                    onBack={() => setCurrentSidebar("main")}
-                    person={person!}
-                />
-            )}
-            
-            {!person &&
-                <AddPerson
-                    onBack={() => setCurrentSidebar("main")}
-                    refresh={refresh}
-
-                />
-            }
-
-        </>
-    );
+            );
+    }
 };
 
 export default SidebarContainer;
