@@ -3,27 +3,33 @@ import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import PersonForm from "./PersonForm";
 import { addSibling } from "@/lib/functions";
+import { useWorkspaceStore } from "@/utils/store";
 
 type Props = {
-    person: Person;
     name: string | undefined;
     onBack: () => void;
-    refresh: () => void;
-    family: Person[];
 }
 
-const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
+const AddSibling = ({ name, onBack }: Props) => {
     const [sibling, setSibling] = useState<"F" | "M" | "P">("F");
+
+    const {
+        familyMembers,
+        refresh,
+        selectedPerson
+    } = useWorkspaceStore();
+
+    if (!selectedPerson) return;
 
     const relFields = [
         { value: "F", label: "Full" },
-        { value: "M", label: "Half (" + family.find(m => m.id === person.pid1)?.firstname + ")" },
-        { value: "P", label: "Half (" + family.find(m => m.id === person.pid2)?.firstname + ")" },
+        { value: "M", label: "Half (" + familyMembers.find(m => m.id === selectedPerson.pid1)?.firstname + ")" },
+        { value: "P", label: "Half (" + familyMembers.find(m => m.id === selectedPerson.pid2)?.firstname + ")" },
     ];
 
     const handleSave = async (formData: Partial<Person>) => {
-        const mom = person.pid1;
-        const dad = person.pid2;
+        const mom = selectedPerson.pid1;
+        const dad = selectedPerson.pid2;
 
         const pids = {
             F: { pid1: mom, pid2: dad },
@@ -31,13 +37,13 @@ const AddSibling = ({ person, name, onBack, refresh, family }: Props) => {
             P: { pid1: null, pid2: dad },
         }[sibling];
 
-        const res = await addSibling(person.id!, {
+        const res = await addSibling(selectedPerson.id!, {
             ...formData,
             ...pids,
-            family_id: person.family_id,
+            family_id: selectedPerson.family_id,
         });
 
-        if (res?.status === "success") refresh();
+        if (res?.status === "success") refresh(selectedPerson.family_id!);
     };
 
     return (

@@ -1,24 +1,29 @@
 import { addPartner } from '@/lib/functions';
 import PersonForm from './PersonForm';
+import { useWorkspaceStore } from '@/utils/store';
 
 type Props = {
-    person: Person;
     name: string | undefined;
     onBack: () => void;
-    refresh: () => void;
-    family: Person[];
 }
 
-const AddPartner = ({ person, name, onBack, refresh }: Props) => {
+const AddPartner = ({ name, onBack }: Props) => {
+
+    const {
+        refresh,
+        selectedPerson
+    } = useWorkspaceStore();
+
+    if (!selectedPerson) return;
 
     const onSaveClick = async (formData: Partial<Person>) => {
-        const data = await addPartner(person.id!, {
+        const data = await addPartner(selectedPerson.id!, {
             ...formData,
-            family_id: person.family_id,
-            partner_id: [person.id!]
+            family_id: selectedPerson.family_id,
+            partner_id: [selectedPerson.id!]
         })
         if (data?.status === "success") {
-            refresh();
+            refresh(selectedPerson.family_id!);
         }
     };
 

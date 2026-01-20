@@ -6,34 +6,34 @@ import AddChild from "./AddChild";
 import AddParent from "./AddParent";
 import AddPartner from "./AddPartner";
 import AddPerson from "./AddPerson";
+import { useWorkspaceStore } from "@/utils/store";
 
 type SidebarView = "main" | "sibling" | "edit" | "child" | "parent" | "partner" | "none";
 
-const SidebarContainer = ({ person, refresh, family }: { person?: Person; refresh: () => void; family: Person[] }) => {
+const SidebarContainer = () => {
     const [view, setView] = useState<SidebarView>("main");
 
-    const name = useMemo(() => 
-        [person?.firstname, person?.middlename, person?.lastname].filter(Boolean).join(" "), 
-    [person]);
+    const person = useWorkspaceStore((state) => state.selectedPerson);
+
+    const name = useMemo(() =>
+        [person?.firstname, person?.middlename, person?.lastname].filter(Boolean).join(" "),
+        [person]);
 
     if (!person) {
-        return <AddPerson onBack={() => setView("main")} refresh={refresh} />;
+        return <AddPerson />;
     }
 
     // 2. Define shared props to avoid repetition
-    const commonProps = { 
-        person, 
-        name, 
-        refresh, 
-        family, 
-        onBack: () => setView("main") 
+    const commonProps = {
+        name,
+        onBack: () => setView("main")
     };
 
     switch (view) {
         case "sibling": return <AddSibling {...commonProps} />;
-        case "edit":    return <EditPerson {...commonProps} />;
-        case "child":   return <AddChild {...commonProps} />;
-        case "parent":  return <AddParent {...commonProps} />;
+        case "edit": return <EditPerson {...commonProps} />;
+        case "child": return <AddChild {...commonProps} />;
+        case "parent": return <AddParent {...commonProps} />;
         case "partner": return <AddPartner {...commonProps} />;
         default:
             return (

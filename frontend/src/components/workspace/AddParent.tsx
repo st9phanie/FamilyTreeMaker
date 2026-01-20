@@ -2,18 +2,23 @@ import { useState } from 'react';
 import { addParent } from '@/lib/functions';
 import Combobox from '../ui/combobox';
 import PersonForm from './PersonForm';
+import { useWorkspaceStore } from '@/utils/store';
 
 type Props = {
-    person: Person;
     name: string | undefined;
     onBack: () => void;
-    refresh: () => void;
-    family: Person[];
 }
 
-const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
+const AddParent = ({ name, onBack }: Props) => {
     const [parent, setParent] = useState<number | null>(null)
 
+    const {
+        familyMembers,
+        refresh,
+        selectedPerson
+    } = useWorkspaceStore();
+
+    if (!selectedPerson) return;
 
     const onSaveClick = async (formData: Partial<Person>) => {
 
@@ -25,24 +30,24 @@ const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
 
         // CASE 1 — user picked existing parent (their name)
         if (isUsingExistingParent) {
-            data = await addParent(person.id!,
-                family.find(m => m.id === parent)!
+            data = await addParent(selectedPerson.id!,
+                familyMembers.find(m => m.id === parent)!
             );
         }
 
         // CASE 2 — user is creating a new parent
         else {
-            data = await addParent(person.id!, {
+            data = await addParent(selectedPerson.id!, {
                 ...formData,
-                family_id: person.family_id,
+                family_id: selectedPerson.family_id,
             });
         }
 
-        if (data?.status === "success") refresh();
+        if (data?.status === "success") refresh(selectedPerson.family_id!);
     };
 
 
-    const familyMembers = family
+    const family = familyMembers
         .slice()
         .sort((a, b) => a.id! - b.id!)
         .map(f => ({
@@ -54,8 +59,8 @@ const AddParent = ({ family, person, name, onBack, refresh }: Props) => {
     return (
         <PersonForm title={`Parent of ${name}`} onBack={onBack} onSave={onSaveClick}>
             <div>
-                <p className='text-teal-900 text-sm'>Add existing person as parent:</p>
-                <Combobox list={familyMembers} listType='person' setValue={setParent} />
+                <p className='text-teal-900 text-sm'>Add existing selectedPerson as parent:</p>
+                <Combobox list={family} listType='selectedPerson' setValue={setParent} />
                 <hr className='mt-7' />
             </div>
         </PersonForm>

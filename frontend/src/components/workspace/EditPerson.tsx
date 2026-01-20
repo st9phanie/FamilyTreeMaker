@@ -1,25 +1,23 @@
 import { updatePerson } from '@/lib/functions';
 import PersonForm from './PersonForm';
+import { useWorkspaceStore } from '@/utils/store';
 
 type Props = {
-    person: Person;
     onBack: () => void;
-    refresh: () => void;
 }
 
-const EditPerson = ({ person, onBack, refresh }: Props) => {
+const EditPerson = ({ onBack }: Props) => {
+
+    const {selectedPerson, refresh} = useWorkspaceStore()
 
     const onSaveClick = async (formData: Partial<Person>) => {
-        const data = await updatePerson(person.id!, { ...formData })
-        console.log(data);
-        if (data.status == "success") refresh();
+        if (!selectedPerson) return
+        const data = await updatePerson(selectedPerson.id!, { ...formData })
+        if (data.status == "success") refresh(selectedPerson.family_id!);
     }
 
     return (
-        <PersonForm title={`Edit ${person.firstname}`} onBack={onBack} onSave={onSaveClick}>
-
-
-        </PersonForm>
+        <PersonForm title={`Edit ${selectedPerson?.firstname}`} onBack={onBack} onSave={onSaveClick} />
     )
 }
 

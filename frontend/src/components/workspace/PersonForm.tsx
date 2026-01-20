@@ -5,12 +5,14 @@ import { ArrowLeft } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@/components/ui/label';
 import ImagePicker from '@/components/ui/ImagePicker';
+import { Calendar22 } from '../ui/datepicker';
+import { useWorkspaceStore } from '@/utils/store';
 
 type PersonFormProps = {
     title: string;
     onBack: () => void;
     onSave: (data: Partial<Person>) => void;
-    children?: React.ReactNode; 
+    children?: React.ReactNode;
 };
 
 const sexFields = [
@@ -20,14 +22,18 @@ const sexFields = [
 ];
 
 const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
-    const [photo, setPhoto] = useState("");
-    const [firstname, setFirstname] = useState("");
-    const [middlename, setMiddlename] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [sex, setSex] = useState<"M" | "F" | "U">("U");
+
+    const { selectedPerson } = useWorkspaceStore()
+
+    const [photo, setPhoto] = useState(selectedPerson?.photo || "");
+    const [firstname, setFirstname] = useState(selectedPerson?.firstname || "");
+    const [middlename, setMiddlename] = useState(selectedPerson?.middlename || "");
+    const [lastname, setLastname] = useState(selectedPerson?.lastname || "");
+    const [sex, setSex] = useState<"M" | "F" | "U">(selectedPerson?.sex || "U");
+    const [birth, setBirth] = useState<Date | null>(selectedPerson?.birth || null);
 
     const handleSubmit = () => {
-        onSave({ photo, firstname, middlename, lastname, sex });
+        onSave({ photo, firstname, middlename, lastname, sex, birth });
     };
 
     return (
@@ -57,6 +63,7 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                         </div>
                     ))}
 
+                    {/* SEX */}
                     <div className="flex flex-col gap-2">
                         <p className="text-xs text-gray-500 px-1">Sex</p>
                         <RadioGroup value={sex} onValueChange={(v) => setSex(v as any)} className="flex flex-row justify-between">
@@ -68,6 +75,12 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                             ))}
                         </RadioGroup>
                     </div>
+
+                    {/* BIRTHDAY */}
+                    <div className="flex flex-col gap-2">
+                        <Calendar22 label="Birth" existingDate="" setDate={() => setBirth} />
+                    </div>
+
 
                     {children}
                 </div>

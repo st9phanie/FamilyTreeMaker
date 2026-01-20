@@ -1,26 +1,23 @@
 import { addPerson } from '@/lib/functions';
 import PersonForm from './PersonForm';
 import { useParams } from 'react-router-dom';
+import { useWorkspaceStore } from '@/utils/store';
 
-type Props = {
-    refresh: () => void;
-}
 
-const AddPerson = ({ refresh }: Props) => {
+const AddPerson = () => {
 
     const { id: familyId } = useParams();
+    const { refresh } = useWorkspaceStore()
 
 
     const onSaveClick = async (formData: Partial<Person>) => {
         const data = await addPerson({ ...formData, family_id: familyId })
-        console.log(data);
-        if (data.status == "success") refresh()
+        if (data.status == "success") refresh(familyId!)
     }
 
     return (
-        <PersonForm title={`Add Person`} onBack={()=>{}} onSave={onSaveClick}>
+        <PersonForm title={`Add Person`} onBack={() => { }} onSave={onSaveClick} />
 
-        </PersonForm>
 
     )
 }
