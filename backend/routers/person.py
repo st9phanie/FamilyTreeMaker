@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from supabaseClient import supabase
 from fastapi import FastAPI, Header, HTTPException, status, Depends
-from models import Person, PersonUpdate, PersonCreate
+from models import Person
 from dependencies import get_current_user
 from typing import Optional
 
@@ -27,7 +27,7 @@ def get_person(id: int):
 
 # update person
 @router.put("/{id}")
-def update_person(id: int, person: PersonUpdate):
+def update_person(id: int, person: Person):
     data = person.model_dump(mode="json", exclude_unset=True)
     print(data)
     if not data:
@@ -72,7 +72,7 @@ def add_person(person: Person, user_id: str = Depends(get_current_user)):
 
 # ----------- ADD PARTNER -----------------
 @router.post("/{id}/add_partner")
-def add_partner(id: int, partner: PersonCreate):  # use a creation model
+def add_partner(id: int, partner: Person):
     data = partner.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
 
@@ -96,7 +96,7 @@ def add_partner(id: int, partner: PersonCreate):  # use a creation model
 
 # ----------- ADD CHILD -----------------
 @router.post("/{id}/add_child")
-def add_child(id: int, child: Optional[PersonCreate] = None):
+def add_child(id: int, child: Optional[Person] = None):
     data = child.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
 
@@ -110,7 +110,7 @@ def add_child(id: int, child: Optional[PersonCreate] = None):
 
 # ----------- ADD SIBLING -----------------
 @router.post("/{id}/add_sibling")
-def add_sibling(id: int, sibling: PersonCreate):  # use a creation model
+def add_sibling(id: int, sibling: Person):  # use a creation model
     data = sibling.model_dump(exclude_unset=True)
     res = supabase.table("person").insert(data).execute()
 

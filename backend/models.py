@@ -28,49 +28,23 @@ class Person(BaseModel):
     governorate: Optional[str] = None
     district: Optional[str] = None
     area: Optional[str] = None
-    deathplace: Optional[str] = None
     sex: Optional[Sex] = Sex.UNDISCLOSED
     status: Optional[Status] = Status.UNKNOWN
     pid1: Optional[int] = None
     pid2: Optional[int] = None
     partner_id: Optional[List[int]] = None
     family_id: Optional[str] = None
+    country: Optional[str] = None
+    country_of_death: Optional[str] = None
+    death_governorate: Optional[str] = None
+    death_area: Optional[str] = None
+    death_district: Optional[str] = None
 
 
 class Family(BaseModel):
     id: Optional[str] = None
     user_id: Optional[str] = None
     name: Optional[str]
-
-class PersonUpdate(BaseModel):
-    firstname: Optional[str] = None
-    middlename: Optional[str] = None
-    lastname: Optional[str] = None
-    governorate: Optional[str] = None
-    district: Optional[str] = None
-    area: Optional[str] = None
-    birth: Optional[date] = None
-    pid1: Optional[int] = None
-    pid2: Optional[int] = None
-    death: Optional[date] = None
-    sex: Optional[Sex] = None
-    status: Optional[Status] = None
-    photo: Optional[str] = None
-    partner_id: Optional[List[int]] = None
-    family_id: Optional[str] = None
-    deathplace: Optional[str] = None
-    
-    
-class PersonCreate(BaseModel):
-    photo: Optional[str] = None
-    firstname: Optional[str] = None
-    middlename: Optional[str] = None
-    lastname: Optional[str] = None
-    sex: Optional[Sex] = "U"
-    family_id: Optional[str] = None
-    partner_id:Optional[List[int]] = None
-    pid1: Optional[int] = None
-    pid2: Optional[int] = None
     
 class UserAuth(BaseModel):
     email: str

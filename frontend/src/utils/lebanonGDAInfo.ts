@@ -1,4 +1,15 @@
-export const locations = {
+export type Governorate = 
+  | "Mount Lebanon" | "Akkar" | "Baalbek-Hermel" 
+  | "Beirut" | "Bekaa" | "Keserwan-Jbeil" 
+  | "Nabatieh" | "North" | "South";
+
+interface LocationData {
+  governorates: Governorate[];
+  districts: Record<Governorate, string[]>;
+  areas: Record<string, string[]>; // Areas usually depend on District strings
+}
+
+export const locations: LocationData = {
   "governorates": [
     "Mount Lebanon",
     "Akkar",

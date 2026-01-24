@@ -1,3 +1,4 @@
+import axios from "axios";
 import { supabase } from "./supabase";
 import api from "@/api";
 

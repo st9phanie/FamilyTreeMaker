@@ -4,9 +4,9 @@ declare global {
         firstname?: string;
         middlename?: string;
         lastname?: string;
-        governorate?: string;
-        district?: string;
-        area?: string;
+        governorate?: string | null;
+        district?: string | null;
+        area?: string | null;
         birth?: date;
         pid1?: number | null;
         pid2?: number | null;
@@ -14,12 +14,13 @@ declare global {
         sex?: "M" | "F" | "U";
         status?: "L" | "D" | "U";
         photo?: string;
-        //deathGovernorate?: string;
-        //deathArea?: string;
-        //deathDistrict?: string;
+        country?: string | null;
+        country_of_death?: string | null;
+        death_governorate?: string | null;
+        death_area?: string | null;
+        death_district?: string | null;
         partner_id?: number[];
         family_id?: string
-        deathplace?: string;
     };
 
     type Family = {

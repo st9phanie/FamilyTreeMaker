@@ -10,39 +10,43 @@ import {
 } from "@/components/ui/popover"
 
 type Props = {
-  setDate: (value: Date | undefined) => void;
+  setDate: (value: Date | null) => void;
   label: string;
-  existingDate?: Date | string | null;
+  date?: Date;
 };
 
-export function Calendar22({ setDate, label, existingDate }: Props) {
-  // Normalize date: always convert string → Date
-  const normalize = (val: Date | string | null | undefined) =>
-    val ? new Date(val) : undefined;
+export function Calendar22({ setDate, label, date }: Props) {
+
+  const dateValue = React.useMemo(() => {
+    if (!date) return undefined;
+    const d = date instanceof Date ? date : new Date(date);
+    return isNaN(d.getTime()) ? undefined : d;
+  }, [date]);
 
   const [open, setOpen] = React.useState(false);
-  const [date, setDate2] = React.useState<Date | undefined>(
-    normalize(existingDate)
-  );
+  const [month, setMonth] = React.useState<Date | undefined>(dateValue);
+  const [localDate, setLocalDate] = React.useState<Date | undefined>(dateValue);
 
   React.useEffect(() => {
-    setDate2(normalize(existingDate));
-  }, [existingDate]);
+    setLocalDate(dateValue);
+    setMonth(dateValue || new Date());
+
+  }, [dateValue]);
+
 
   const handleSelect = (selected: Date | undefined) => {
     const isSame =
-      selected && date && selected.getTime() === date.getTime();
+      selected && dateValue && selected.getTime() === dateValue.getTime();
 
     const newValue = isSame ? undefined : selected;
-
-    setDate2(newValue);
-    setDate(newValue);
+    setLocalDate(selected);
+    setDate(newValue || null);
     setOpen(false);
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1 font-normal">
+    <div className="flex flex-col">
+      <Label htmlFor="date" className="text-xs text-gray-500 mb-1 font-normal px-1">
         {label}
       </Label>
 
@@ -51,9 +55,9 @@ export function Calendar22({ setDate, label, existingDate }: Props) {
           <Button
             variant="outline"
             id="date"
-            className="w-[250px] justify-between font-normal"
+            className=" justify-between font-normal"
           >
-            {date ? date.toISOString().slice(0, 10) : "Select date"}
+            {localDate ? localDate.toLocaleDateString('en-CA') : "Select date"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -61,9 +65,13 @@ export function Calendar22({ setDate, label, existingDate }: Props) {
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            selected={date}
+            selected={localDate}
             captionLayout="dropdown"
             onSelect={handleSelect}
+
+            month={month}
+            onMonthChange={setMonth}
+            defaultMonth={dateValue}
           />
         </PopoverContent>
       </Popover>

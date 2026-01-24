@@ -38,7 +38,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
             const data = await fetchFamilyMembers(familyId);
             set({ familyMembers: data });
 
-            // Keep the selected person synced if they still exist
             const current = get().selectedPerson;
             if (current) {
                 const updated = data.find(m => m.id === current.id);
