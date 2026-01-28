@@ -2,16 +2,17 @@ import { Edit, EllipsisVertical, Loader2, Users, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { updateFamilyCardName } from "@/lib/functions";
+import { deleteFamily, updateFamilyCardName } from "@/lib/functions";
 import { useState } from "react";
 
 type Props = {
   name: string | "Unnamed";
   memberCount?: number;
   id: string;
+  onRefresh: () => void;
 }
 
-const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
+const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
   const navigate = useNavigate();
   const [new_name, setNewName] = useState<string>(name)
   const [open, setOpen] = useState<boolean>(false)
@@ -32,9 +33,24 @@ const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
     } catch (error) {
       console.error("Failed to update:", error);
     } finally {
-      setLoading(false); // 2. Stop loading regardless of success/fail
+      setLoading(false);
     }
   };
+
+  const delete_family = async () => {
+    setLoading(true);
+    try {
+      const response = await deleteFamily(id)
+      if (response.status === "success") {
+        onRefresh();
+      }
+    } catch (error) {
+      console.error("Failed to delete family:", error);
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const GoTo = () => {
     navigate(`/family/${id}`);
@@ -89,7 +105,7 @@ const FamilyCard = ({ name, memberCount = 0, id }: Props) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={handleOpenModal} className="text-teal-950 cursor-pointer">Edit Name</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => { }} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Delete</DropdownMenuItem>
+            <DropdownMenuItem onClick={delete_family} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 

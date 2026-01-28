@@ -93,6 +93,7 @@ const Families = () => {
                         name={f.name}
                         id={f.id}
                         memberCount={members[index]}
+                        onRefresh={loadFamilies}
                     />
                 ))}
 

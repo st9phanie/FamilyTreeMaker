@@ -110,3 +110,8 @@ export async function changeImage(id: number, formData: FormData) {
   const { data } = await api.post(`/person/${id}/upload-photo`, formData);
   return data;
 }
+
+export async function deleteFamily(family_id: string) {
+  const { data } = await api.delete(`/family/${family_id}`);
+  return data;
+}

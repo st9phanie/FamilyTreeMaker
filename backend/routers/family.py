@@ -12,13 +12,13 @@ router = APIRouter(
 
 # get the families created by a user
 @router.get("/all")
-def read_user_families(user_id: str = Depends(get_current_user)):
+async def read_user_families(user_id: str = Depends(get_current_user)):
     families = supabase.table("family").select("*").eq("user_id", user_id).execute()
     return families.data if families.data else []
 
 # get family members of a certain family
 @router.get("/{family_id}")
-def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
+async def get_family_members(family_id: str, user_id: str = Depends(get_current_user)):
     check = supabase.table("family").select("id").eq("id", family_id).eq("user_id", user_id).execute()
     if not check.data:
         raise HTTPException(status_code=403, detail="Forbidden: You do not own this family")
@@ -28,7 +28,7 @@ def get_family_members(family_id: str, user_id: str = Depends(get_current_user))
 
 # update family card name
 @router.put("/{id}/update_name")
-def update_family_card_name(id: str, new_name:FamilyNameUpdate,user_id: str = Depends(get_current_user)):
+async def update_family_card_name(id: str, new_name:FamilyNameUpdate,user_id: str = Depends(get_current_user)):
     check = supabase.table("family").select("id").eq("id", id).eq("user_id", user_id).execute()
     if not check.data:
         raise HTTPException(status_code=403, detail="Forbidden: You do not own this family")
@@ -44,7 +44,7 @@ def update_family_card_name(id: str, new_name:FamilyNameUpdate,user_id: str = De
         )
         
 @router.post("")
-def create_new_family(family: Family, user_id: str = Depends(get_current_user)):
+async def create_new_family(family: Family, user_id: str = Depends(get_current_user)):
     
     family_data = family.model_dump(exclude_unset=True)    
     family_data["user_id"] = user_id
@@ -58,3 +58,14 @@ def create_new_family(family: Family, user_id: str = Depends(get_current_user)):
         "status": "success", 
         "id": res.data[0]["id"]
     }
+    
+@router.delete("/{family_id}")
+async def delete_family(family_id: str):
+    try:
+        response = supabase.table("family").delete().eq("id", family_id).execute()
+        
+        if response.data:
+                return {
+                    "status": "success","message":"Family deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
