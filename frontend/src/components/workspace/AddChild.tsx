@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { addChild } from '@/lib/functions';
+import { addPerson } from '@/lib/functions';
 import Combobox from '../ui/combobox';
 import PersonForm from './PersonForm';
 import { useWorkspaceStore } from '@/utils/store';
@@ -13,18 +13,23 @@ type Props = {
 const AddChild = ({ name, onBack }: Props) => {
     const [parent, setParent] = useState<number | null>(null)
 
-        const {
-            familyMembers,
-            refresh,
-            selectedPerson
-        } = useWorkspaceStore();
+    const {
+        familyMembers,
+        refresh,
+        selectedPerson
+    } = useWorkspaceStore();
 
     if (!selectedPerson) return;
 
     const handleSave = async (formData: Partial<Person>) => {
-        const res = await addChild(selectedPerson.id!, { ...formData, family_id: selectedPerson.family_id, pid1: selectedPerson.id, pid2: parent })
+        const res = await addPerson({ ...formData, family_id: selectedPerson.family_id, pid1: selectedPerson.id, pid2: parent })
 
-        if (res?.status === "success") refresh(selectedPerson.family_id!);
+        if (res?.status === "success") {
+            refresh(selectedPerson.family_id!);
+            return res.person;
+        }
+
+        return null;
 
     };
 
@@ -39,8 +44,8 @@ const AddChild = ({ name, onBack }: Props) => {
     return (
         <PersonForm title={`Child of ${name}`} onBack={onBack} onSave={handleSave}>
             <div>
-                <p className='text-teal-900 text-sm mb-2'>Add existing person as the second parent of the child:</p>
-                <Combobox list={family} listType='selectedPerson' setValue={setParent} />
+                <p className='text-xs text-gray-500 mb-2'>Add existing person as the second parent:</p>
+                <Combobox list={family} listType='person' setValue={setParent} />
             </div>
         </PersonForm >
     );

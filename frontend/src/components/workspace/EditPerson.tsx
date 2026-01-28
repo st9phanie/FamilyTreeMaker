@@ -8,12 +8,17 @@ type Props = {
 
 const EditPerson = ({ onBack }: Props) => {
 
-    const {selectedPerson, refresh} = useWorkspaceStore()
+    const { selectedPerson, refresh } = useWorkspaceStore()
 
     const onSaveClick = async (formData: Partial<Person>) => {
         if (!selectedPerson) return
         const data = await updatePerson(selectedPerson.id!, { ...formData })
-        if (data.status == "success") refresh(selectedPerson.family_id!);
+        if (data.status == "success") {
+            refresh(selectedPerson.family_id!);
+            return data.person;
+        }
+
+        return null
     }
 
     return (

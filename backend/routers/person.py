@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,File, UploadFile
 from supabaseClient import supabase
 from fastapi import FastAPI, Header, HTTPException, status, Depends
 from models import Person
 from dependencies import get_current_user
-from typing import Optional
+from typing import Optional, Any
 
 router = APIRouter(
     prefix="/person",
@@ -29,13 +29,13 @@ def get_person(id: int):
 @router.put("/{id}")
 def update_person(id: int, person: Person):
     data = person.model_dump(mode="json", exclude_unset=True)
-    print(data)
+
     if not data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No fields provided for update.",
         )
-
+        
     response = supabase.table("person").update(data).eq("id", id).execute()
     if response.data:
         return {
@@ -47,6 +47,39 @@ def update_person(id: int, person: Person):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Person with id {id} not found",
         )
+
+# picture
+@router.post("/{id}/upload-photo")
+async def change_picture(id: int, photo: UploadFile = File(...)):
+    try:
+        file_content = await photo.read()
+        file_extension = photo.filename.split('.')[-1]
+        storage_path = f"/person_{id}.{file_extension}"
+        
+        response = supabase.storage.from_("images").upload(
+            path=storage_path,       
+            file=file_content,        
+            file_options={
+                "cache-control": "3600",
+                "upsert": "true"
+            }
+        )
+
+        public_url_response = supabase.storage.from_('images').get_public_url(storage_path)
+        print(public_url_response)
+        db_response = supabase.table('person').update(
+            {"photo": str(public_url_response)}
+        ).eq('id', id).execute()
+
+        return {
+            "status": "success",
+            "url": public_url_response,
+            "data": db_response.data
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
 
 #create oerson        
 @router.post("")
@@ -73,59 +106,25 @@ def add_person(person: Person, user_id: str = Depends(get_current_user)):
 # ----------- ADD PARTNER -----------------
 @router.post("/{id}/add_partner")
 def add_partner(id: int, partner: Person):
-    data = partner.model_dump(exclude_unset=True)
-    res = supabase.table("person").insert(data).execute()
+    new_person = add_person(partner)
+    new_id = new_person["id"]
 
-    if not res.data:
-        raise HTTPException(status_code=400, detail="Failed to create partner")
-
-    new_id = res.data[0]["id"]
-
-    # Get original person's partner_id safely
+    # Get original person's partner_id []
     original = supabase.table("person").select("partner_id").eq("id", id).execute()
     if not original.data:
         raise HTTPException(status_code=404, detail=f"Person {id} not found")
 
     partners = original.data[0].get("partner_id") or []
-    partners.routerend(new_id)
+    partners.append(new_id)
 
     supabase.table("person").update({"partner_id": partners}).eq("id", id).execute()
 
     return {"status": "success", "new_partner_id": new_id}
 
-
-# ----------- ADD CHILD -----------------
-@router.post("/{id}/add_child")
-def add_child(id: int, child: Optional[Person] = None):
-    data = child.model_dump(exclude_unset=True)
-    res = supabase.table("person").insert(data).execute()
-
-    if not res.data:
-        raise HTTPException(status_code=400, detail="Failed to create child")
-
-    new_id = res.data[0]["id"]
-
-    return {"status": "success", "new_child_id": new_id}
-
-
-# ----------- ADD SIBLING -----------------
-@router.post("/{id}/add_sibling")
-def add_sibling(id: int, sibling: Person):  # use a creation model
-    data = sibling.model_dump(exclude_unset=True)
-    res = supabase.table("person").insert(data).execute()
-
-    if not res.data:
-        raise HTTPException(status_code=400, detail="Failed to create sibling")
-
-    new_id = res.data[0]["id"]
-
-    return {"status": "success", "sibling_id": new_id}
-
-
 # -------------------------------------- ADD PARENT -----------------------------------------------
 @router.post("/{id}/add_parent")
-def add_parent(id: int, partner: Person):
-    data = partner.model_dump(exclude_unset=True)
+def add_parent(id: int, parent: Person):
+    data = parent.model_dump(exclude_unset=True)
 
     # --------------------------------------------
     # CASE A: existing parent (ID provided)
@@ -137,12 +136,8 @@ def add_parent(id: int, partner: Person):
     # CASE B: create new parent
     # --------------------------------------------
     else:
-        res = supabase.table("person").insert(data).execute()
-
-        if not res.data:
-            raise HTTPException(400, "Failed to create parent")
-
-        new_parent_id = res.data[0]["id"]
+        new_person = add_person(parent)
+        new_parent_id = new_person["id"]
 
     # --------------------------------------------
     # Fetch child's current parents
@@ -171,7 +166,7 @@ def add_parent(id: int, partner: Person):
         partners = p1.data[0].get("partner_id") or []
 
         if new_parent_id not in partners:
-            partners.routerend(new_parent_id)
+            partners.append(new_parent_id)
 
         supabase.table("person").update({"partner_id": partners}).eq(
             "id", pid1

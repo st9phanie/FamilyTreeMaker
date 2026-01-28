@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import PersonForm from "./PersonForm";
-import { addSibling } from "@/lib/functions";
+import { addPerson, } from "@/lib/functions";
 import { useWorkspaceStore } from "@/utils/store";
 
 type Props = {
@@ -37,28 +37,32 @@ const AddSibling = ({ name, onBack }: Props) => {
             P: { pid1: null, pid2: dad },
         }[sibling];
 
-        const res = await addSibling(selectedPerson.id!, {
+        const res = await addPerson({
             ...formData,
             ...pids,
             family_id: selectedPerson.family_id,
         });
 
-        if (res?.status === "success") refresh(selectedPerson.family_id!);
+        if (res?.status === "success") {
+            refresh(selectedPerson.family_id!);
+            return res.person;
+        }
+        return null;
     };
 
     return (
         <PersonForm title={`Sibling of ${name}`} onBack={onBack} onSave={handleSave}>
             {/* ------------------------------------------------------------ FULL OR HALF SIBLING -------------------------------------------------------- */}
             <div className="flex flex-col gap-3">
-                <p className="text-sm px-1">Relation</p>
+                <p className="text-xs text-gray-500 px-1">Relation</p>
                 <RadioGroup
                     value={sibling}
                     onValueChange={(value) => setSibling(value as "F" | "M" | "P")}
-                    className="flex flex-row font-normal text-teal-700 justify-around">
+                    className="flex flex-row text-black justify-around">
                     {relFields.map((val, key) => (
                         <div key={key} className="flex items-center space-x-2">
                             <RadioGroupItem value={val.value} id={val.label} />
-                            <Label htmlFor={val.label}>{val.label}</Label>
+                            <Label htmlFor={val.label} className="text-teal-950">{val.label}</Label>
                         </div>
                     ))}
                 </RadioGroup>

@@ -1,13 +1,19 @@
 import { fileToBase64 } from "@/lib/helperfunctions";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
-  setPhoto: (value: string) => void;
+  currentPhoto?: string | null;
+  setPhoto: (value: any) => void;
 }
 
-const ImagePicker = ({ setPhoto }: Props) => {
+const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(currentPhoto || null);
+
+  useEffect(() => {
+    setPreview(currentPhoto || null);
+  }, [currentPhoto]);
+
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -19,8 +25,8 @@ const ImagePicker = ({ setPhoto }: Props) => {
 
     const base64 = await fileToBase64(file);
 
-    setPreview(base64);   // for UI
-    setPhoto(base64);     // now passing the string to parent
+    setPreview(base64); 
+    setPhoto(file);
   };
 
   return (
@@ -36,7 +42,7 @@ const ImagePicker = ({ setPhoto }: Props) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-gray-400 text-xs text-center px-1">Upload <br/> photo</span>
+          <span className="text-gray-400 text-xs text-center px-1">Upload <br /> photo</span>
         )}
       </div>
 

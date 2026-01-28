@@ -24,7 +24,10 @@ const AddPartner = ({ name, onBack }: Props) => {
         })
         if (data?.status === "success") {
             refresh(selectedPerson.family_id!);
+            return data.person;
         }
+
+        return null;
     };
 
 

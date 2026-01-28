@@ -1,4 +1,3 @@
-import axios from "axios";
 import { supabase } from "./supabase";
 import api from "@/api";
 
@@ -74,7 +73,7 @@ export async function updatePerson(id: number, person: Partial<Person>) {
 export async function addPerson(person: Partial<Person>) {
   const headers = await getAuthHeader();
 
-  const { data } = await api.post(`/person`, person, {headers});
+  const { data } = await api.post(`/person`, person, { headers });
   return data;
 }
 
@@ -83,15 +82,6 @@ export async function addPartner(id: number, person: Partial<Person>) {
   return data;
 }
 
-export async function addSibling(id: number, person: Partial<Person>) {
-  const { data } = await api.post(`/person/${id}/add_sibling`, person);
-  return data;
-}
-
-export async function addChild(id: number, person: Partial<Person>) {
-  const { data } = await api.post(`/person/${id}/add_child`, person);
-  return data;
-}
 
 export async function addParent(id: number, person: Partial<Person>) {
   const { data } = await api.post(`/person/${id}/add_parent`, person);
@@ -112,5 +102,11 @@ export async function updateFamilyCardName(id: string, new_name: string) {
 
 export async function createNewFamily(family: Partial<Family>) {
   const { data } = await api.post(`/family`, family);
+  return data;
+}
+
+export async function changeImage(id: number, formData: FormData) {
+
+  const { data } = await api.post(`/person/${id}/upload-photo`, formData);
   return data;
 }

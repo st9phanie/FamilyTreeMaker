@@ -10,9 +10,9 @@ const Hero = () => {
     }
 
     return (
-        <section id="" className='flex flex-col lg:flex-row w-full h-[calc(100vh-80px)] lg:justify-between px-20 py-5 lg:items-center z-10 '>
-            <div className="bg-teal-800 size-100 top-15 right-0 -z-10 fixed rounded-bl-full" />
-            <div className="bg-teal-800 w-25 h-50 top-[90%] left-[0%] -z-10 fixed rounded-r-full" />
+        <section id="" className='flex flex-col lg:flex-row w-full h-screen lg:justify-between px-20 py-5 lg:items-center z-10 '>
+            <div className="bg-teal-800 size-100 top-15 right-0 -z-10 absolute rounded-bl-full" />
+            <div className="absolute top-[90%] left-0 -z-10 w-20 h-20 bg-teal-800 rounded-tr-full" />
 
             <div className="flex flex-col lg:w-[50%] gap-y-6 lg:pr-10 lg:items-start items-center lg:text-start text-center">
                 <h1 className="font-semibold  lg:text-[52px] text-4xl  text-teal-900  ">Build a family tree</h1>

@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Any
 from datetime import date
 from enum import Enum
-
+from fastapi import File, UploadFile
 # ------- ENUMS --------------
 class Sex(str, Enum):
     MALE = "M"

@@ -45,8 +45,8 @@ export function Calendar22({ setDate, label, date }: Props) {
   };
 
   return (
-    <div className="flex flex-col">
-      <Label htmlFor="date" className="text-xs text-gray-500 mb-1 font-normal px-1">
+    <div className="flex flex-col text-teal-950">
+      <Label htmlFor="date" className="text-xs text-gray-500 mb-1  px-1">
         {label}
       </Label>
 
@@ -55,9 +55,9 @@ export function Calendar22({ setDate, label, date }: Props) {
           <Button
             variant="outline"
             id="date"
-            className=" justify-between font-normal"
+            className=" justify-between "
           >
-            {localDate ? localDate.toLocaleDateString('en-CA') : "Select date"}
+            {localDate ? localDate.toLocaleDateString('en-CA') : "Select date..."}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
@@ -68,7 +68,7 @@ export function Calendar22({ setDate, label, date }: Props) {
             selected={localDate}
             captionLayout="dropdown"
             onSelect={handleSelect}
-
+fromYear={-1}
             month={month}
             onMonthChange={setMonth}
             defaultMonth={dateValue}

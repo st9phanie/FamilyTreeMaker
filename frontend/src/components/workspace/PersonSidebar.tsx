@@ -43,26 +43,26 @@ const PersonSidebar = ({ name, onAddSibling, onEditDetails, onAddChild, onAddPar
 
             <div className='flex flex-col gap-y-2 '>
                 <img src={selectedPerson.photo || "/defaultpfp.jpg"} className=' size-24 place-self-center rounded-full border-2 border-gray-200 ' />
-                <p className='text-center text-md text-teal-900 font-medium mt-5'>{name}</p>
+                <p className='text-center text-md text-teal-950 font-medium mt-5'>{name}</p>
                 <p className='text-center text-sm text-gray-400 '>{selectedPerson.birth} </p>
                 <div className='border-gray-300 border-t h-3 w-full my-5 rounded-t-full' />
 
                 <Button className='border text-white border-teal-900 ' onClick={onEditDetails}>Edit profile</Button>
                 <div className='flex flex-row justify-between gap-x-1'>
-                    <Button variant="ghost" className='border flex-1 border-teal-900 bg-white text-teal-900'>Contact</Button>
-                    <Button variant="ghost" className='border flex-1 border-teal-900 bg-white text-teal-900'>Notes</Button>
+                    <Button variant="ghost" className='border flex-1 border-teal-900 bg-white text-teal-950'>Contact</Button>
+                    <Button variant="ghost" className='border flex-1 border-teal-900 bg-white text-teal-950'>Notes</Button>
                 </div>
             </div>
 
             {/* <hr className='border-gray-300 ' /> */}
 
             <div className=''>
-                <p className='text-start text-sm text-teal-900 mb-5'>Add relatives:</p>
+                <p className='text-start text-sm text-teal-950 mb-5'>Add relatives:</p>
                 <div className=' gap-y-2 grid grid-cols-2 gap-x-1 '>
-                    <Button variant="ghost" className='border  border-teal-900  bg-white text-teal-900' onClick={onAddParent}>Parent</Button>
-                    <Button variant="ghost" className='border border-teal-900 bg-white text-teal-900' onClick={onAddPartner}>Partner</Button>
-                    <Button variant="ghost" className='border  border-teal-900 bg-white text-teal-900' onClick={onAddSibling}>Sibling</Button>
-                    <Button variant="ghost" className='border border-teal-900 bg-white text-teal-900' onClick={onAddChild}>Child</Button>
+                    <Button variant="ghost" className='border  border-teal-900  bg-white text-teal-950' onClick={onAddParent}>Parent</Button>
+                    <Button variant="ghost" className='border border-teal-900 bg-white text-teal-950' onClick={onAddPartner}>Partner</Button>
+                    <Button variant="ghost" className='border  border-teal-900 bg-white text-teal-950' onClick={onAddSibling}>Sibling</Button>
+                    <Button variant="ghost" className='border border-teal-900 bg-white text-teal-950' onClick={onAddChild}>Child</Button>
                 </div>
             </div>
 

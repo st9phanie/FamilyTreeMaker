@@ -9,6 +9,7 @@ import { Calendar22 } from '../ui/datepicker';
 import { useWorkspaceStore } from '@/utils/store';
 import LebanonLocations from '../ui/LebanonLocations';
 import CountryPicker from '../ui/countryPicker';
+import { changeImage } from '@/lib/functions';
 
 type PersonFormProps = {
     title: string;
@@ -28,181 +29,210 @@ const statusFields = [
     { code: "D", label: "Deceased" },
     { code: "U", label: "Unknown" },
 ];
-
 const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
+    const { selectedPerson, loading } = useWorkspaceStore();
+    const isEdit = title.startsWith("Edit");
 
-    const { selectedPerson, loading } = useWorkspaceStore()
+    const [formData, setFormData] = useState<Person>({
+        photo: null,
+        firstname: "",
+        middlename: "",
+        lastname: "",
+        sex: "U",
+        status: "U",
+        birth: null,
+        death: null,
+        country: null,
+        governorate: null,
+        district: null,
+        area: null,
+        country_of_death: null,
+        death_governorate: null,
+        death_district: null,
+        death_area: null,
+    });
 
-    const [photo, setPhoto] = useState(selectedPerson?.photo || "");
-    const [firstname, setFirstname] = useState(selectedPerson?.firstname || "");
-    const [middlename, setMiddlename] = useState(selectedPerson?.middlename || "");
-    const [lastname, setLastname] = useState(selectedPerson?.lastname || "");
-    const [sex, setSex] = useState<"M" | "F" | "U">(selectedPerson?.sex || "U");
-    const [birth, setBirth] = useState<Date | null>(selectedPerson?.birth || null);
-    const [death, setDeath] = useState<Date | null>(selectedPerson?.death || null);
-    const [status, setStatus] = useState<"L" | "D" | "U">(selectedPerson?.status || death ? "D" : "U");
+    const handleChange = (field: string, value: any) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
 
-    //birth location details
-    const [country, setCountry] = useState(selectedPerson?.country || null)
-    const [birthGov, setBirthGov] = useState(selectedPerson?.governorate || null);
-    const [birthDis, setBirthDis] = useState(selectedPerson?.district || null);
-    const [birthLoc, setBirthLoc] = useState(selectedPerson?.area || null);
-
-    //death location details
-    const [countryOfDeath, setCountryOfDeath] = useState(selectedPerson?.country_of_death || null)
-    const [deathGov, setDeathGov] = useState(selectedPerson?.death_governorate || null);
-    const [deathDis, setDeathDis] = useState(selectedPerson?.death_district || null);
-    const [deathLoc, setDeathLoc] = useState(selectedPerson?.death_area || null);
-
-
-    useEffect(() => {
-        setPhoto(selectedPerson?.photo || "");
-        setFirstname(selectedPerson?.firstname || "");
-        setMiddlename(selectedPerson?.middlename || "");
-        setLastname(selectedPerson?.lastname || "");
-        setSex(selectedPerson?.sex || "U");
-        if (selectedPerson?.birth) {
-            const [year, month, day] = (selectedPerson.birth as string).split('-').map(Number);
-            setBirth(new Date(year, month - 1, day));
-        } else {
-            setBirth(null);
-        }
-        if (selectedPerson?.death) {
-            const [year, month, day] = (selectedPerson.death as string).split('-').map(Number);
-            setDeath(new Date(year, month - 1, day));
-            setStatus("D")
-        } else {
-            setDeath(null);
-            setStatus("U")
-        }
-        setCountry(selectedPerson?.country || null)
-        setCountryOfDeath(selectedPerson?.country_of_death || null)
-        setBirthGov(selectedPerson?.governorate || null);
-        setBirthDis(selectedPerson?.district || null);
-        setBirthLoc(selectedPerson?.area || null);
-        setDeathGov(selectedPerson?.death_governorate || null);
-        setDeathDis(selectedPerson?.death_district || null);
-        setDeathLoc(selectedPerson?.death_area || null);
-    }, [selectedPerson]);
+    const parseDate = (dateStr: any) => {
+        if (!dateStr) return null;
+        const [year, month, day] = String(dateStr).split('-').map(Number);
+        return new Date(year, month - 1, day);
+    };
 
     useEffect(() => {
-        if (death) setStatus("D")
-    }, [death])
+        if (isEdit && selectedPerson) {
+            setFormData({
+                photo: selectedPerson.photo || null,
+                firstname: selectedPerson.firstname || "",
+                middlename: selectedPerson.middlename || "",
+                lastname: selectedPerson.lastname || "",
+                sex: selectedPerson.sex || "U",
+                status: selectedPerson.death ? "D" : "L",
+                birth: parseDate(selectedPerson.birth),
+                death: parseDate(selectedPerson.death),
+                country: selectedPerson.country || null,
+                governorate: selectedPerson.governorate || null,
+                district: selectedPerson.district || null,
+                area: selectedPerson.area || null,
+                country_of_death: selectedPerson.country_of_death || null,
+                death_governorate: selectedPerson.death_governorate || null,
+                death_district: selectedPerson.death_district || null,
+                death_area: selectedPerson.death_area || null,
+            });
+        }
+    }, [selectedPerson, isEdit]);
 
-    const handleSubmit = () => {
-        const formatDate = (d: Date | null) => {
-            if (!d) return null;
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
-        onSave({
-            photo, firstname, middlename, lastname, sex,
-            birth: formatDate(birth) as any,
-            death: formatDate(death) as any,
-            status,
-            governorate: birthGov,
-            district: birthDis,
-            area: birthLoc,
-            country: country,
-            death_governorate: deathGov,
-            death_district: deathDis,
-            death_area: deathLoc,
-            country_of_death: countryOfDeath,
-        });
+    useEffect(() => {
+        if (formData.death) handleChange("status", "D");
+    }, [formData.death]);
+
+    const handleSubmit = async () => {
+        try {
+            const formatDate = (d: Date | null) => {
+                if (!d) return null;
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`; // Returns "YYYY-MM-DD" in local time
+            };
+            const personData = {
+                ...formData,
+                birth: formatDate(formData.birth),
+                death: formatDate(formData.death),
+                photo: formData.photo instanceof File ? (selectedPerson?.photo || null) : formData.photo
+            };
+
+            const response = await onSave(personData);
+
+            const personId = selectedPerson?.id || response?.id;
+
+            if (personId && formData.photo instanceof File) {
+                const imagePayload = new FormData();
+                imagePayload.append("photo", formData.photo);
+                console.log("FormData built. Ready to upload...");
+                await changeImage(personId, imagePayload);
+            }
+
+            onBack();
+        } catch (error) {
+            console.error("Failed to save person", error);
+        }
     };
 
     return (
         <div className='w-[360px] h-[calc(100vh-40px)] border-r border-gray-300 px-5 flex flex-col gap-y-5 top-[40px] fixed py-5 justify-between bg-white overflow-y-scroll'>
             <div className='flex flex-col gap-y-5'>
                 <div className='flex flex-row justify-between items-center'>
-                    <ArrowLeft className='cursor-pointer text-teal-900' onClick={onBack} />
-                    <p className='text-center font-medium text-teal-900'>{title}</p>
+                    <ArrowLeft className='cursor-pointer text-teal-950' onClick={onBack} />
+                    <p className='text-center font-medium text-teal-950'>{title}</p>
                     <div className='w-6' />
                 </div>
 
-                <ImagePicker setPhoto={setPhoto} />
+                <ImagePicker
+                    currentPhoto={formData.photo}
+                    setPhoto={(value) => handleChange("photo", value)}
+                />
 
                 <div className='flex flex-col gap-y-4'>
                     {[
-                        { id: "fn", label: "First Name", val: firstname, set: setFirstname },
-                        { id: "mn", label: "Middle Name", val: middlename, set: setMiddlename },
-                        { id: "ln", label: "Last Name", val: lastname, set: setLastname },
+                        { id: "firstname", label: "First Name", val: formData.firstname },
+                        { id: "middlename", label: "Middle Name", val: formData.middlename },
+                        { id: "lastname", label: "Last Name", val: formData.lastname },
                     ].map((f) => (
                         <div key={f.id} className="flex flex-col">
                             <label className="text-xs text-gray-500 mb-1 px-1">{f.label}</label>
                             <input
                                 value={f.val}
-                                onChange={(e) => f.set(e.target.value)}
+                                onChange={(e) => handleChange(f.id, e.target.value)}
                                 className="rounded-lg border border-gray-300 outline-none focus:border-teal-900 px-2 py-1.5 text-sm"
                             />
                         </div>
                     ))}
 
-                    {/* SEX */}
                     <div className="flex flex-col gap-2">
                         <p className="text-xs text-gray-500 px-1">Sex</p>
-                        <RadioGroup value={sex} onValueChange={(v) => setSex(v as any)} className="flex flex-row justify-between">
+                        <RadioGroup value={formData.sex} onValueChange={(v) => handleChange("sex", v)} className="flex flex-row justify-between">
                             {sexFields.map((s) => (
                                 <div key={s.code} className="flex items-center space-x-2 ">
                                     <RadioGroupItem value={s.code} id={s.code} className='cursor-pointer' />
-                                    <Label htmlFor={s.code} className="text-sm">{s.label}</Label>
+                                    <Label htmlFor={s.code} className="text-sm text-teal-950">{s.label}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
                     </div>
 
                     {children}
-
                     <hr className='mt-1' />
 
-                    {/* STATUS */}
                     <div className="flex flex-col gap-2">
                         <p className="text-xs text-gray-500 px-1">Status</p>
-                        <RadioGroup value={status} onValueChange={(v) => setStatus(v as any)} className="flex flex-row justify-between">
+                        <RadioGroup value={formData.status} onValueChange={(v) => handleChange("status", v)} className="flex flex-row justify-between">
                             {statusFields.map((s) => (
                                 <div key={s.code} className="flex items-center space-x-2">
                                     <RadioGroupItem value={s.code} id={s.code} className='cursor-pointer' />
-                                    <Label htmlFor={s.code} className="text-sm">{s.label}</Label>
+                                    <Label htmlFor={s.code} className="text-sm text-teal-950">{s.label}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
                     </div>
 
-                    {/* BIRTH DATE and DEATH DATE */}
                     <div className="flex flex-col gap-2">
-                        <Calendar22 label="Birth" date={birth || undefined} setDate={setBirth} />
-                        <Calendar22 label="Death" date={death || undefined} setDate={setDeath} />
+                        <Calendar22 label="Birth" date={formData.birth || undefined} setDate={(date) => handleChange("birth", date)} />
+                        <Calendar22 label="Death" date={formData.death || undefined} setDate={(date) => handleChange("death", date)} />
                     </div>
 
                     <hr className='mt-1' />
 
-                    {/* BIRTH LOCATION */}
-                    <CountryPicker country={country} setCountry={setCountry} city={birthLoc} setCity={setBirthLoc} label="Birth" />
+                    <CountryPicker
+                        country={formData.country}
+                        setCountry={(v) => handleChange("country", v)}
+                        city={formData.area}
+                        setCity={(v) => handleChange("area", v)}
+                        label="Birth"
+                    />
 
-                    {country === "Lebanon" &&
-                        <LebanonLocations governorate={birthGov} district={birthDis} area={birthLoc} setGovernorate={setBirthGov} setArea={setBirthLoc} setDistrict={setBirthDis} />
-                    }
+                    {formData.country === "Lebanon" && (
+                        <LebanonLocations
+                            governorate={formData.governorate}
+                            district={formData.district}
+                            area={formData.area}
+                            setGovernorate={(v) => handleChange("governorate", v)}
+                            setDistrict={(v) => handleChange("district", v)}
+                            setArea={(v) => handleChange("area", v)}
+                        />
+                    )}
+
                     <hr className='mt-1' />
 
+                    {formData.status === "D" && (
+                        <CountryPicker
+                            country={formData.country_of_death}
+                            setCountry={(v) => handleChange("country_of_death", v)}
+                            city={formData.death_area}
+                            setCity={(v) => handleChange("death_area", v)}
+                            label="Death"
+                        />
+                    )}
 
-                    {/* DEATH LOCATION */}
-                    {status === "D" &&
-                        <CountryPicker country={countryOfDeath} setCountry={setCountryOfDeath} city={deathLoc} setCity={setDeathLoc} label="Death" />}
+                    {formData.status === "D" && formData.country_of_death === "Lebanon" && (
+                        <LebanonLocations
+                            governorate={formData.death_governorate}
+                            district={formData.death_district}
+                            area={formData.death_area}
+                            setGovernorate={(v) => handleChange("death_governorate", v)}
+                            setArea={(v) => handleChange("death_area", v)}
+                            setDistrict={(v) => handleChange("death_district", v)}
+                        />
+                    )}
 
-                    {status === "D" && countryOfDeath === "Lebanon" &&
-                        <LebanonLocations governorate={deathGov} district={deathDis} area={deathLoc} setGovernorate={setDeathGov} setArea={setDeathLoc} setDistrict={setDeathDis} />
-
-                    }
-
-                    {status === "D" && <hr className='mt-1' />}
-
+                    {formData.status === "D" && <hr className='mt-1' />}
                 </div>
             </div>
 
             <div className='flex flex-row gap-x-2 w-full'>
-
                 <Button className='bg-teal-900 flex-1' disabled={loading} onClick={handleSubmit}>Save</Button>
                 <Button variant="outline" className='flex-1' disabled={loading} onClick={onBack}>Cancel</Button>
             </div>
