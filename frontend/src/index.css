@@ -19,6 +19,16 @@ svg.tommy .node.female>rect {
   fill: #861f24;
 }
 
+.dark #tree svg {
+    background-color: #020617 !important; 
+}
+
+.dark #tree text {
+    fill:white !important; 
+}
+
+
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -61,19 +71,21 @@ svg.tommy .node.female>rect {
 }
 
 :root {
+  --primary: oklch(12.9% 0.042 264.695);
+  --secondary: oklch(1 0 0);
+  --sidebar-border: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(55.1% 0.027 264.364);
+  --muted-foreground: oklch(43.7% 0.078 188.216);
+  
   --radius: 0.625rem;
+  --popover-foreground: oklch(0.129 0.042 264.695);
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: #004f3b;
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
   --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(44.153% 0.18047 27.964);
@@ -91,23 +103,24 @@ svg.tommy .node.female>rect {
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
   --sidebar-accent: oklch(0.968 0.007 247.896);
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
 .dark {
+  --primary: oklch(0.929 0.013 255.508);
+  --secondary: oklch(12.9% 0.042 264.695);
+  --sidebar-border: oklch(37.2% 0.044 257.287);
+  --primary-foreground: oklch(86.9% 0.022 252.894);
+  --muted-foreground: oklch(27.9% 0.041 260.031);
+
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
   --secondary-foreground: oklch(0.984 0.003 247.858);
   --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
   --accent: oklch(0.279 0.041 260.031);
   --accent-foreground: oklch(0.984 0.003 247.858);
   --destructive: oklch(0.704 0.191 22.216);
@@ -125,7 +138,6 @@ svg.tommy .node.female>rect {
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
   --sidebar-accent: oklch(0.279 0.041 260.031);
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
@@ -138,10 +150,12 @@ svg.tommy .node.female>rect {
     @apply bg-background text-foreground;
   }
 }
+
 .fdl {
   font-family: "Fleur De Leah", cursive;
   font-optical-sizing: auto;
 }
+
 .poppins {
   font-family: "Poppins", sans-serif;
   font-optical-sizing: auto;

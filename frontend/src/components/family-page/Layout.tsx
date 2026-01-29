@@ -12,7 +12,8 @@ const Layout = ({ children, className }: Props) => {
             {`fixed
         top-10 w-full
         h-[calc(100vh-40px)]
-        bg-white
+        bg-secondary
+        text-primary
         overflow-auto
         flex
         py-3

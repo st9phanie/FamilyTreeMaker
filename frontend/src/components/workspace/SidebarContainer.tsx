@@ -23,7 +23,6 @@ const SidebarContainer = () => {
         return <AddPerson />;
     }
 
-    // 2. Define shared props to avoid repetition
     const commonProps = {
         name,
         onBack: () => setView("main")

@@ -1,4 +1,4 @@
-import { Globe } from 'lucide-react'
+import { Globe, Moon, Sun } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,19 +9,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '../ui/button'
+import { useTheme } from '@/utils/store'
 
 const Navbar = () => {
+    const { isDarkMode, toggle } = useTheme()
+
     const navigate = useNavigate();
 
-    const goToSignup = ()=>{
+    const goToSignup = () => {
         navigate(`/signup`)
     }
 
     return (
-        <nav className='w-full flex flex-row bg-white text-teal-900 h-[60px] border-b border-gray-200 px-20 items-center justify-between z-100 fixed top-0 left-0 '>
+        <nav className='w-full flex flex-row bg-secondary text-primary h-[60px] border-b border-sidebar-border px-20 items-center justify-between z-100 fixed top-0 left-0 '>
             <Link to="/"><p className='md:text-2xl text-xl font-semibold'>ORIGIN</p></Link>
 
-            <div className='flex flex-row gap-x-3'>
+            <div className='flex flex-row gap-x-3 items-center'>
                 <Button onClick={goToSignup} className='rounded-2xl'>Sign up</Button>
 
                 <DropdownMenu modal={false}>
@@ -35,6 +38,10 @@ const Navbar = () => {
                         <DropdownMenuItem>العربية</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+
+                <button onClick={toggle} className='hover:text-primary/80'>
+                    {isDarkMode ? <Sun className='size-7 cursor-pointer text-primary' /> : <Moon className='text-primary size-7 cursor-pointer ' />}
+                </button>
             </div>
 
         </nav >

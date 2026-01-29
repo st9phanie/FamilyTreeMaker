@@ -67,11 +67,11 @@ const CountryPicker = ({
 
     return (
         <div className="flex flex-col gap-3 w-full text-xs">
-            {label && <p className="text-base font-medium text-teal-900 ">Location of {label}</p>}
+            {label && <p className="text-base font-medium ">Location of {label}</p>}
 
             {/* Countries */}
             <div className="flex flex-col">
-                <label className=" text-gray-500 mb-1 px-1">Country</label>
+                <label className=" text-primary-foreground mb-1 px-1">Country</label>
                 <Combobox
                     list={countryNames}
                     value={propCountry?.id}
@@ -83,7 +83,7 @@ const CountryPicker = ({
 
             {country !== "Lebanon" && selectedCountry?.country.country !== "Lebanon" &&
                 <div className="flex flex-col">
-                    <label className=" text-gray-500 mb-1 px-1">City</label>
+                    <label className=" text-primary-foreground mb-1 px-1">City</label>
                     <Combobox
                         list={selectedCountry ? cities : []}
                         listType="City"

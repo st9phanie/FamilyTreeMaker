@@ -42,7 +42,7 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-gray-400 text-xs text-center px-1">Upload <br /> photo</span>
+          <span className="text-text-primary-foreground text-xs text-center px-1">Upload <br /> photo</span>
         )}
       </div>
 

@@ -1,12 +1,17 @@
 // store.ts
 import { fetchFamilyMembers } from '@/lib/functions';
 import { create } from 'zustand';
+import { persist } from "zustand/middleware";
 
 type SidebarState = {
     isOpen: boolean;
     toggle: () => void;
 }
 
+type ThemeState = {
+    isDarkMode: boolean;
+    toggle: () => void;
+}
 interface WorkspaceState {
     familyMembers: Person[];
     selectedPerson: Person | null;
@@ -71,3 +76,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     },
     clearSelection: () => set({ selectedPerson: null }),
 }));
+
+export const useTheme = create<ThemeState>()(
+    persist((set) => ({
+        isDarkMode: false,
+        toggle: () => set((state) => ({ isDarkMode: !state.isDarkMode }))
+    }),
+        {
+            name: 'theme-storage',
+        }));

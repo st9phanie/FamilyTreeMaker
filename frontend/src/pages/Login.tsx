@@ -72,7 +72,7 @@ const login = async () => {
   }
   return (
     <div className="h-screen flex flex-row w-full ">
-      <div className="hidden h-full w-200 bg-teal-950 px-4 sm:flex flex-col text-white justify-between">
+      <div className="hidden h-full w-200 bg-slate-950 px-4 sm:flex flex-col text-white justify-between">
         <div className="h-[60px] flex items-center">
           <Link to="/"><p className='md:text-2xl text-xl font-medium '>ORIGIN</p></Link>
         </div>
@@ -80,13 +80,13 @@ const login = async () => {
         <div className="w-90 text-center gap-y-10 mx-auto flex flex-col items-center justify-center h-full">
           <h3 className="text-4xl font-semibold">Hello!</h3>
           <p className="text-wrap ">Start creating your family tree for free by signing up today. </p>
-          <Button className="w-full capitalize  border border-white border-b-2 bg-transparent hover:bg-teal-800" size="lg"
+          <Button className="w-full capitalize py-5 bg-slate-700 text-white border-none"
             onClick={goToSignup}>Sign up</Button>
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-3 h-full w-full bg-white text-teal-900">
-        <h1 className="text-4xl my-10 font-semibold">Log in</h1>
+      <div className="flex flex-col items-center justify-center gap-3 h-full w-full bg-teal-800 text-slate-950">
+        <h1 className="text-4xl my-10 font-semibold text-white">Log in</h1>
 
         <input
           type="email"
@@ -94,7 +94,7 @@ const login = async () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded-lg  px-2 py-2 w-[360px] bg-gray-100"
+          className="border rounded-lg bg-white px-2 py-2 w-[360px] border-sidebar-border"
         />
 
         <input
@@ -103,11 +103,11 @@ const login = async () => {
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="border px-2 rounded-lg  py-2 w-[360px] bg-gray-100"
+          className="border px-2 rounded-lg bg-white py-2 w-[360px]  border-sidebar-border"
         />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
-        {info && <p className="text-sm text-green-700">{info}</p>}
+        {info && <p className="text-sm text-slate-950">{info}</p>}
 
         {error === "Email not confirmed. Please confirm your email." && (
           <button
@@ -120,7 +120,7 @@ const login = async () => {
         )}
 
         <Button
-          className=" w-[360px] py-5 hover:bg-teal-800/90 mt-2"
+          className=" w-[360px] py-5 text-white bg-slate-950 hover:bg-slate-900 border-none"
           onClick={login}
           disabled={loading}
         >

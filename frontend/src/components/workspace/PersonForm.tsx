@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@/components/ui/label';
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Calendar22 } from '../ui/datepicker';
-import { useWorkspaceStore } from '@/utils/store';
+import { useTheme, useWorkspaceStore } from '@/utils/store';
 import LebanonLocations from '../ui/LebanonLocations';
 import CountryPicker from '../ui/countryPicker';
 import { changeImage } from '@/lib/functions';
@@ -30,8 +30,10 @@ const statusFields = [
     { code: "U", label: "Unknown" },
 ];
 const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
-    const { selectedPerson, loading } = useWorkspaceStore();
+    const { selectedPerson } = useWorkspaceStore();
     const isEdit = title.startsWith("Edit");
+
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [formData, setFormData] = useState<Person>({
         photo: null,
@@ -91,6 +93,7 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
 
     const handleSubmit = async () => {
         try {
+            setIsLoading(true)
             const formatDate = (d: Date | null) => {
                 if (!d) return null;
                 const year = d.getFullYear();
@@ -100,6 +103,9 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
             };
             const personData = {
                 ...formData,
+                firstname: formData.firstname?.trim(),
+                middlename: formData.middlename?.trim(),
+                lastname: formData.lastname?.trim(),
                 birth: formatDate(formData.birth),
                 death: formatDate(formData.death),
                 photo: formData.photo instanceof File ? (selectedPerson?.photo || null) : formData.photo
@@ -119,15 +125,21 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
             onBack();
         } catch (error) {
             console.error("Failed to save person", error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
     return (
-        <div className='w-[360px] h-[calc(100vh-40px)] border-r border-gray-300 px-5 flex flex-col gap-y-5 top-[40px] fixed py-5 justify-between bg-white overflow-y-scroll'>
+        <div className='w-[360px] h-[calc(100vh-40px)] border-r 
+        border-sidebar-border
+        bg-secondary
+        text-primary
+        px-5 flex flex-col gap-y-5 top-[40px] fixed py-5 justify-between  overflow-y-scroll'>
             <div className='flex flex-col gap-y-5'>
                 <div className='flex flex-row justify-between items-center'>
-                    <ArrowLeft className='cursor-pointer text-teal-950' onClick={onBack} />
-                    <p className='text-center font-medium text-teal-950'>{title}</p>
+                    <ArrowLeft className='cursor-pointer text-primary' onClick={onBack} />
+                    <p className='text-center font-medium text-primary'>{title}</p>
                     <div className='w-6' />
                 </div>
 
@@ -143,22 +155,22 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                         { id: "lastname", label: "Last Name", val: formData.lastname },
                     ].map((f) => (
                         <div key={f.id} className="flex flex-col">
-                            <label className="text-xs text-gray-500 mb-1 px-1">{f.label}</label>
+                            <label className="text-xs text-primary-foreground mb-1 px-1">{f.label}</label>
                             <input
                                 value={f.val}
                                 onChange={(e) => handleChange(f.id, e.target.value)}
-                                className="rounded-lg border border-gray-300 outline-none focus:border-teal-900 px-2 py-1.5 text-sm"
+                                className="rounded-lg border border-sidebar-border outline-none focus:border-primary px-2 py-1.5 text-sm"
                             />
                         </div>
                     ))}
 
                     <div className="flex flex-col gap-2">
-                        <p className="text-xs text-gray-500 px-1">Sex</p>
+                        <p className="text-xs px-1 text-primary-foreground">Sex</p>
                         <RadioGroup value={formData.sex} onValueChange={(v) => handleChange("sex", v)} className="flex flex-row justify-between">
                             {sexFields.map((s) => (
                                 <div key={s.code} className="flex items-center space-x-2 ">
                                     <RadioGroupItem value={s.code} id={s.code} className='cursor-pointer' />
-                                    <Label htmlFor={s.code} className="text-sm text-teal-950">{s.label}</Label>
+                                    <Label htmlFor={s.code} className="text-sm text-primary">{s.label}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
@@ -168,12 +180,12 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                     <hr className='mt-1' />
 
                     <div className="flex flex-col gap-2">
-                        <p className="text-xs text-gray-500 px-1">Status</p>
+                        <p className="text-xs px-1 text-primary-foreground">Status</p>
                         <RadioGroup value={formData.status} onValueChange={(v) => handleChange("status", v)} className="flex flex-row justify-between">
                             {statusFields.map((s) => (
                                 <div key={s.code} className="flex items-center space-x-2">
                                     <RadioGroupItem value={s.code} id={s.code} className='cursor-pointer' />
-                                    <Label htmlFor={s.code} className="text-sm text-teal-950">{s.label}</Label>
+                                    <Label htmlFor={s.code} className="text-sm text-primary">{s.label}</Label>
                                 </div>
                             ))}
                         </RadioGroup>
@@ -233,8 +245,8 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
             </div>
 
             <div className='flex flex-row gap-x-2 w-full'>
-                <Button className='bg-teal-900 flex-1' disabled={loading} onClick={handleSubmit}>Save</Button>
-                <Button variant="outline" className='flex-1' disabled={loading} onClick={onBack}>Cancel</Button>
+                <Button className='flex-1' disabled={isLoading} onClick={handleSubmit}>Save</Button>
+                <Button variant="outline" className='flex-1' disabled={isLoading} onClick={onBack}>Cancel</Button>
             </div>
         </div>
     );

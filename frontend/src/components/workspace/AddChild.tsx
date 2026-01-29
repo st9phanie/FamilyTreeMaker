@@ -44,7 +44,7 @@ const AddChild = ({ name, onBack }: Props) => {
     return (
         <PersonForm title={`Child of ${name}`} onBack={onBack} onSave={handleSave}>
             <div>
-                <p className='text-xs text-gray-500 mb-2'>Add existing person as the second parent:</p>
+                <p className='text-xs text-primary-foreground mb-2'>Add existing person as the second parent:</p>
                 <Combobox list={family} listType='person' setValue={setParent} />
             </div>
         </PersonForm >

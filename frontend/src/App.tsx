@@ -7,6 +7,8 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import MainLayout from "./Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { useTheme } from "./utils/store";
+import { useEffect } from "react";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,19 @@ function FamilyTreeWrapper() {
 }
 
 const App = () => {
+
+  const isDarkMode = useTheme((state) => state.isDarkMode);
+
+  useEffect(() => {
+    const root = window.document.documentElement; // This is the <html> tag
+    
+    if (isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   return (
     <div className="max-w-full min-h-screen poppins flex flex-col">
       <Routes>

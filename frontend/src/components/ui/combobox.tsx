@@ -65,14 +65,14 @@ const Combobox = ({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className="justify-between text-teal-950  w-full"
+          className="justify-between text-primary  w-full"
         >
           {selectedItem ? selectedItem.label : `Select ${listType}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-full p-0  text-teal-950">
+      <PopoverContent className="w-full p-0  text-primary">
         <Command>
           <CommandInput
             placeholder={`Search ${listType}...`}
@@ -87,12 +87,12 @@ const Combobox = ({
                   key={item.id}
                   value={item.label}
                   onSelect={() => handleSelect(item.id)}
-                  className="text-teal-950"
+                  className="text-primary"
                 >
                   {item.label}
                   <Check
                     className={cn(
-                      "ml-auto h-4 w-4 text-teal-950",
+                      "ml-auto h-4 w-4 text-primary",
                       item.id === actualValue ? "opacity-100" : "opacity-0"
                     )}
                   />

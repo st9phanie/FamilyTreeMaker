@@ -53,16 +53,19 @@ const AddSibling = ({ name, onBack }: Props) => {
     return (
         <PersonForm title={`Sibling of ${name}`} onBack={onBack} onSave={handleSave}>
             {/* ------------------------------------------------------------ FULL OR HALF SIBLING -------------------------------------------------------- */}
-            <div className="flex flex-col gap-3">
-                <p className="text-xs text-gray-500 px-1">Relation</p>
+            <div className="flex flex-col gap-3 ">
+                <p className="text-xs text-primary-foreground px-1">Relation</p>
                 <RadioGroup
                     value={sibling}
                     onValueChange={(value) => setSibling(value as "F" | "M" | "P")}
-                    className="flex flex-row text-black justify-around">
+                    className="flex flex-row text- justify-around">
                     {relFields.map((val, key) => (
                         <div key={key} className="flex items-center space-x-2">
-                            <RadioGroupItem value={val.value} id={val.label} />
-                            <Label htmlFor={val.label} className="text-teal-950">{val.label}</Label>
+                            {!val.label.includes("undefined") &&
+                                (<><RadioGroupItem value={val.value} id={val.label} />
+                                    <Label htmlFor={val.label} className="text-primary">{val.label}</Label>
+                                </>)
+                            }
                         </div>
                     ))}
                 </RadioGroup>

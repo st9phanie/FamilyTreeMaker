@@ -8,7 +8,7 @@ type Props = {
 const SidebarLayout = ({ children, className }: Props) => {
     return (
         <div className=
-            {`w-[360px] h-[calc(100vh-40px)] border-r border-r-gray-300 px-5 flex flex-col top-[40px] fixed py-10 justify-between
+            {`w-[360px] h-[calc(100vh-40px)] bg-secondary text-primary border-r border-sidebar-border px-5 flex flex-col top-[40px] fixed py-10 justify-between
          ${className}`}
         >
             {children}

@@ -1,4 +1,4 @@
-import { User2 } from 'lucide-react'
+import { Moon, Sun, User2 } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,23 +9,25 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
+import { useTheme } from '@/utils/store'
 
 const Navbar = () => {
 
     async function signOut() {
         const { error } = await supabase.auth.signOut()
         console.log(error);
-        
     }
 
+    const { isDarkMode, toggle } = useTheme()
+
     return (
-        <nav className='w-full flex flex-row text-teal-950 h-10 border-b border-gray-200 px-5 items-center justify-between fixed top-0 left-0 '>
+        <nav className='w-full flex flex-row h-10 border-b border-sidebar-border px-5 items-center justify-between fixed top-0 left-0 text-primary bg-secondary'>
             <Link to="/family"><p className='text-lg font-medium cursor-pointer'>ORIGIN</p></Link>
 
             <div className='flex'>
                 <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>
                     <li className=''>
-                        <div className='flex grid-cols-2 gap-x-5 p-1 hover:bg-teal-700/20 rounded-full'>
+                        <div className='flex p-1 hover:bg-teal-700/20 rounded-full'>
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger>
                                     <User2 className='size-5  cursor-pointer  ' />
@@ -37,9 +39,14 @@ const Navbar = () => {
                                     <DropdownMenuItem onClick={signOut} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-
                         </div>
                     </li>
+                    <li>
+                        <button onClick={toggle} className='flex p-1 hover:bg-teal-700/20 rounded-full'>
+                            {isDarkMode ? <Sun className='size-6 cursor-pointer text-white' /> : <Moon className='text-primary size-6 cursor-pointer ' />}
+                        </button>
+                    </li>
+
 
                 </ul>
             </div>

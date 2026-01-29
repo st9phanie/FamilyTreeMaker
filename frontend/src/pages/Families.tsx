@@ -50,7 +50,7 @@ const Families = () => {
             const { data: { user } } = await supabase.auth.getUser();
 
             if (user) {
-                const response = await createNewFamily({ user_id: user.id, name: newName });
+                const response = await createNewFamily({ user_id: user.id, name: newName.trim() });
                 if (response.status === "success") {
                     setNewName("");
                     navigate(`/family/${response.id}`);
@@ -72,14 +72,14 @@ const Families = () => {
         return (
             <Layout>
                 <div className='min-h-max fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-                    <Loader2 className='animate-spin size-10 text-teal-600' />
+                    <Loader2 className='animate-spin size-10' />
                 </div>
             </Layout>)
     }
     if (error) return <Layout><div className="text-red-500">{error}</div></Layout>;
 
     return (
-        <Layout className="flex flex-col text-teal-950">
+        <Layout className="flex flex-col">
             <h1 className="text-lg drop-shadow-sm font-medium tracking-wide mb-3">
                 Your Families
             </h1>
@@ -97,11 +97,11 @@ const Families = () => {
                     />
                 ))}
 
-                <div className="rounded-lg flex cursor-pointer items-center border-2 border-teal-950 h-35 w-[200px] shadow-sm justify-center">
+                <div className="rounded-lg flex cursor-pointer items-center border-2 border-primary h-35 w-[200px] shadow-sm justify-center">
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="ghost" className="flex-1 h-full">
-                                <Plus className="text-teal-950 size-6" />
+                                <Plus className="size-6" />
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">

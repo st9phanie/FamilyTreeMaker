@@ -57,13 +57,13 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
   };
 
   return (
-    <div className='rounded-lg flex flex-col shadow-sm text-sm  bg-teal-600 py-4  text-white h-35 w-[200px] gap-y-3 justify-between'>
+    <div className='rounded-lg flex flex-col shadow-sm text-sm  bg-teal-800 py-4  text-white h-35 w-[200px] gap-y-3 justify-between'>
       <div>
 
         {open
           ?
           <div className="flex flex-row items-center text-white px-4 ">
-            <input placeholder="Enter new name" value={new_name} className="rounded-lg bg-white text-teal-950 py-1 px-2 flex-1 min-w-0 mr-2 mb-1 " onChange={(e) => setNewName(e.target.value)} />
+            <input placeholder="Enter new name" value={new_name} className="rounded-lg bg-white text-primary py-1 px-2 flex-1 min-w-0 mr-2 mb-1 " onChange={(e) => setNewName(e.target.value)} />
             <X className="size-5 -mr-1 shrink-0 cursor-pointer " onClick={() => setOpen(false)} />
           </div>
           :
@@ -72,7 +72,7 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
           </p>
         }
 
-        <div className="flex items-center px-4 mt-1 text-xs text-teal-950">
+        <div className="flex items-center px-4 mt-1 text-xs text-primary">
           <Users className="w-4 h-4 mr-2" />
           {memberCount === 0 ? (
             <span className="">0 members</span>
@@ -104,7 +104,7 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
             <EllipsisVertical className="size-5 " />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={handleOpenModal} className="text-teal-950 cursor-pointer">Edit Name</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleOpenModal} className="text-primary cursor-pointer">Edit Name</DropdownMenuItem>
             <DropdownMenuItem onClick={delete_family} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

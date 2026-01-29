@@ -91,7 +91,7 @@ const LebanonLocations = ({
 
       {/* Governorate */}
       <div className="flex flex-col">
-        <label className=" text-gray-500 mb-1 px-1">Governorate</label>
+        <label className=" text-primary-foreground mb-1 px-1">Governorate</label>
         <Combobox
           list={govs}
           value={propGov?.id}
@@ -101,7 +101,7 @@ const LebanonLocations = ({
       </div>
 
       <div className="flex flex-col">
-        <label className=" text-gray-500 mb-1 px-1">District</label>
+        <label className=" text-primary-foreground mb-1 px-1">District</label>
         <Combobox
           list={selectedGov ? districts : []}
           listType="District"
@@ -112,7 +112,7 @@ const LebanonLocations = ({
       </div>
 
       <div className="flex flex-col">
-        <label className=" text-gray-500 mb-1 px-1">Area</label>
+        <label className=" text-primary-foreground mb-1 px-1">Area</label>
         <Combobox
           list={selectedDis ? areas : []}
           listType="Area"

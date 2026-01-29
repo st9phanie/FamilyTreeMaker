@@ -45,8 +45,8 @@ export function Calendar22({ setDate, label, date }: Props) {
   };
 
   return (
-    <div className="flex flex-col text-teal-950">
-      <Label htmlFor="date" className="text-xs text-gray-500 mb-1  px-1">
+    <div className="flex flex-col text-primary">
+      <Label htmlFor="date" className="text-xs text-primary-foreground mb-1  px-1">
         {label}
       </Label>
 

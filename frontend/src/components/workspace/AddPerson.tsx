@@ -11,13 +11,16 @@ const AddPerson = () => {
 
     const navigate = useNavigate()
 
-    const onBack = () =>{
+    const onBack = () => {
         navigate("/family")
     }
 
     const onSaveClick = async (formData: Partial<Person>) => {
         const data = await addPerson({ ...formData, family_id: familyId })
-        if (data.status == "success") refresh(familyId!)
+        if (data.status == "success") {
+            refresh(familyId!)
+
+        }
     }
 
     return (

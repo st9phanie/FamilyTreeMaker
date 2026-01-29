@@ -29,7 +29,7 @@ export async function fetchFamilyMembers(id: string) {
     return data;
   } catch (err: any) {
     console.error(`Error fetching members for family ${id}:`, err.response?.data || err.message);
-    return []; // Return empty list on error to prevent Promise.all failure
+    return [];
   }
 }
 

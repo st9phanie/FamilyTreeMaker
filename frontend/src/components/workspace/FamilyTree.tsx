@@ -61,14 +61,14 @@ const Family = ({ nodes, onSend }: Props) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center w-full h-full text-teal-600">
+            <div className="flex justify-center items-center w-full h-full bg-secondary text-primary">
                 <Loader2 className="w-10 h-10 animate-spin" />
             </div>
         );
     }
 
     return (
-        <div
+        <div className="bg-secondary text-primary "
             ref={treeRef}
             id="tree"
             style={{ width: "100%", height: "calc(100vh - 40px)", overflow: "hidden" }}
