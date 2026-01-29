@@ -63,7 +63,7 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
         {open
           ?
           <div className="flex flex-row items-center text-white px-4 ">
-            <input placeholder="Enter new name" value={new_name} className="rounded-lg bg-white text-primary py-1 px-2 flex-1 min-w-0 mr-2 mb-1 " onChange={(e) => setNewName(e.target.value)} />
+            <input placeholder="Enter new name" value={new_name} className="rounded-lg bg-white text-slate-950 py-1 px-2 flex-1 min-w-0 mr-2 mb-1 " onChange={(e) => setNewName(e.target.value)} />
             <X className="size-5 -mr-1 shrink-0 cursor-pointer " onClick={() => setOpen(false)} />
           </div>
           :
@@ -72,7 +72,7 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
           </p>
         }
 
-        <div className="flex items-center px-4 mt-1 text-xs text-primary">
+        <div className="flex items-center px-4 mt-1 text-xs text-white">
           <Users className="w-4 h-4 mr-2" />
           {memberCount === 0 ? (
             <span className="">0 members</span>
@@ -85,7 +85,7 @@ const FamilyCard = ({ name, memberCount = 0, id, onRefresh }: Props) => {
       <div className="flex  flex-row justify-between items-center mt-3 w-full">
         {open
           ?
-          <Button size="sm" className="ml-4  hover:bg-teal-900 text-xs " onClick={updateName} disabled={loading}>
+          <Button size="sm" className="ml-4 border-none text-xs " onClick={updateName} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -7,7 +7,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useTheme } from '@/utils/store'
 
@@ -19,6 +19,12 @@ const Navbar = () => {
     }
 
     const { isDarkMode, toggle } = useTheme()
+
+    const navigate = useNavigate();
+
+    const goToProfile = () => {
+        navigate("/profile")
+    }
 
     return (
         <nav className='w-full flex flex-row h-10 border-b border-sidebar-border px-5 items-center justify-between fixed top-0 left-0 text-primary bg-secondary'>
@@ -35,7 +41,7 @@ const Navbar = () => {
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel>Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className='cursor-pointer'>Profile</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={goToProfile} className='cursor-pointer'>Profile</DropdownMenuItem>
                                     <DropdownMenuItem onClick={signOut} className="text-red-600 focus:text-red-600 focus:bg-red-600/10 cursor-pointer">Logout</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

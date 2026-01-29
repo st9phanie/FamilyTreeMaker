@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    FamilyTree: any;
+    FamilyTree: unknown;
   }
 }
 export {};

@@ -16,7 +16,7 @@ export async function fetchFamilies() {
     const headers = await getAuthHeader();
     const { data } = await api.get(`/family/all`, { headers });
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error fetching families:", err.response?.data || err.message);
     throw err; // Throwing allows the component to catch and show an error UI
   }
@@ -27,7 +27,7 @@ export async function fetchFamilyMembers(id: string) {
     const headers = await getAuthHeader();
     const { data } = await api.get(`/family/${id}`, { headers });
     return data;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`Error fetching members for family ${id}:`, err.response?.data || err.message);
     return [];
   }
@@ -47,7 +47,7 @@ export async function fetchUserFamiliesAndLengths() {
     const lengths = memberLists.map(list => list.length);
 
     return [families, lengths];
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Error in combined fetch:", err.message);
     return [[], []];
   }

@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from '@/components/ui/label';
 import ImagePicker from '@/components/ui/ImagePicker';
 import { Calendar22 } from '../ui/datepicker';
-import { useTheme, useWorkspaceStore } from '@/utils/store';
+import { useWorkspaceStore } from '@/utils/store';
 import LebanonLocations from '../ui/LebanonLocations';
 import CountryPicker from '../ui/countryPicker';
 import { changeImage } from '@/lib/functions';
@@ -54,11 +54,11 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
         death_area: null,
     });
 
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: unknown) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const parseDate = (dateStr: any) => {
+    const parseDate = (dateStr: unknown) => {
         if (!dateStr) return null;
         const [year, month, day] = String(dateStr).split('-').map(Number);
         return new Date(year, month - 1, day);

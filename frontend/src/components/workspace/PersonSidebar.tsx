@@ -3,7 +3,7 @@ import { deletePerson } from '@/lib/functions';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import SidebarLayout from './SidebarLayout';
-import { useTheme, useWorkspaceStore } from '@/utils/store';
+import { useWorkspaceStore } from '@/utils/store';
 
 type Props = {
     name: string | undefined;
@@ -18,7 +18,6 @@ const PersonSidebar = ({ name, onAddSibling, onEditDetails, onAddChild, onAddPar
     const [loading, setLoading] = useState<boolean>(false)
     const { selectedPerson, refresh } = useWorkspaceStore()
 
-    const {isDarkMode} = useTheme()
 
     if (!selectedPerson) return
 

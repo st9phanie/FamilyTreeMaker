@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
   currentPhoto?: string | null;
-  setPhoto: (value: any) => void;
+  setPhoto: (value: unknown) => void;
 }
 
 const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
@@ -32,7 +32,7 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="size-24 rounded-full border border-gray-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-teal-900 transition bg-white"
+        className="size-24 rounded-full border border-sidebar-border flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary transition bg-secondary"
         onClick={handleClick}
       >
         {preview ? (

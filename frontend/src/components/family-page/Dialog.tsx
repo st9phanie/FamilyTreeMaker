@@ -2,7 +2,7 @@ import { X } from 'lucide-react'
 import { Button } from '../ui/button';
 
 type Props = {
-  ref: any;
+  ref: unknown;
   setOpen: () => void;
 }
 

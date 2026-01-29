@@ -25,7 +25,7 @@ export const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
-export async function retryFetch(fn: () => Promise<any>, retries = 3, delay = 500) {
+export async function retryFetch(fn: () => Promise<unknown>, retries = 3, delay = 500) {
   try {
     return await fn();
   } catch (err) {

@@ -36,7 +36,7 @@ const Families = () => {
                 setMembers(data[1]);
             }
         } catch (err) {
-            setError("Failed to load your families. Please try logging in again.");
+            setError("Failed to load your families. Please try logging in again." + err);
         } finally {
             setLoading(false);
         }
@@ -57,7 +57,7 @@ const Families = () => {
                 }
             }
         } catch (err) {
-            setError("Failed to create family.");
+            setError("Failed to create family." + err);
         } finally {
             setLoading(false);
         }
