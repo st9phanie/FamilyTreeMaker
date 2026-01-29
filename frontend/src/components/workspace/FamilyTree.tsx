@@ -11,7 +11,6 @@ const Family = ({ nodes, onSend }: Props) => {
     const treeRef = useRef<HTMLDivElement | null>(null);
     const treeInstance = useRef<any>(null);
 
-    // Load FamilyTree.js script dynamically
     useEffect(() => {
         const loadScript = () =>
             new Promise<void>((resolve, reject) => {
@@ -35,28 +34,35 @@ const Family = ({ nodes, onSend }: Props) => {
 
         const FamilyTree = window.FamilyTree;
 
-        treeInstance.current?.destroy?.();
+        const timeoutId = setTimeout(() => {
+            if (!treeRef.current) return;
+            treeInstance.current?.destroy?.();
 
-        const family = new FamilyTree(treeRef.current, {
-            mouseScrool: FamilyTree.action.scroll,
-            padding: 20,
-            template: "tommy",
-            scaleInitial: 0.8,
-            enableSearch: true, 
-            nodeMouseClick: FamilyTree.action.none,
-            toolbar: { zoom: true, fit: true, fullScreen: true },
-            nodeBinding: { field_0: "name" },
-            nodes: nodes,
-        });
+            const family = new FamilyTree(treeRef.current, {
+                mouseScrool: FamilyTree.action.scroll,
+                padding: 20,
+                template: "tommy",
+                scaleInitial: 0.8,
+                enableSearch: true,
+                nodeMouseClick: FamilyTree.action.none,
+                toolbar: { zoom: true, fit: true, fullScreen: true },
+                nodeBinding: { field_0: "name" },
+                nodes: nodes,
+            });
 
-        family.onNodeClick((args:any) => {
-            onSend(args.node.id)
-            return false;
-        });
+            family.onNodeClick((args: any) => {
+                onSend(args.node.id)
+                return false;
+            });
 
-        treeInstance.current = family;
+            treeInstance.current = family;
 
-        return () => family.destroy?.();
+        }, 50)
+
+        return () => {
+            clearTimeout(timeoutId);
+            treeInstance.current?.destroy?.();
+        };
     }, [loading, nodes, onSend]);
 
     if (loading) {

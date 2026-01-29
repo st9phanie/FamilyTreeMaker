@@ -20,11 +20,11 @@ svg.tommy .node.female>rect {
 }
 
 .dark #tree svg {
-    background-color: #020617 !important; 
+  background-color: #020617 !important;
 }
 
 .dark #tree text {
-    fill:white !important; 
+  fill: white !important;
 }
 
 
@@ -71,12 +71,13 @@ svg.tommy .node.female>rect {
 }
 
 :root {
+
   --primary: oklch(12.9% 0.042 264.695);
   --secondary: oklch(1 0 0);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --primary-foreground: oklch(55.1% 0.027 264.364);
   --muted-foreground: oklch(43.7% 0.078 188.216);
-  
+
   --radius: 0.625rem;
   --popover-foreground: oklch(0.129 0.042 264.695);
   --background: oklch(1 0 0);
@@ -112,6 +113,7 @@ svg.tommy .node.female>rect {
   --sidebar-border: oklch(37.2% 0.044 257.287);
   --primary-foreground: oklch(86.9% 0.022 252.894);
   --muted-foreground: oklch(27.9% 0.041 260.031);
+    color-scheme: dark;
 
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
