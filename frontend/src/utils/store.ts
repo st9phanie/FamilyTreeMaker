@@ -45,7 +45,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
             const current = get().selectedPerson;
             if (current) {
-                const updated = data.find(m => m.id === current.id);
+                const updated = data.find((m: person )=> m.id === current.id);
                 set({ selectedPerson: updated || null });
             }
         } finally {

@@ -49,8 +49,6 @@ const CountryPicker = ({
     const propCity = cities.find((item) => item.label === city)
 
     const [selectedCity, setSelectedCity] = useState(propCity || null)
-    console.log(selectedCity);
-
 
     const onCountryChange = (id: number | null) => {
         const g = countries.find((item) => String(item.id) === String(id));

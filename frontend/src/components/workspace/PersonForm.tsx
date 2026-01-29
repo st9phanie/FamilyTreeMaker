@@ -14,7 +14,7 @@ import { changeImage } from '@/lib/functions';
 type PersonFormProps = {
     title: string;
     onBack: () => void;
-    onSave: (data: Partial<Person>) => void;
+    onSave: (data: Person) => void;
     children?: React.ReactNode;
 };
 
@@ -111,9 +111,9 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 photo: formData.photo instanceof File ? (selectedPerson?.photo || null) : formData.photo
             };
 
-            const response = await onSave(personData);
+            const response = onSave(personData);            
 
-            const personId = selectedPerson?.id || response?.id;
+            const personId = selectedPerson?.id || response;
 
             if (personId && formData.photo instanceof File) {
                 const imagePayload = new FormData();
@@ -122,7 +122,7 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 await changeImage(personId, imagePayload);
             }
 
-            onBack();
+           // onBack();
         } catch (error) {
             console.error("Failed to save person", error);
         } finally {
