@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "build"
+  functions = "functions" 
+
+[[redirects]]
+  from = "/app/*"
+  to = "/app/index.html"
+  status = 200 # rewrite for single page apps
