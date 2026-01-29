@@ -2,15 +2,8 @@
   base = "frontend"
   command = "npm run build"
   publish = "dist"
-  
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[headers]]
-  # This helps with security and caching
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
