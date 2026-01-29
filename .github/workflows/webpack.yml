@@ -31,6 +31,10 @@ jobs:
         run: |
           npm ci
           npm run build # 👈 Ensure this creates a 'dist' folder
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
