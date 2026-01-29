@@ -48,6 +48,7 @@ const CountryPicker = ({
 
     const propCity = cities.find((item) => item.label === city)
 
+    //eslint-disable-next-line
     const [selectedCity, setSelectedCity] = useState(propCity || null)
 
     const onCountryChange = (id: number | null) => {
