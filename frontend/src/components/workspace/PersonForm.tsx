@@ -27,7 +27,7 @@ const sexFields = [
 const statusFields = [
     { code: "L", label: "Living" },
     { code: "D", label: "Deceased" },
-    { code: "U", label: "Unknown" },
+    { code: "U", label: "any" },
 ];
 const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
     const { selectedPerson } = useWorkspaceStore();
@@ -54,11 +54,11 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
         death_area: null,
     });
 
-    const handleChange = (field: string, value: unknown) => {
+    const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const parseDate = (dateStr: unknown) => {
+    const parseDate = (dateStr: any) => {
         if (!dateStr) return null;
         const [year, month, day] = String(dateStr).split('-').map(Number);
         return new Date(year, month - 1, day);

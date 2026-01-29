@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
   currentPhoto?: string | null;
-  setPhoto: (value: unknown) => void;
+  setPhoto: (value: any) => void;
 }
 
 const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {

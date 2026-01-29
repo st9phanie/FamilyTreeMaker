@@ -9,7 +9,7 @@ type Props = {
 const Family = ({ nodes, onSend }: Props) => {
     const [loading, setLoading] = useState(true);
     const treeRef = useRef<HTMLDivElement | null>(null);
-    const treeInstance = useRef<unknown>(null);
+    const treeInstance = useRef<any>(null);
 
     // Load FamilyTree.js script dynamically
     useEffect(() => {
@@ -49,7 +49,7 @@ const Family = ({ nodes, onSend }: Props) => {
             nodes: nodes,
         });
 
-        family.onNodeClick((args:unknown) => {
+        family.onNodeClick((args:any) => {
             onSend(args.node.id)
             return false;
         });

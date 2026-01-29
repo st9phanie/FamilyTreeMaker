@@ -13,7 +13,7 @@ class Sex(str, Enum):
 class Status(str, Enum):
     LIVE = "L"
     DECEASED = "D"
-    UNKNOWN = "U"
+    any = "U"
 
 
 # ------- MODELS --------------
@@ -29,7 +29,7 @@ class Person(BaseModel):
     district: Optional[str] = None
     area: Optional[str] = None
     sex: Optional[Sex] = Sex.UNDISCLOSED
-    status: Optional[Status] = Status.UNKNOWN
+    status: Optional[Status] = Status.any
     pid1: Optional[int] = None
     pid2: Optional[int] = None
     partner_id: Optional[List[int]] = None

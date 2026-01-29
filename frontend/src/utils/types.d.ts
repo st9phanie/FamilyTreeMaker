@@ -13,7 +13,7 @@ declare global {
         death?: date;
         sex?: "M" | "F" | "U";
         status?: "L" | "D" | "U";
-        photo?: unknown | null;
+        photo?: any | null;
         country?: string | null;
         country_of_death?: string | null;
         death_governorate?: string | null;
@@ -30,10 +30,10 @@ declare global {
     };
 
     interface Window {
-        FamilyTree: unknown;
+        FamilyTree: any;
     }
 
-    declare var FamilyTree: unknown;
+    declare var FamilyTree: any;
 
     interface MemberNode {
         id: number;

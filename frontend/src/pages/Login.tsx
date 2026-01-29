@@ -33,7 +33,7 @@ const login = async () => {
         if (data?.session) {
             navigate("/family");
         }
-    } catch (err: unknown) {
+    } catch (err: any) {
         setError(err.message || "Login failed");
     } finally {
         setLoading(false);
@@ -59,7 +59,7 @@ const login = async () => {
       } else {
         setError(data?.message || "Failed to resend confirmation");
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       setError(err?.response?.data?.detail || "Failed to resend confirmation");
     } finally {
       setResending(false);
