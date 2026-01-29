@@ -27,7 +27,7 @@ const sexFields = [
 const statusFields = [
     { code: "L", label: "Living" },
     { code: "D", label: "Deceased" },
-    { code: "U", label: "any" },
+    { code: "U", label: "Unknown" },
 ];
 const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
     const { selectedPerson } = useWorkspaceStore();
