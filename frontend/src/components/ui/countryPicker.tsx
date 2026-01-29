@@ -1,6 +1,5 @@
 import Combobox from "@/components/ui/combobox";
 import { countriesAndCities } from "@/utils/countriesandcities";
-import { useState } from "react";
 
 type Props = {
     country?: string | null;
@@ -10,89 +9,58 @@ type Props = {
     label?: string;
 };
 
-const CountryPicker = ({
-    country,
-    city,
-    setCountry,
-    setCity,
-    label
-}: Props) => {
+const CountryPicker = ({ country, city, setCountry, setCity, label }: Props) => {
 
-
-    ///mapping
-    const countries = countriesAndCities.map((obj, index) => ({
-        id: index,
-        country: obj,
-    }));
-
-    const countryNames = countriesAndCities.map((obj, index) => ({
+    const countryList = countriesAndCities.map((obj, index) => ({
         id: index,
         label: obj.country,
+        cities: obj.cities
     }));
 
-    const propCountry = countries.find((item) => item.country.country === country)
+    const currentCountryObj = countryList.find((c) => c.label === country);
 
-    const [selectedCountry, setSelectedCountry] = useState(propCountry || null)
+    const cities = currentCountryObj 
+        ? currentCountryObj.cities.map((name, index) => ({ id: index, label: name }))
+        : [];
 
-    let cities: {
-        id: number;
-        label: string;
-    }[] = [];
-
-    if (selectedCountry) {
-        cities = selectedCountry.country.cities.map((name: string, index: number) => ({
-            id: index,
-            label: name
-        }));
-    }
-
-    const propCity = cities.find((item) => item.label === city)
-
-    //eslint-disable-next-line
-    const [selectedCity, setSelectedCity] = useState(propCity || null)
+    const currentCityObj = cities.find((c) => c.label === city);
 
     const onCountryChange = (id: number | null) => {
-        const g = countries.find((item) => String(item.id) === String(id));
-        setCountry(g ? g.country.country : null)
-        setSelectedCountry(g || null)
-        setCity(null);
+        const found = countryList.find((c) => c.id === id);
+        setCountry(found ? found.label : null);
+        setCity(null); 
     };
 
     const onCityChange = (id: number | null) => {
-        const d = cities.find((item) => String(item.id) === String(id));
-        setCity(d ? d.label : null);
-        setSelectedCity(d || null);
+        const found = cities.find((c) => c.id === id);
+        setCity(found ? found.label : null);
     };
-
 
     return (
         <div className="flex flex-col gap-3 w-full text-xs">
-            {label && <p className="text-base font-medium ">Location of {label}</p>}
+            {label && <p className="text-base font-medium">Location of {label}</p>}
 
-            {/* Countries */}
             <div className="flex flex-col">
-                <label className=" text-primary-foreground mb-1 px-1">Country</label>
+                <label className="text-primary-foreground mb-1 px-1">Country</label>
                 <Combobox
-                    list={countryNames}
-                    value={propCountry?.id}
+                    list={countryList}
+                    value={currentCountryObj?.id}
                     listType="Country"
                     setValue={onCountryChange}
                 />
             </div>
 
-
-            {country !== "Lebanon" && selectedCountry?.country.country !== "Lebanon" &&
+            {country && country !== "Lebanon" && (
                 <div className="flex flex-col">
-                    <label className=" text-primary-foreground mb-1 px-1">City</label>
+                    <label className="text-primary-foreground mb-1 px-1">City</label>
                     <Combobox
-                        list={selectedCountry ? cities : []}
+                        list={cities}
                         listType="City"
-                        value={propCity?.id}
+                        value={currentCityObj?.id}
                         setValue={onCityChange}
-                        disabled={!selectedCountry}
                     />
                 </div>
-            }
+            )}
         </div>
     );
 };
