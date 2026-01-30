@@ -27,7 +27,7 @@ const Hero = () => {
                 {/* <p className="text-xs text-primary-foreground -mt-4 italic">Free. No credit card required.</p> */}
             </div>
             <div className="lg:w-[50%] lg:mt-0 mt-6 ">
-                <img src="/hero.jpg" alt="" className="object-cover w-full rounded-2xl lg:h-auto h-70" />
+                <img src={`${import.meta.env.BASE_URL}hero.jpg`} alt="" className="object-cover w-full rounded-2xl lg:h-auto h-70" />
             </div>
 
 
