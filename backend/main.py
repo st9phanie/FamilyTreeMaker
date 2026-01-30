@@ -4,7 +4,7 @@ from routers import auth, person, family
 
 app = FastAPI()
 
-origins = ["http://localhost:5173","https://origin-family-tree.netlify.app"]
+origins = ["http://localhost:5173","st9phanie.github.io/FamilyTreeMaker/"]
 
 app.add_middleware(
     CORSMiddleware,
