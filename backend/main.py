@@ -4,7 +4,7 @@ from routers import auth, person, family
 
 app = FastAPI()
 
-origins = ["http://localhost:5173","st9phanie.github.io"]
+origins = ["http://localhost:5173","https://st9phanie.github.io"]
 
 app.add_middleware(
     CORSMiddleware,
