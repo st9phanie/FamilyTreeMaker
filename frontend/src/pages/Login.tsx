@@ -94,7 +94,7 @@ const login = async () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded-lg bg-white px-2 py-2 w-[360px] border-sidebar-border"
+          className="border rounded-lg autofill:bg-gray-200 invalid:border-red-700 active:border-none invalid:border-2 invalid:text-red-700 focus:bg-white active:bg-gray-100 bg-white px-2 py-2 w-[360px] border-sidebar-border focus:border-none"
         />
 
         <input
@@ -103,7 +103,7 @@ const login = async () => {
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="border px-2 rounded-lg bg-white py-2 w-[360px]  border-sidebar-border"
+          className="border px-2  rounded-lg bg-white py-2 w-[360px]  border-sidebar-border"
         />
 
         {error && <p className="text-sm text-red-600">{error}</p>}

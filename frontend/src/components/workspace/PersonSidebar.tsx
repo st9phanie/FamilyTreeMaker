@@ -43,7 +43,7 @@ const PersonSidebar = ({ name, onAddSibling, onEditDetails, onAddChild, onAddPar
         <SidebarLayout>
 
             <div className='flex flex-col gap-y-2 '>
-                <img src={selectedPerson.photo || "/blackdefaultpfp.jpg"} className=' size-24 place-self-center rounded-full border-2 border-sidebar-border ' />
+                <img src={selectedPerson.photo || "/blackdefaultpfp.jpg"} loading="lazy" className=' size-24 place-self-center rounded-full border-2 border-sidebar-border ' />
                 <p className='text-center text-md text-primary font-medium mt-5'>{name}</p>
                 <p className='text-center text-sm text-text-primary-foreground '>{selectedPerson.birth} </p>
                 <div className='border-sidebar-border border-t h-1 w-full my-5 rounded-t-full' />

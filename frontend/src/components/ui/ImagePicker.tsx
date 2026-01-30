@@ -37,6 +37,7 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
       >
         {preview ? (
           <img
+          loading="lazy"
             src={preview}
             alt="Preview"
             className="w-full h-full object-cover"
