@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build && shx cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview"
-  },
+  }, 
   "dependencies": {
     "@balkangraph/familytree.js": "^1.9.47",
     "@balkangraph/familytree2.js": "^2.0.172",
