@@ -25,12 +25,10 @@ export const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
-export async function retryFetch(fn: () => Promise<any>, retries = 3, delay = 500) {
-  try {
-    return await fn();
-  } catch (err) {
-    if (retries <= 0) throw err;
-    await new Promise(res => setTimeout(res, delay));
-    return retryFetch(fn, retries - 1, delay);
-  }
+export const handlePdfExport = (FamilyTree: any, family:any) => {
+    FamilyTree.pdfPrevUI.show(family, {
+        format: "A4",
+        header: 'My Header',
+        footer: 'My Footer. Page {current-page} of {total-pages}',
+    });
 }

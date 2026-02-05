@@ -11,8 +11,8 @@ const Hero = () => {
 
     return (
         <section id="" className='bg-secondary flex flex-col lg:flex-row w-full h-screen lg:justify-between px-20 py-5 lg:items-center z-10 '>
-            <div className="bg-teal-800 dark:bg-secondary size-100 top-15 right-0 -z-10 absolute rounded-bl-full" />
-            <div className="absolute top-[90%] left-0 -z-10 w-20 h-20 bg-teal-800 dark:bg-secondary rounded-tr-full" />
+            <div className="bg-teal-700  size-100 top-15 right-0 -z-10 absolute rounded-bl-full" />
+            <div className="absolute top-[90%] left-0 -z-10 w-20 h-20 bg-teal-700 rounded-tr-full" />
 
             <div className="flex flex-col lg:w-[50%] gap-y-6 lg:pr-10 lg:items-start items-center lg:text-start text-center">
                 <h1 className="font-semibold  lg:text-[52px] text-4xl  text-primary  ">Build a family tree</h1>

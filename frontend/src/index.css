@@ -19,15 +19,49 @@ svg.tommy .node.female>rect {
   fill: #861f24;
 }
 
-.dark #tree svg {
-  background-color: #020617 !important;
+#tree svg {
+  background-color: var(--secondary) !important;
 }
 
-.dark #tree text {
+#tree text {
   fill: white !important;
 }
 
+div.bft-light div.bft-family-menu [data-item] {
+  display: flex;
+  background-color: var(--secondary) !important;
+  color: var(--primary) !important;
+}
 
+div.bft-light div.bft-family-menu [data-item]:hover {
+  cursor: pointer;
+  background-color: oklch(12.9% 0.042 264.695) !important;
+  color: white !important;
+}
+
+.dark div.bft-light div.bft-family-menu [data-item] {
+  display: flex;
+  background-color: oklch(0.208 0.042 265.755) !important;
+  color: white !important;
+}
+
+.dark div.bft-light div.bft-family-menu [data-item]:hover {
+  display: flex;
+  background-color: oklch(12.9% 0.042 264.695) !important;
+  color: white !important;
+}
+
+[data-ctrl-menu] {
+  top:15px !important;
+  height:40px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+[data-ctrl-menu] hr {
+  background-color: var(--primary) !important;
+}
 
 
 @custom-variant dark (&:is(.dark *));
@@ -108,12 +142,12 @@ svg.tommy .node.female>rect {
 }
 
 .dark {
-  --primary: oklch(0.929 0.013 255.508);
+  --primary: oklch(1 0 0);
   --secondary: oklch(12.9% 0.042 264.695);
   --sidebar-border: oklch(37.2% 0.044 257.287);
   --primary-foreground: oklch(86.9% 0.022 252.894);
   --muted-foreground: oklch(27.9% 0.041 260.031);
-    color-scheme: dark;
+  color-scheme: dark;
 
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);

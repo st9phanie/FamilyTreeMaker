@@ -18,27 +18,27 @@ const Login = () => {
 
 
 
-const login = async () => {
+  const login = async () => {
     setLoading(true);
     setError(null);
 
     try {
-        const { data, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (authError) throw authError;
+      if (authError) throw authError;
 
-        if (data?.session) {
-            navigate("/family");
-        }
+      if (data?.session) {
+        navigate("/family");
+      }
     } catch (err: any) {
-        setError(err.message || "Login failed");
+      setError(err.message || "Login failed");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
 
   const resend = async () => {
@@ -80,7 +80,7 @@ const login = async () => {
         <div className="w-90 text-center gap-y-10 mx-auto flex flex-col items-center justify-center h-full">
           <h3 className="text-4xl font-semibold">Hello!</h3>
           <p className="text-wrap ">Start creating your family tree for free by signing up today. </p>
-          <Button className="w-full capitalize py-5 bg-slate-700 text-white border-none"
+          <Button className="w-full capitalize py-5 bg-slate-700 hover:bg-slate-800 text-white border-none"
             onClick={goToSignup}>Sign up</Button>
         </div>
       </div>
@@ -94,7 +94,7 @@ const login = async () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded-lg autofill:bg-gray-200 invalid:border-red-700 active:border-none invalid:border-2 invalid:text-red-700 focus:bg-white active:bg-gray-100 bg-white px-2 py-2 w-[360px] border-sidebar-border focus:border-none"
+          className="border rounded-lg dark:autofill:shadow-[inset_0_0_0px_1000px_#314158] bg-white px-2 py-2 w-[360px] border-sidebar-border "
         />
 
         <input
@@ -103,7 +103,7 @@ const login = async () => {
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
-          className="border px-2  rounded-lg bg-white py-2 w-[360px]  border-sidebar-border"
+          className="border px-2 dark:autofill:shadow-[inset_0_0_0px_1000px_#314158]  rounded-lg bg-white py-2 w-[360px]  border-sidebar-border"
         />
 
         {error && <p className="text-sm text-red-600">{error}</p>}

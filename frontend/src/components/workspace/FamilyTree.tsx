@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { handlePdfExport } from "@/lib/helperfunctions";
 
 type Props = {
     nodes: MemberNode[];
@@ -48,6 +49,22 @@ const Family = ({ nodes, onSend }: Props) => {
                 toolbar: { zoom: true, fit: true, fullScreen: true },
                 nodeBinding: { field_0: "name" },
                 nodes: nodes,
+                menu: {
+                    pdf: {
+                        text: "Export as PDF",
+                        icon: "",
+                    },
+                    png: {
+                        text: "Export as PNG",
+                        icon: "",
+
+                    },
+                    svg: {
+                        text: "Export as SVG",
+                        icon: "",
+
+                    },
+                }
             });
 
             family.onNodeClick((args: any) => {
