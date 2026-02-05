@@ -10,37 +10,76 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createNewFamily, fetchUserFamiliesAndLengths } from "@/lib/functions";
 import { supabase } from "@/lib/supabase";
-import { Loader2, Plus } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { ArrowDownAz, ArrowDownZa, ChevronDown, Loader2, Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+interface DashboardState {
+    families: Family[];
+    members: Record<string, number>;
+}
 
 const Families = () => {
     const navigate = useNavigate();
 
-    const [families, setFamilies] = useState<Family[]>([]);
-    const [members, setMembers] = useState<number[]>([]);
+    const [dashboardData, setDashboardData] = useState<DashboardState>({
+        families: [],
+        members: {}
+    });
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [newName, setNewName] = useState<string>("")
+    const [sortType, setSortType] = useState<"none" | "asc" | "desc">("none");
 
     const loadFamilies = useCallback(async () => {
         try {
             setLoading(true);
             const data = await fetchUserFamiliesAndLengths();
-            if (data) {
-                setFamilies(data[0]);
-                setMembers(data[1]);
+
+            if (data && Array.isArray(data)) {
+                const [familiesList, membersArray] = data;
+                const membersMap: Record<string, number> = {};
+                if (Array.isArray(familiesList) && Array.isArray(membersArray)) {
+                    familiesList.forEach((family, index) => {
+                        membersMap[family.id] = membersArray[index] || 0;
+                    });
+                }
+
+                setDashboardData({
+                    families: familiesList || [],
+                    members: membersMap
+                });
             }
         } catch (err) {
-            setError("Failed to load your families. Please try logging in again." + err);
+            setError("Failed to load data. " + err);
         } finally {
             setLoading(false);
         }
     }, []);
+
+    const sortedFamilies = useMemo(() => {
+        const families = [...dashboardData.families];
+
+        if (sortType === "asc") {
+            return families.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortType === "desc") {
+            return families.sort((a, b) => b.name.localeCompare(a.name));
+        }
+
+        return families;
+    }, [dashboardData.families, sortType]);
 
     const createFamily = async () => {
         if (!newName.trim()) return;
@@ -80,19 +119,40 @@ const Families = () => {
 
     return (
         <Layout className="flex flex-col">
-            <h1 className="text-lg drop-shadow-sm font-medium tracking-wide mb-3">
-                Your Families
-            </h1>
+            <div className="mb-3 flex flex-row justify-between">
+
+                <h1 className="text-lg drop-shadow-sm font-medium tracking-wide ">
+                    Your Families
+                </h1>
+
+                <div className=" mr-1">
+                    <DropdownMenu modal={false}>
+                        <DropdownMenuTrigger className="flex flex-row items-center gap-x-2 cursor-pointer text-primary">
+                            <span>Sort:</span>
+                            <span>{sortType === 'asc' ? 'Ascending (A-Z)' : sortType === 'desc' ? 'Descending (Z-A)' : 'None'}</span>
+                            <ChevronDown className="size-5" />
+
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="mr-6">
+                            <DropdownMenuItem onClick={() => setSortType("asc")} className='cursor-pointer'>
+                                <ArrowDownAz className="text-primary" />Ascending (A-Z)</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setSortType("desc")} className="cursor-pointer">
+                                <ArrowDownZa className="text-primary" /> Descending (Z-A)</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                </div>
+            </div>
 
             <div
                 className={`grid grid-cols-7 w-full gap-y-10 gap-x-3`}
             >
-                {families.map((f, index) => (
+                {sortedFamilies.map((f) => (
                     <FamilyCard
                         key={f.id}
                         name={f.name}
                         id={f.id}
-                        memberCount={members[index]}
+                        memberCount={dashboardData.members[f.id] || 0}
                         onRefresh={loadFamilies}
                     />
                 ))}
