@@ -40,6 +40,12 @@ class Person(BaseModel):
     death_area: Optional[str] = None
     death_district: Optional[str] = None
 
+class User(BaseModel):
+    id: Optional[str] = None
+    name: Optional[str] = None
+    country: Optional[str] = None
+    email: Optional[str] = None
+
 
 class Family(BaseModel):
     id: Optional[str] = None

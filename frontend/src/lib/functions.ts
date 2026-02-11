@@ -93,6 +93,8 @@ export async function deletePerson(id: number) {
   return data;
 }
 
+// --- FAMILY FUNCTIONS  ---
+
 export async function updateFamilyCardName(id: string, new_name: string) {
   const headers = await getAuthHeader();
 
@@ -106,12 +108,23 @@ export async function createNewFamily(family: Partial<Family>) {
 }
 
 export async function changeImage(id: number, formData: FormData) {
-
   const { data } = await api.post(`/person/${id}/upload-photo`, formData);
   return data;
 }
 
 export async function deleteFamily(family_id: string) {
   const { data } = await api.delete(`/family/${family_id}`);
+  return data;
+}
+
+// --- USER FUNCTIONS  ---
+
+export async function updateUser( user: Partial<User>) {
+  const { data } = await api.put(`/user/update`, user);
+  return data;
+}
+
+export async function changeUserImage(formData: FormData) {
+  const { data } = await api.post(`/user/upload-photo`, formData);
   return data;
 }

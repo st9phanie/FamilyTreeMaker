@@ -1,16 +1,14 @@
-from fastapi import APIRouter, HTTPException,File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from supabaseClient import supabase
 from fastapi import FastAPI, Header, HTTPException, status, Depends
 from models import Person
 from dependencies import get_current_user
 from typing import Optional, Any
 
-router = APIRouter(
-    prefix="/person",
-    tags=["person"] # Grouping in Swagger docs
-)
+router = APIRouter(prefix="/person", tags=["person"])
 
-#---------------------------------- APP -----------------------------------------------
+# ---------------------------------- APP -----------------------------------------------
+
 
 # get person info
 @router.get("/{id}")
@@ -35,7 +33,7 @@ def update_person(id: int, person: Person):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No fields provided for update.",
         )
-        
+
     response = supabase.table("person").update(data).eq("id", id).execute()
     if response.data:
         return {
@@ -48,50 +46,61 @@ def update_person(id: int, person: Person):
             detail=f"Person with id {id} not found",
         )
 
+
 # picture
 @router.post("/{id}/upload-photo")
 async def change_picture(id: int, photo: UploadFile = File(...)):
     try:
         file_content = await photo.read()
-        file_extension = photo.filename.split('.')[-1]
+        file_extension = photo.filename.split(".")[-1]
         storage_path = f"/person_{id}.{file_extension}"
-        
+
         response = supabase.storage.from_("images").upload(
-            path=storage_path,       
-            file=file_content,        
-            file_options={
-                "cache-control": "3600",
-                "upsert": "true"
-            }
+            path=storage_path,
+            file=file_content,
+            file_options={"cache-control": "3600", "upsert": "true"},
         )
 
-        public_url_response = supabase.storage.from_('images').get_public_url(storage_path)
+        public_url_response = supabase.storage.from_("images").get_public_url(
+            storage_path
+        )
         print(public_url_response)
-        db_response = supabase.table('person').update(
-            {"photo": str(public_url_response)}
-        ).eq('id', id).execute()
+        db_response = (
+            supabase.table("person")
+            .update({"photo": str(public_url_response)})
+            .eq("id", id)
+            .execute()
+        )
 
         return {
             "status": "success",
             "url": public_url_response,
-            "data": db_response.data
+            "data": db_response.data,
         }
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
 
-#create oerson        
+
+# create oerson
 @router.post("")
 def add_person(person: Person, user_id: str = Depends(get_current_user)):
-    family_check = supabase.table("family").select("id").eq("id", person.family_id).eq("user_id", user_id).execute()
-    
+    family_check = (
+        supabase.table("family")
+        .select("id")
+        .eq("id", person.family_id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+
     if not family_check.data:
-        raise HTTPException(status_code=403, detail="You cannot add members to a family you don't own")
+        raise HTTPException(
+            status_code=403, detail="You cannot add members to a family you don't own"
+        )
 
     data = person.model_dump(mode="json", exclude_unset=True)
     response = supabase.table("person").insert(data).execute()
-    
+
     if response.data:
         return {
             "status": "success",
@@ -102,6 +111,7 @@ def add_person(person: Person, user_id: str = Depends(get_current_user)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to insert person: {response.error}",
         )
+
 
 # ----------- ADD PARTNER -----------------
 @router.post("/{id}/add_partner")
@@ -120,6 +130,7 @@ def add_partner(id: int, partner: Person):
     supabase.table("person").update({"partner_id": partners}).eq("id", id).execute()
 
     return {"status": "success", "new_partner_id": new_id}
+
 
 # -------------------------------------- ADD PARENT -----------------------------------------------
 @router.post("/{id}/add_parent")

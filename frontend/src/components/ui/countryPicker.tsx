@@ -7,9 +7,10 @@ type Props = {
     setCountry: (value: string | null) => void;
     setCity: (value: string | null) => void;
     label?: string;
+    className?:string;
 };
 
-const CountryPicker = ({ country, city, setCountry, setCity, label }: Props) => {
+const CountryPicker = ({ country, city, setCountry, setCity, label, className }: Props) => {
 
     const countryList = countriesAndCities.map((obj, index) => ({
         id: index,
@@ -37,11 +38,11 @@ const CountryPicker = ({ country, city, setCountry, setCity, label }: Props) => 
     };
 
     return (
-        <div className="flex flex-col gap-3 w-full text-xs">
+        <div className={`flex flex-col gap-3 text-xs ${className}`}>
             {label && <p className="text-base font-medium">Location of {label}</p>}
 
             <div className="flex flex-col">
-                <label className="text-primary-foreground mb-1 px-1">Country</label>
+                <label className="text-primary-foreground mb-1 px-1">{label ? "Country": ""}</label>
                 <Combobox
                     list={countryList}
                     value={currentCountryObj?.id}

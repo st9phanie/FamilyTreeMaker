@@ -38144,9 +38144,9 @@ export const countriesAndCities: LocationData[] = [
     ]
   },
   {
-    "iso2": "IL",
-    "iso3": "ISR",
-    "country": "Israel",
+    "iso2": "PS",
+    "iso3": "PSE",
+    "country": "Palestine",
     "cities": [
       "`Alma",
       "`Amir",

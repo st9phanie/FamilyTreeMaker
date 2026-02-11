@@ -122,7 +122,6 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 await changeImage(personId, imagePayload);
             }
 
-           // onBack();
         } catch (error) {
             console.error("Failed to save person", error);
         } finally {

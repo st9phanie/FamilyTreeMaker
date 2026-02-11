@@ -23,6 +23,14 @@ declare global {
         family_id?: string
     };
 
+    type User = {
+        id?: string;
+        name?: string;
+        email?: string;
+        photo?: any | null;
+        country?: string | null; 
+    }
+
     type Family = {
         id: string;
         user_id: string;

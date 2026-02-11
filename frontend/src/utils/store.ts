@@ -1,5 +1,6 @@
 // store.ts
 import { fetchFamilyMembers } from '@/lib/functions';
+import { supabase } from '@/lib/supabase';
 import { create } from 'zustand';
 import { persist } from "zustand/middleware";
 
@@ -24,13 +25,51 @@ interface WorkspaceState {
 
     selectPersonById: (id: number) => void;
     clearSelection: () => void;
+}
 
+interface UserState {
+    user: User | null;
+    fetchUser: () => Promise<void>;
+    loading: boolean;
+    clearUser: () => void;
 }
 
 export const useSidebar = create<SidebarState>((set) => ({
     isOpen: true,
     toggle: () => set((state) => ({ isOpen: !state.isOpen })),
-}))
+}));
+
+export const useUserState = create<UserState>((set) => ({
+    user: null,
+    loading: false,
+
+    fetchUser: async () => {
+        set({ loading: true });
+        try {
+            const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !authUser) {
+                set({ user: null, loading: false });
+                return;
+            }
+
+            const { data: dbUser, error: dbError } = await supabase
+                .from('user')
+                .select('*')
+                .eq('id', authUser.id)
+                .maybeSingle();                
+
+            if (dbError) throw dbError;
+
+            set({ user: dbUser, loading: false });
+        } catch (error) {
+            console.error("Error fetching user:", error);
+            set({ user: null, loading: false });
+        }
+    },
+
+    clearUser: () => set({ user: null }),
+}));
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     familyMembers: [],
@@ -45,7 +84,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
             const current = get().selectedPerson;
             if (current) {
-                const updated = data.find((m: Person )=> m.id === current.id);
+                const updated = data.find((m: Person) => m.id === current.id);
                 set({ selectedPerson: updated || null });
             }
         } finally {

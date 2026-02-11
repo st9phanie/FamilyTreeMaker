@@ -11,7 +11,11 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
   const [preview, setPreview] = useState<string | null>(currentPhoto || null);
 
   useEffect(() => {
-    setPreview(currentPhoto || null);
+    const hasLocalFile = fileInputRef.current?.files && fileInputRef.current.files.length > 0;
+
+    if (!hasLocalFile) {
+      setPreview(currentPhoto || null);
+    }
   }, [currentPhoto]);
 
 
@@ -25,7 +29,7 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
 
     const base64 = await fileToBase64(file);
 
-    setPreview(base64); 
+    setPreview(base64);
     setPhoto(file);
   };
 
@@ -37,7 +41,7 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
       >
         {preview ? (
           <img
-          loading="lazy"
+            loading="lazy"
             src={preview}
             alt="Preview"
             className="w-full h-full object-cover"

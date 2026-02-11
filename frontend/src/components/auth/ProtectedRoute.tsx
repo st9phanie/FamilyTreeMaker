@@ -6,7 +6,6 @@ const ProtectedRoute = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
-        // 1. Check current session immediately
         const initAuth = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             setIsAuthenticated(!!session);
@@ -14,16 +13,13 @@ const ProtectedRoute = () => {
 
         initAuth();
 
-        // 2. Listen for any changes (Login, Logout, Token Refresh)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setIsAuthenticated(!!session);
         });
 
-        // 3. Cleanup the listener when component unmounts
         return () => subscription.unsubscribe();
     }, []);
 
-    // While checking, show nothing (or a loading spinner)
     if (isAuthenticated === null) {
         return (
             <div className="h-screen w-screen flex items-center justify-center">
