@@ -39,37 +39,51 @@ export const useSidebar = create<SidebarState>((set) => ({
     toggle: () => set((state) => ({ isOpen: !state.isOpen })),
 }));
 
-export const useUserState = create<UserState>((set) => ({
-    user: null,
-    loading: false,
+export const useUserState = create<UserState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      loading: true,
 
-    fetchUser: async () => {
-        set({ loading: true });
-        try {
-            const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-
-            if (authError || !authUser) {
-                set({ user: null, loading: false });
-                return;
-            }
-
-            const { data: dbUser, error: dbError } = await supabase
-                .from('user')
-                .select('*')
-                .eq('id', authUser.id)
-                .maybeSingle();                
-
-            if (dbError) throw dbError;
-
-            set({ user: dbUser, loading: false });
-        } catch (error) {
-            console.error("Error fetching user:", error);
-            set({ user: null, loading: false });
+      fetchUser: async () => {
+        if (!get().user) {
+          set({ loading: true });
         }
-    },
 
-    clearUser: () => set({ user: null }),
-}));
+        try {
+          const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+
+          if (authError || !authUser) {
+            set({ user: null, loading: false });
+            return;
+          }
+
+          const { data: dbUser, error: dbError } = await supabase
+            .from('user')
+            .select('*')
+            .eq('id', authUser.id)
+            .maybeSingle();
+
+          if (dbError) throw dbError;
+
+          set({ user: dbUser, loading: false });
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          set({ user: null, loading: false });
+        }
+      },
+
+      clearUser: () => {
+        set({ user: null, loading: false });
+        localStorage.removeItem('user-storage'); 
+      },
+    }),
+    { 
+      name: 'user-storage',
+      partialize: (state) => ({ user: state.user }), 
+    }
+  )
+);
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     familyMembers: [],

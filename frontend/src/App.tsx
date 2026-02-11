@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useTheme } from "./utils/store";
 import { useEffect } from "react";
 import { useUserState } from '@/utils/store'
+import { supabase } from "./lib/supabase";
 
 function FamilyTreeWrapper() {
   const { id } = useParams<{ id: string }>();
@@ -31,11 +32,21 @@ const App = () => {
     }
   }, [isDarkMode]);
 
-  const { fetchUser } = useUserState();
+  const { fetchUser, clearUser } = useUserState();
 
   useEffect(() => {
     fetchUser();
-  }, [fetchUser]);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        fetchUser();
+      } else if (event === "SIGNED_OUT") {
+        clearUser();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [fetchUser, clearUser]);
 
   return (
     <div className="max-w-full min-h-screen poppins flex flex-col">
