@@ -10,10 +10,20 @@ import {
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useTheme, useUserState } from '@/utils/store'
+import { useEffect, useState } from 'react'
 
 const Navbar = () => {
+    const { clearUser, user } = useUserState()
 
-    const { clearUser } = useUserState()
+    const [preview, setPreview] = useState<string | null>(user?.photo || null);
+
+    useEffect(() => {
+
+        if (!user?.photo) {
+            setPreview(user?.photo || null);
+        }
+    }, [user?.photo]);
+
 
     async function signOut() {
         const { error } = await supabase.auth.signOut()
@@ -31,12 +41,12 @@ const Navbar = () => {
             <Link to="/family"><p className='text-lg font-medium cursor-pointer'>ORIGIN</p></Link>
 
             <div className='flex'>
-                <ul className='flex flex-row gap-x-4 items-center justify-between text-lg font-medium'>
+                <ul className='flex flex-row gap-x-2 items-center justify-between text-lg font-medium'>
                     <li className=''>
                         <div className='flex p-1 hover:bg-teal-700/20 rounded-full'>
                             <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger>
-                                    <User2 className='size-5  cursor-pointer  ' />
+                                    {preview ? <div className='rounded-full cursor-pointer size-6'><img src={preview!} height={24} width={24} className='rounded-full'  /></div> : <User2 className='size-  cursor-pointer  ' />}
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
                                     <DropdownMenuLabel>Account</DropdownMenuLabel>
