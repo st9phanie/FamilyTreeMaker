@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import MainLayout from "./Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useTheme } from "./utils/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUserState } from '@/utils/store'
 import { supabase } from "./lib/supabase";
 
