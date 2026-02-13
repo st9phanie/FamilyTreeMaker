@@ -1,4 +1,4 @@
-import { Routes, Route, useParams, Navigate } from "react-router-dom";
+import { Routes, Route, useParams, Navigate, useNavigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Families from "./pages/Families";
 import MyProfile from "./pages/MyProfile";
@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import MainLayout from "./Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { useTheme } from "./utils/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserState } from '@/utils/store'
 import { supabase } from "./lib/supabase";
 
@@ -19,6 +19,19 @@ function FamilyTreeWrapper() {
 
 const App = () => {
 
+  const [isResetting, setIsResetting] = useState(false);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsResetting(true);
+        navigate("/profile?reset=true");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
   const isDarkMode = useTheme((state) => state.isDarkMode);
 
   useEffect(() => {
@@ -40,7 +53,12 @@ const App = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         fetchUser();
-      } else if (event === "SIGNED_OUT") {
+      }
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecoveryMode(true);
+      }
+
+      else if (event === "SIGNED_OUT") {
         clearUser();
       }
     });

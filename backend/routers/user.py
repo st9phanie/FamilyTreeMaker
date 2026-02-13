@@ -68,6 +68,7 @@ async def change_picture(photo: UploadFile = File(...), current_user: Any = Depe
         db_response = supabase.table('user').update(
             {"photo": str(public_url_response)}
         ).eq('id', current_user).execute()
+        
 
         return {
             "status": "success",
@@ -78,3 +79,21 @@ async def change_picture(photo: UploadFile = File(...), current_user: Any = Depe
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
+#delete picture
+@router.delete("/delete-photo")
+async def delete_picutre(photo: str, current_user: Any = Depends(get_current_user)):
+    try:
+        response = supabase.storage.from_("images").remove([photo])
+        
+        if response.data:
+            db_response = supabase.table('user').update(
+                {"photo": ""}
+            ).eq('id', current_user).execute()    
+            
+            if db_response.data:  
+                return {
+                    "status": "success",
+                }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

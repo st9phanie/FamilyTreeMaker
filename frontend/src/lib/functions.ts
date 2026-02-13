@@ -128,3 +128,8 @@ export async function changeUserImage(formData: FormData) {
   const { data } = await api.post(`/user/upload-photo`, formData);
   return data;
 }
+
+export async function deleteUserImage(photo: string) {
+  const { data } = await api.delete(`/user/delete-photo`, photo);
+  return data;
+}

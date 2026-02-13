@@ -6,11 +6,22 @@ import { useUserState } from '@/utils/store'
 import { Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { changeUserImage, updateUser } from '@/lib/functions'
-
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from '../ui/input'
+import { supabase } from '@/lib/supabase'
+import { useSearchParams } from 'react-router-dom'
 
 const PersonalInfoTab = () => {
     const { user, loading, fetchUser } = useUserState()
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [showResetModal, setShowResetModal] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
     const [formData, setFormData] = useState<User>({
@@ -22,6 +33,26 @@ const PersonalInfoTab = () => {
 
     const handleChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const updatePassword = async () => {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) alert(error.message);
+        else {
+            alert("Password updated!");
+            setShowResetModal(false);
+        }
+    };
+
+    useEffect(() => {
+        if (searchParams.get("reset") === "true") {
+            setShowResetModal(true);
+        }
+    }, [searchParams]);
+
+    const handleClose = () => {
+        setShowResetModal(false);
+        setSearchParams({});
     };
 
 
@@ -38,8 +69,8 @@ const PersonalInfoTab = () => {
 
 
     const profileItems = [
-        { name: "Name", value: formData?.name },
-        { name: "Email", value: formData?.email }
+        { name: "Name", value: formData?.name, type: "text" },
+        { name: "Email", value: formData?.email, type: "email" }
     ]
 
     const handleSubmit = async () => {
@@ -56,7 +87,7 @@ const PersonalInfoTab = () => {
 
             let response;
             if (user) {
-             response = await updateUser(userData);
+                response = await updateUser(userData);
 
                 if (formData.photo instanceof File) {
                     const imagePayload = new FormData();
@@ -73,7 +104,7 @@ const PersonalInfoTab = () => {
         }
     };
 
-    if (loading) return <TabLayout><Loader2 className='animate-spin size-10'/></TabLayout>;
+    if (loading) return <TabLayout><Loader2 className='animate-spin size-10' /></TabLayout>;
     if (!user) return <TabLayout>No user found. Please log in.</TabLayout>;
 
     return (
@@ -81,7 +112,7 @@ const PersonalInfoTab = () => {
             <div className='flex flex-col w-full h-full items-center '>
                 <h1 className='text-2xl text-start w-[600px] '>Personal Info</h1>
 
-                <div className='flex flex-col  justify-center py-5 lg: w-[600px] gap-y-5 '>
+                <div className='flex flex-col  justify-center py-5 lg:w-[600px] gap-y-5 '>
 
                     <div className='flex flex-col justify-between items-center mt-2 w-full '>
                         <ImagePicker currentPhoto={formData.photo} setPhoto={(value) => handleChange("photo", value)} />
@@ -93,7 +124,7 @@ const PersonalInfoTab = () => {
                         profileItems.map((i, k) => (
                             <div key={k} className='flex flex-row justify-between items-center w-full '>
                                 <span className='w-1/3 font-semibold my-2 text-base text-primary'>{i.name}</span>
-                                <input placeholder={i.name} value={i.value || ""} onChange={(e) => handleChange(i.name.toLowerCase(), e.target.value)} className='w-2/3 border-b py-1 px-2 active:outline-none outline-none cursor-pointer ' />
+                                <input type={i.type} placeholder={i.name} value={i.value || ""} onChange={(e) => handleChange(i.name.toLowerCase(), e.target.value)} className='w-2/3 border-b py-1 px-2 active:outline-none outline-none cursor-pointer ' />
                             </div>
 
                         ))
@@ -108,6 +139,21 @@ const PersonalInfoTab = () => {
                         {isLoading ? "Saving..." : "Save"}</Button>
                 </div>
             </div>
+
+            <Dialog open={showResetModal} onOpenChange={handleClose}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Enter New Password</DialogTitle>
+                    </DialogHeader>
+                    <Input
+                        type="password"
+                        placeholder="New Password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <Button onClick={updatePassword}>Update Password</Button>
+                </DialogContent>
+            </Dialog>
         </TabLayout>
     )
 }
