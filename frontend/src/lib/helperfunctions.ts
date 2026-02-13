@@ -24,11 +24,3 @@ export const fileToBase64 = (file: File): Promise<string> => {
     reader.readAsDataURL(file);
   });
 };
-
-export const handlePdfExport = (FamilyTree: any, family:any) => {
-    FamilyTree.pdfPrevUI.show(family, {
-        format: "A4",
-        header: 'My Header',
-        footer: 'My Footer. Page {current-page} of {total-pages}',
-    });
-}

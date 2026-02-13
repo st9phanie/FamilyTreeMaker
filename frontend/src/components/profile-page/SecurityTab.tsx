@@ -38,7 +38,7 @@ const SecurityTab = () => {
   return (
     <TabLayout>
       <div className='flex flex-col w-full h-full  items-center '>
-        <h1 className='text-2xl text-start w-[600px] mb-5'>Security & Sign In Info</h1>
+        <h1 className='text-2xl text-start w-[600px] mb-5'>Security & Sign in Info</h1>
 
         <div className='flex flex-col justify-center py-5 lg:w-[600px] gap-y-5 my-5'>
           <div className='flex flex-row w-full justify-between items-center'>

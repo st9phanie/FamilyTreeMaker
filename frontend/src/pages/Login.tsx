@@ -59,7 +59,7 @@ const Login = () => {
       } else {
         setError(data?.message || "Failed to resend confirmation");
       }
-    } catch (err: any) {
+    } catch (err:any) {
       setError(err?.response?.data?.detail || "Failed to resend confirmation");
     } finally {
       setResending(false);

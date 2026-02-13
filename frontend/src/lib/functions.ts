@@ -18,7 +18,7 @@ export async function fetchFamilies() {
     return data;
   } catch (err: any) {
     console.error("Error fetching families:", err.response?.data || err.message);
-    throw err; // Throwing allows the component to catch and show an error UI
+    throw err;
   }
 }
 
@@ -130,6 +130,8 @@ export async function changeUserImage(formData: FormData) {
 }
 
 export async function deleteUserImage(photo: string) {
-  const { data } = await api.delete(`/user/delete-photo`, photo);
+  const { data } = await api.delete('/user/delete-photo', {
+    data: { photo } 
+  });
   return data;
 }

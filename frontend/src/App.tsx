@@ -54,10 +54,6 @@ const App = () => {
       if (event === "SIGNED_IN" && session) {
         fetchUser();
       }
-      if (event === 'PASSWORD_RECOVERY') {
-        setRecoveryMode(true);
-      }
-
       else if (event === "SIGNED_OUT") {
         clearUser();
       }
