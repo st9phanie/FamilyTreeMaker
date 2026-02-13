@@ -19,14 +19,12 @@ function FamilyTreeWrapper() {
 
 const App = () => {
 
-  const [isResetting, setIsResetting] = useState(false);
   const navigate = useNavigate();
 
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        setIsResetting(true);
         navigate("/profile?reset=true");
       }
     });

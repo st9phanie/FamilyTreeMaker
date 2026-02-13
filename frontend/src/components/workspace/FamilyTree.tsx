@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { handlePdfExport } from "@/lib/helperfunctions";
 
 type Props = {
     nodes: MemberNode[];

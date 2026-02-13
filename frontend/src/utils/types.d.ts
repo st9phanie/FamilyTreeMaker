@@ -13,7 +13,7 @@ declare global {
         death?: date;
         sex?: "M" | "F" | "U";
         status?: "L" | "D" | "U";
-        photo?: string | null;
+        photo?: any | null;
         country?: string | null;
         country_of_death?: string | null;
         death_governorate?: string | null;
@@ -27,7 +27,7 @@ declare global {
         id?: string;
         name?: string;
         email?: string;
-        photo?: string | null;
+        photo?: any | null;
         country?: string | null; 
     }
 
