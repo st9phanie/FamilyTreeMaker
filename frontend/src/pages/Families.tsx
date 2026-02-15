@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createNewFamily, fetchUserFamiliesAndLengths } from "@/lib/functions";
 import { supabase } from "@/lib/supabase";
+import { useUserState } from "@/utils/store";
 import { ArrowDownAz, ArrowDownZa, ChevronDown, Loader2, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,13 +33,14 @@ interface DashboardState {
 
 const Families = () => {
     const navigate = useNavigate();
+    const { user, loading: authLoading } = useUserState();
 
     const [dashboardData, setDashboardData] = useState<DashboardState>({
         families: [],
         members: {}
     });
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [newName, setNewName] = useState<string>("")
     const [sortType, setSortType] = useState<"none" | "asc" | "desc">("none");
@@ -46,24 +48,33 @@ const Families = () => {
     const loadFamilies = useCallback(async () => {
         try {
             setLoading(true);
+            setError(null);
+
             const data = await fetchUserFamiliesAndLengths();
 
-            if (data && Array.isArray(data)) {
-                const [familiesList, membersArray] = data;
-                const membersMap: Record<string, number> = {};
-                if (Array.isArray(familiesList) && Array.isArray(membersArray)) {
-                    familiesList.forEach((family, index) => {
+            if (!data || !Array.isArray(data) || data.length < 2) {
+                setDashboardData({ families: [], members: {} });
+                return;
+            }
+
+            const [familiesList, membersArray] = data;
+            const membersMap: Record<string, number> = {};
+
+            if (Array.isArray(familiesList) && Array.isArray(membersArray)) {
+                familiesList.forEach((family, index) => {
+                    if (family && family.id) {
                         membersMap[family.id] = membersArray[index] || 0;
-                    });
-                }
+                    }
+                });
 
                 setDashboardData({
-                    families: familiesList || [],
+                    families: familiesList,
                     members: membersMap
                 });
             }
         } catch (err) {
-            setError("Failed to load data. " + err);
+            console.error("Dashboard Load Error:", err);
+            setError("Failed to load families. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -104,10 +115,16 @@ const Families = () => {
 
 
     useEffect(() => {
-        loadFamilies();
-    }, [loadFamilies]);
+        if (!authLoading) {
+            if (user) {
+                loadFamilies();
+            } else {
+                setLoading(false);
+            }
+        }
+    }, [authLoading, user, loadFamilies]);
 
-    if (loading) {
+    if (authLoading || loading) {
         return (
             <Layout>
                 <div className='min-h-max fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>

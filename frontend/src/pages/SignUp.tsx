@@ -47,7 +47,7 @@ const SignUp = () => {
   }
 
   return (
-    <div className="h-screen flex flex-row w-full ">
+    <div className="h-screen hidden lg:flex flex-row w-full ">
       <div className="h-full w-200 bg-teal-800 px-4 flex flex-col text-white justify-between">
         <div className="h-[60px] flex items-center">
           <Link to="/"><p className='md:text-2xl text-xl font-medium '>ORIGIN</p></Link>

@@ -4,7 +4,7 @@ import Navbar from '@/components/index-page/Navbar'
 
 const Index = () => {
   return (
-    <div className='w-full bg-white flex flex-col '>
+    <div className='w-full  flex flex-col '>
         <Navbar />
         <Hero />
         <Footer />

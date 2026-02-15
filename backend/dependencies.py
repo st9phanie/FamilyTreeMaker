@@ -6,7 +6,7 @@ async def get_current_user(authorization: str = Header(None)) -> str:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid or missing token")
     
-    token = authorization.replace("Bearer ", "")
+    token = authorization.split(" ")[1]
     try:
         response = supabase.auth.get_user(token)
         if not response.user:

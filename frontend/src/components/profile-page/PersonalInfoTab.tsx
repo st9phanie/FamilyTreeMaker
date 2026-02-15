@@ -116,7 +116,10 @@ const PersonalInfoTab = () => {
 
                     <div className='flex flex-col justify-between items-center mt-2 w-full '>
                         <ImagePicker currentPhoto={formData.photo} setPhoto={(value) => handleChange("photo", value)} />
-                        <span className='my-2 text-sm text-primary'>Profile Picture</span>
+                        <span className='mt-2 text-sm text-primary'>Profile Picture</span>
+                        {formData.photo && <span className='text-xs text-primary/40 cursor-pointer hover:text-primary/60'>Remove</span>
+
+                        }
                     </div>
 
                     <hr className=' my-2 border-sidebar-border w-full' />

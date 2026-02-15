@@ -14,11 +14,12 @@ async function getAuthHeader() {
 export async function fetchFamilies() {
   try {
     const headers = await getAuthHeader();
+    if (!headers) throw new Error("No authentication headers found");
     const { data } = await api.get(`/family/all`, { headers });
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (err: any) {
     console.error("Error fetching families:", err.response?.data || err.message);
-    throw err;
+    return [];
   }
 }
 
@@ -119,7 +120,7 @@ export async function deleteFamily(family_id: string) {
 
 // --- USER FUNCTIONS  ---
 
-export async function updateUser( user: Partial<User>) {
+export async function updateUser(user: Partial<User>) {
   const { data } = await api.put(`/user/update`, user);
   return data;
 }
@@ -131,7 +132,7 @@ export async function changeUserImage(formData: FormData) {
 
 export async function deleteUserImage(photo: string) {
   const { data } = await api.delete('/user/delete-photo', {
-    data: { photo } 
+    data: { photo }
   });
   return data;
 }
