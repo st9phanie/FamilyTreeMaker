@@ -71,6 +71,10 @@ const Family = ({ nodes, onSend }: Props) => {
                 return false;
             });
 
+            family.onExportStart((args: any) => {
+                args.styles += document.getElementById('myStyles')!.outerHTML;
+            });
+
             treeInstance.current = family;
 
         }, 50)

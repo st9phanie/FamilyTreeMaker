@@ -10,6 +10,61 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Origin - Family Tree Maker</title>
+  <style id="myStyles">
+    @import url('https://fonts.googleapis.com/css2?family=Fleur+De+Leah&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+    svg.tommy .node {
+      font-family: 'Poppins';
+      font-weight: normal !important;
+
+
+    }
+
+    #tree>svg>g>text {
+      font-weight: 400 !important;
+    }
+
+    svg.tommy .node.male>rect {
+      fill: #23354f;
+
+    }
+
+    svg.tommy .node.female>rect {
+      fill: #861f24;
+    }
+
+    #tree svg {
+      background-color: var(--secondary) !important;
+    }
+
+    #tree text {
+      fill: white !important;
+    }
+
+    div.bft-light div.bft-family-menu [data-item] {
+      display: flex;
+      background-color: var(--secondary) !important;
+      color: var(--primary) !important;
+    }
+
+    div.bft-light div.bft-family-menu [data-item]:hover {
+      cursor: pointer;
+      background-color: oklch(12.9% 0.042 264.695) !important;
+      color: white !important;
+    }
+
+    .dark div.bft-light div.bft-family-menu [data-item] {
+      display: flex;
+      background-color: oklch(0.208 0.042 265.755) !important;
+      color: white !important;
+    }
+
+    .dark div.bft-light div.bft-family-menu [data-item]:hover {
+      display: flex;
+      background-color: oklch(12.9% 0.042 264.695) !important;
+      color: white !important;
+    }
+  </style>
 </head>
 
 <body>

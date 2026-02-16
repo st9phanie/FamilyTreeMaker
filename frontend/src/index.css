@@ -11,49 +11,9 @@ body {
   background: var(--secondary);
 }
 
-svg.tommy .node.male>rect {
-  fill: #23354f;
-}
-
-svg.tommy .node.female>rect {
-  fill: #861f24;
-}
-
-#tree svg {
-  background-color: var(--secondary) !important;
-}
-
-#tree text {
-  fill: white !important;
-}
-
-div.bft-light div.bft-family-menu [data-item] {
-  display: flex;
-  background-color: var(--secondary) !important;
-  color: var(--primary) !important;
-}
-
-div.bft-light div.bft-family-menu [data-item]:hover {
-  cursor: pointer;
-  background-color: oklch(12.9% 0.042 264.695) !important;
-  color: white !important;
-}
-
-.dark div.bft-light div.bft-family-menu [data-item] {
-  display: flex;
-  background-color: oklch(0.208 0.042 265.755) !important;
-  color: white !important;
-}
-
-.dark div.bft-light div.bft-family-menu [data-item]:hover {
-  display: flex;
-  background-color: oklch(12.9% 0.042 264.695) !important;
-  color: white !important;
-}
-
 [data-ctrl-menu] {
-  top:15px !important;
-  height:40px !important;
+  top: 15px !important;
+  height: 40px !important;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
