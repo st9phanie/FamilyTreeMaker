@@ -8,7 +8,7 @@ html {
 }
 
 body {
-  background: #fff;
+  background: var(--secondary);
 }
 
 svg.tommy .node.male>rect {

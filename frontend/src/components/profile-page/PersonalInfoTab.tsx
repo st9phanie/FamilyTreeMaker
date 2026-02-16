@@ -5,23 +5,18 @@ import TabLayout from './TabLayout'
 import { useUserState } from '@/utils/store'
 import { Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
-import { changeUserImage, updateUser } from '@/lib/functions'
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from '../ui/input'
-import { supabase } from '@/lib/supabase'
+import { changeUserImage, deleteUserImage, updateUser } from '@/lib/functions'
+
 import { useSearchParams } from 'react-router-dom'
+import PasswordResetModal from './PasswordResetModal'
+import SimpleDialog from '../ui/SimpleDialog'
 
 const PersonalInfoTab = () => {
     const { user, loading, fetchUser } = useUserState()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [showResetModal, setShowResetModal] = useState(false);
-    const [newPassword, setNewPassword] = useState("");
     const [searchParams, setSearchParams] = useSearchParams();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
 
     const [formData, setFormData] = useState<User>({
@@ -35,15 +30,6 @@ const PersonalInfoTab = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const updatePassword = async () => {
-        const { error } = await supabase.auth.updateUser({ password: newPassword });
-        if (error) alert(error.message);
-        else {
-            alert("Password updated!");
-            setShowResetModal(false);
-        }
-    };
-
     useEffect(() => {
         if (searchParams.get("reset") === "true") {
             setShowResetModal(true);
@@ -54,7 +40,6 @@ const PersonalInfoTab = () => {
         setShowResetModal(false);
         setSearchParams({});
     };
-
 
     useEffect(() => {
         if (user) {
@@ -104,6 +89,23 @@ const PersonalInfoTab = () => {
         }
     };
 
+    const removePhoto = async () => {
+        try {
+            const response = await deleteUserImage(user?.photo)
+            if (response.status == "success") {
+                handleChange("photo", null);
+
+            useUserState.setState((state) => ({
+                user: state.user ? { ...state.user, photo: "" } : null
+            }));
+                await fetchUser();}
+
+
+        } catch (error) {
+            console.error("Failed to remove user photo", error);
+        }
+    }
+
     if (loading) return <TabLayout><Loader2 className='animate-spin size-10' /></TabLayout>;
     if (!user) return <TabLayout>No user found. Please log in.</TabLayout>;
 
@@ -111,19 +113,21 @@ const PersonalInfoTab = () => {
         <TabLayout>
             <div className='flex flex-col w-full h-full items-center '>
                 <h1 className='text-2xl text-start w-[600px] '>Personal Info</h1>
-
                 <div className='flex flex-col  justify-center py-5 lg:w-[600px] gap-y-5 '>
 
                     <div className='flex flex-col justify-between items-center mt-2 w-full '>
                         <ImagePicker currentPhoto={formData.photo} setPhoto={(value) => handleChange("photo", value)} />
                         <span className='mt-2 text-sm text-primary'>Profile Picture</span>
-                        {formData.photo && <span className='text-xs text-primary/40 cursor-pointer hover:text-primary/60'>Remove</span>
-
+                        {formData.photo &&
+                            <button className='text-xs text-primary/40 cursor-pointer hover:text-primary/60' onClick={() => setIsDeleteDialogOpen(true)}>
+                                Remove
+                            </button>
                         }
                     </div>
 
                     <hr className=' my-2 border-sidebar-border w-full' />
-                    {
+
+                    { ////////////////// INPUTS //////////////////////////////
                         profileItems.map((i, k) => (
                             <div key={k} className='flex flex-row justify-between items-center w-full '>
                                 <span className='w-1/3 font-semibold my-2 text-base text-primary'>{i.name}</span>
@@ -138,25 +142,20 @@ const PersonalInfoTab = () => {
                         <CountryPicker label='' country={formData.country} setCountry={(value) => handleChange("country", value)} setCity={() => { }} className='w-[400px] ' />
                     </div>
 
-                    <Button className='w-1/3 mt-10 place-self-end' disabled={isLoading} onClick={handleSubmit}>{isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        {isLoading ? "Saving..." : "Save"}</Button>
+                    <Button className='w-1/3 mt-10 place-self-end' disabled={isLoading} onClick={handleSubmit}>
+                        {isLoading ? "Saving..." : "Save"}
+                    </Button>
                 </div>
             </div>
+            <SimpleDialog
+                open={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                title="Delete Profile Picture?"
+                description="This action cannot be undone."
+                action={removePhoto}
+            />
+            <PasswordResetModal onClose={handleClose} open={showResetModal} />
 
-            <Dialog open={showResetModal} onOpenChange={handleClose}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Enter New Password</DialogTitle>
-                    </DialogHeader>
-                    <Input
-                        type="password"
-                        placeholder="New Password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                    <Button onClick={updatePassword}>Update Password</Button>
-                </DialogContent>
-            </Dialog>
         </TabLayout>
     )
 }

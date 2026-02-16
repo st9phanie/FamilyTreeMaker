@@ -61,3 +61,6 @@ class EmailRequest(BaseModel):
     
 class FamilyNameUpdate(BaseModel):
     new_name: str
+    
+class PhotoRequest(BaseModel):
+    photo: str

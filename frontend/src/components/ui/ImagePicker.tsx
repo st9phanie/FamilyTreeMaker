@@ -11,10 +11,16 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
   const [preview, setPreview] = useState<string | null>(currentPhoto || null);
 
   useEffect(() => {
-    const hasLocalFile = fileInputRef.current?.files && fileInputRef.current.files.length > 0;
-
-    if (!hasLocalFile) {
-      setPreview(currentPhoto || null);
+    if (!currentPhoto) {
+      setPreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } else {
+      const isUrl = typeof currentPhoto === 'string';
+      if (isUrl) {
+        setPreview(currentPhoto);
+      }
     }
   }, [currentPhoto]);
 
