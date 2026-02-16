@@ -1,12 +1,14 @@
 import { fileToBase64 } from "@/lib/helperfunctions";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Props = {
   currentPhoto?: string | null;
   setPhoto: (value: any) => void;
+  children?: ReactNode;
+  onRemove?: () => void;
 }
 
-const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
+const ImagePicker = ({ currentPhoto, setPhoto, children, onRemove }: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(currentPhoto || null);
 
@@ -39,6 +41,8 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
     setPhoto(file);
   };
 
+  const isSavedInDb = typeof currentPhoto === 'string' && currentPhoto.length > 0;
+
   return (
     <div className="flex flex-col items-center gap-2">
       <div
@@ -64,6 +68,22 @@ const ImagePicker = ({ currentPhoto, setPhoto }: Props) => {
         onChange={handleFileChange}
         className="hidden"
       />
+
+      {children}
+
+      {isSavedInDb && onRemove && (
+        <button
+        type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className='text-xs text-primary/40 cursor-pointer hover:text-red-500 transition-colors'
+        >
+          Remove photo
+        </button>
+      )}
+
     </div>
   );
 };

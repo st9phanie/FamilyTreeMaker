@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from supabaseClient import supabase
-from fastapi import FastAPI, Header, HTTPException, status, Depends
-from models import Person
-from dependencies import get_current_user
+from fastapi import status, Depends
+from models import Person, PhotoRequest
+from dependencies import get_current_user, check_person_ownership
 from typing import Optional, Any
 
 router = APIRouter(prefix="/person", tags=["person"])
@@ -12,7 +12,9 @@ router = APIRouter(prefix="/person", tags=["person"])
 
 # get person info
 @router.get("/{id}")
-def get_person(id: int):
+def get_person(id: int, user_id: str = Depends(get_current_user)):
+    
+    check_person_ownership(id, user_id)
     person = supabase.table("person").select("*").eq("id", id).execute()
 
     if not person.data:
@@ -25,7 +27,9 @@ def get_person(id: int):
 
 # update person
 @router.put("/{id}")
-def update_person(id: int, person: Person):
+def update_person(id: int, person: Person, user_id: str = Depends(get_current_user)):
+    
+    check_person_ownership(id, user_id)
     data = person.model_dump(mode="json", exclude_unset=True)
 
     if not data:
@@ -49,7 +53,9 @@ def update_person(id: int, person: Person):
 
 # picture
 @router.post("/{id}/upload-photo")
-async def change_picture(id: int, photo: UploadFile = File(...)):
+async def change_picture(id: int, photo: UploadFile = File(...), user_id: str = Depends(get_current_user)):
+    
+    check_person_ownership(id, user_id)
     try:
         file_content = await photo.read()
         file_extension = photo.filename.split(".")[-1]
@@ -79,6 +85,30 @@ async def change_picture(id: int, photo: UploadFile = File(...)):
         }
 
     except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# delete photo
+@router.delete("/{id}/delete-photo")
+async def delete_picutre(photo: PhotoRequest, user_id: str = Depends(get_current_user)):
+    
+    check_person_ownership(id, user_id)
+    try:
+        file_path = photo.photo.split("/")[-1]
+
+        supabase.storage.from_("images").remove([file_path])
+
+        db_response = (
+            supabase.table("person").update({"photo": ""}).eq("id", id).execute()
+        )
+
+        if not db_response.data:
+            raise HTTPException(status_code=404, detail="Person record not found")
+
+        return {"status": "success"}
+
+    except Exception as e:
+        print(f"Delete error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -115,8 +145,10 @@ def add_person(person: Person, user_id: str = Depends(get_current_user)):
 
 # ----------- ADD PARTNER -----------------
 @router.post("/{id}/add_partner")
-def add_partner(id: int, partner: Person):
-    new_person = add_person(partner)
+def add_partner(id: int, partner: Person, user_id: str = Depends(get_current_user)):
+    
+    check_person_ownership(id, user_id)
+    new_person = add_person(partner, user_id=user_id)
     new_id = new_person["id"]
 
     # Get original person's partner_id []
@@ -134,7 +166,9 @@ def add_partner(id: int, partner: Person):
 
 # -------------------------------------- ADD PARENT -----------------------------------------------
 @router.post("/{id}/add_parent")
-def add_parent(id: int, parent: Person):
+def add_parent(id: int, parent: Person, user_id: str = Depends(get_current_user)):
+
+    check_person_ownership(id, user_id)
     data = parent.model_dump(exclude_unset=True)
 
     # --------------------------------------------
@@ -147,7 +181,7 @@ def add_parent(id: int, parent: Person):
     # CASE B: create new parent
     # --------------------------------------------
     else:
-        new_person = add_person(parent)
+        new_person = add_person(parent, user_id=user_id)
         new_parent_id = new_person["id"]
 
     # --------------------------------------------
@@ -198,7 +232,9 @@ def add_parent(id: int, parent: Person):
 
 
 @router.delete("/{id}")
-def delete_person(id: int):
+def delete_person(id: int, user_id: str = Depends(get_current_user)):
+
+    check_person_ownership(id, user_id)
     # 1. Fetch the person (we need their partner list)
     person = supabase.table("person").select("partner_id").eq("id", id).execute()
 

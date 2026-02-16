@@ -106,5 +106,5 @@ async def delete_picutre(
         return {"status": "success"}
 
     except Exception as e:
-        print(f"Delete error: {e}") # Keep logs for yourself
+        print(f"Delete error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

@@ -15,3 +15,22 @@ async def get_current_user(authorization: str = Header(None)) -> str:
     except Exception:
         raise HTTPException(status_code=401, detail="Authentication failed")
         
+        
+def check_person_ownership(person_id: int, user_id: str):
+    person_check = (
+        supabase.table("person")
+        .select("id, family:family_id(user_id)")
+        .eq("id", person_id)
+        .execute()
+    )
+
+    if not person_check.data:
+        raise HTTPException(status_code=404, detail="Person not found")
+
+    family_owner = person_check.data[0].get("family", {}).get("user_id")
+    
+    if family_owner != user_id:
+        raise HTTPException(
+            status_code=403, 
+            detail="Access denied: You do not own the family this person belongs to"
+        )

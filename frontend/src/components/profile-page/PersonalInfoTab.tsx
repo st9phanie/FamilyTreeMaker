@@ -18,7 +18,6 @@ const PersonalInfoTab = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-
     const [formData, setFormData] = useState<User>({
         photo: null,
         name: "",
@@ -95,10 +94,10 @@ const PersonalInfoTab = () => {
             if (response.status == "success") {
                 handleChange("photo", null);
 
-            useUserState.setState((state) => ({
-                user: state.user ? { ...state.user, photo: "" } : null
-            }));
-                await fetchUser();}
+                useUserState.setState((state) => ({
+                    user: state.user ? { ...state.user, photo: "" } : null
+                }));
+            }
 
 
         } catch (error) {
@@ -116,13 +115,9 @@ const PersonalInfoTab = () => {
                 <div className='flex flex-col  justify-center py-5 lg:w-[600px] gap-y-5 '>
 
                     <div className='flex flex-col justify-between items-center mt-2 w-full '>
-                        <ImagePicker currentPhoto={formData.photo} setPhoto={(value) => handleChange("photo", value)} />
-                        <span className='mt-2 text-sm text-primary'>Profile Picture</span>
-                        {formData.photo &&
-                            <button className='text-xs text-primary/40 cursor-pointer hover:text-primary/60' onClick={() => setIsDeleteDialogOpen(true)}>
-                                Remove
-                            </button>
-                        }
+                        <ImagePicker currentPhoto={formData.photo} setPhoto={(value) => handleChange("photo", value)} onRemove={() => setIsDeleteDialogOpen(true)}>
+                            <span className='mt-2 text-sm text-primary'>Profile Picture</span>
+                        </ImagePicker>
                     </div>
 
                     <hr className=' my-2 border-sidebar-border w-full' />

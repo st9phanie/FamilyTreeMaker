@@ -9,7 +9,8 @@ import { Calendar22 } from '../ui/datepicker';
 import { useWorkspaceStore } from '@/utils/store';
 import LebanonLocations from '../ui/LebanonLocations';
 import CountryPicker from '../ui/countryPicker';
-import { changeImage } from '@/lib/functions';
+import { changeImage, deletePersonImage } from '@/lib/functions';
+import SimpleDialog from '../ui/SimpleDialog';
 
 type PersonFormProps = {
     title: string;
@@ -34,6 +35,8 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
     const isEdit = title.startsWith("Edit");
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
 
     const [formData, setFormData] = useState<Person>({
         photo: null,
@@ -111,7 +114,7 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 photo: formData.photo instanceof File ? (selectedPerson?.photo || null) : formData.photo
             };
 
-            const response = onSave(personData);            
+            const response = onSave(personData);
 
             const personId = selectedPerson?.id || response;
 
@@ -129,6 +132,22 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
         }
     };
 
+    const removePhoto = async () => {
+        try {
+            if (selectedPerson?.id) {
+                const response = await deletePersonImage(selectedPerson?.photo, selectedPerson?.id)
+                if (response.status == "success") {
+                    handleChange("photo", null);
+                    useWorkspaceStore.setState((state) => ({
+                        selectedPerson: state.selectedPerson ? { ...state.selectedPerson, photo: "" } : null
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error("Failed to remove person photo", error);
+        }
+    }
+
     return (
         <div className='w-[360px] h-[calc(100vh-40px)] border-r 
         border-sidebar-border
@@ -145,6 +164,7 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 <ImagePicker
                     currentPhoto={formData.photo}
                     setPhoto={(value) => handleChange("photo", value)}
+                    onRemove={() => setIsDeleteDialogOpen(true)}
                 />
 
                 <div className='flex flex-col gap-y-4'>
@@ -247,6 +267,14 @@ const PersonForm = ({ title, onBack, onSave, children }: PersonFormProps) => {
                 <Button className='flex-1' disabled={isLoading} onClick={handleSubmit}>Save</Button>
                 <Button variant="outline" className='flex-1' disabled={isLoading} onClick={onBack}>Cancel</Button>
             </div>
+
+            <SimpleDialog
+                open={isDeleteDialogOpen}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                title="Delete Picture?"
+                description="This action cannot be undone."
+                action={removePhoto}
+            />
         </div>
     );
 };

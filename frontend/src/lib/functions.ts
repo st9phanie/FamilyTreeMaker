@@ -136,3 +136,7 @@ export async function deleteUserImage(photo: string) {
   });
   return data;
 }
+export async function deletePersonImage(photo: string, id: number) {
+  const { data } = await api.delete(`/person/${id}/delete-photo`, {data: { photo }});
+  return data;
+}
